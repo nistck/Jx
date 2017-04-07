@@ -25,9 +25,17 @@ namespace Jx
             };
 
             jxPropertyGrid1.SelectedObject = jxPropertyGrid1;
+            jxPropertyGrid1.ReadOnly = true;
+
             jxPropertyGrid2.SelectedObject = labelInfo;
 
-            jxPropertyGrid1.ReadOnly = true;  
+            ToolStripItem tsi = jxPropertyGrid2.ToolStrip.Items.Add("T");
+            tsi.Click += Tsi_Click;
+        }
+
+        private void Tsi_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Tsi_Click: " + jxPropertyGrid2.SelectedGridItem.Label);
         }
 
         public class LabelInfo : JxObject

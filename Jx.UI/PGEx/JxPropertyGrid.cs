@@ -258,7 +258,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 
-        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Use the custom properties collections as SelectedObjects."), RefreshProperties(RefreshProperties.All)]public bool ShowCustomPropertiesSet
+        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Use the custom properties collections as SelectedObjects."), RefreshProperties(RefreshProperties.All)]
+        public bool ShowCustomPropertiesSet
         {
 			get
 			{
@@ -275,7 +276,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 
-		[Category("Appearance"), DefaultValue(false), DescriptionAttribute("Draw a flat toolbar")]public new bool DrawFlatToolbar
+		[Category("Appearance"), DefaultValue(false), DescriptionAttribute("Draw a flat toolbar")]
+        public new bool DrawFlatToolbar
         {
 			get
 			{
@@ -288,7 +290,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 
-        [Category("Appearance"), DisplayName("Toolstrip"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Toolbar object"), Browsable(true)]public ToolStrip ToolStrip
+        [Category("Appearance"), DisplayName("Toolstrip"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Toolbar object"), Browsable(true)]
+        public ToolStrip ToolStrip
         {
 			get
 			{
