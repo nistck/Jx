@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{28DB28F0-BF6D-42B5-9AD9-657A09CCF8B0}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{C09AF302-C508-4D5C-91A6-0669A9FA5BE7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jx</RootNamespace>
-    <AssemblyName>JxMain</AssemblyName>
+    <RootNamespace>Jx.UI</RootNamespace>
+    <AssemblyName>Jx.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,63 +32,34 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="PGEx\JxBrowsableTypeConverter.cs" />
+    <Compile Include="PGEx\JxCustomChoices.cs" />
+    <Compile Include="PGEx\JxCustomColorScheme.cs" />
+    <Compile Include="PGEx\JxCustomProperty.cs" />
+    <Compile Include="PGEx\JxCustomPropertyCollection.cs" />
+    <Compile Include="PGEx\JxCustomPropertyCollectionSet.cs" />
+    <Compile Include="PGEx\JxUICustomEventEditor.cs" />
+    <Compile Include="PGEx\JxUIFileNameEditor.cs" />
+    <Compile Include="PGEx\JxUIListboxEditor.cs" />
+    <Compile Include="PGEx\JxUITimeEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Include="PGEx\JxPropertyGrid.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    <Compile Include="PGEx\JxPropertyGrid.Designer.cs">
+      <DependentUpon>JxPropertyGrid.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
-      <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
-      <Name>Jx.IO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
-      <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>
-      <Name>Jx.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Jx\Jx.csproj">
-      <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
-      <Name>Jx</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
