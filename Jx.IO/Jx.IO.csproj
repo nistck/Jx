@@ -40,8 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="d.cs" />
-    <Compile Include="e.cs" />
+    <Compile Include="Internals\TextBlockHelper.cs" />
+    <Compile Include="Internals\TextBlockParser.cs" />
     <Compile Include="IPersist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextBlock.cs" />

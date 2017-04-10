@@ -283,7 +283,7 @@ namespace Jx.IO
                 string nameEncoded;
                 if (ShouldEncode(this.Name, false))
                 {
-                    nameEncoded = string.Format("\"{0}\"", d.EncodeDelimiterFormatString(this.Name));
+                    nameEncoded = string.Format("\"{0}\"", TextBlockHelper.EncodeDelimiterFormatString(this.Name));
                 }
                 else
                 {
@@ -297,7 +297,7 @@ namespace Jx.IO
                     string dataEncoded;
                     if (ShouldEncode(this.Data, false))
                     {
-                        dataEncoded = string.Format("\"{0}\"", d.EncodeDelimiterFormatString(this.Data));
+                        dataEncoded = string.Format("\"{0}\"", TextBlockHelper.EncodeDelimiterFormatString(this.Data));
                     }
                     else
                     {
@@ -315,7 +315,7 @@ namespace Jx.IO
                 string attrNameEncoded;
                 if (ShouldEncode(attr.Name, false))
                 {
-                    attrNameEncoded = string.Format("\"{0}\"", d.EncodeDelimiterFormatString(attr.Name));
+                    attrNameEncoded = string.Format("\"{0}\"", TextBlockHelper.EncodeDelimiterFormatString(attr.Name));
                 }
                 else
                 {
@@ -325,7 +325,7 @@ namespace Jx.IO
                 string attrValueEncoded;
                 if (ShouldEncode(attr.Value, true))
                 {
-                    attrValueEncoded = string.Format("\"{0}\"", d.EncodeDelimiterFormatString(attr.Value));
+                    attrValueEncoded = string.Format("\"{0}\"", TextBlockHelper.EncodeDelimiterFormatString(attr.Value));
                 }
                 else
                 {
@@ -368,7 +368,7 @@ namespace Jx.IO
 
         public static TextBlock Parse(string str, out string errorString)
         {
-            return e.Parse(str, out errorString);
+            return TextBlockParser.Parse(str, out errorString);
         }
     }
 }

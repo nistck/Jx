@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Jx.IO
 {
-    internal static class d
+    internal static class TextBlockHelper
     {
         public static bool IsCorrectIdentifierName(string name)
         {
@@ -36,11 +36,10 @@ namespace Jx.IO
             int i = 0;
             while (i < text.Length)
             {
-                char c = text[i];
-                char c2 = c;
-                if (c2 <= '"')
+                char c = text[i]; 
+                if (c <= '"')
                 {
-                    switch (c2)
+                    switch (c)
                     {
                         case '\t':
                             stringBuilder.Append("\\t");
@@ -55,7 +54,7 @@ namespace Jx.IO
                             stringBuilder.Append("\\r");
                             break;
                         default:
-                            if (c2 != '"')
+                            if (c != '"')
                             {
                                 goto IL_B5;
                             }
@@ -63,9 +62,9 @@ namespace Jx.IO
                             break;
                     }
                 }
-                else if (c2 != '\'')
+                else if (c != '\'')
                 {
-                    if (c2 != '\\')
+                    if (c != '\\')
                     {
                         goto IL_B5;
                     }
@@ -183,7 +182,7 @@ namespace Jx.IO
         public static string DecodeDelimiterFormatString(string text)
         {
             StringBuilder stringBuilder = new StringBuilder("", text.Length + 2);
-            d._DecodeDelimiterFormatString(stringBuilder, text);
+            TextBlockHelper._DecodeDelimiterFormatString(stringBuilder, text);
             return stringBuilder.ToString();
         }
         public static string[] TextWordWrap(string text, int charactersPerLine)
