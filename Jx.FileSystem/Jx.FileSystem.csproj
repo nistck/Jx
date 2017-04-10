@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FEB8FE8F-3399-48C8-AD0C-C86709ADC89B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jx.FileSystem</RootNamespace>
+    <AssemblyName>Jx.FileSystem</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="A\c.cs" />
+    <Compile Include="A\D.cs" />
+    <Compile Include="A\E.cs" />
+    <Compile Include="A\f.cs" />
+    <Compile Include="A\G.cs" />
+    <Compile Include="A\H.cs" />
+    <Compile Include="A\I.cs" />
+    <Compile Include="Jx.FileSystem.Archives\Archive.cs" />
+    <Compile Include="Jx.FileSystem.Archives\ArchiveFactory.cs" />
+    <Compile Include="Jx.FileSystem.Archives\ArchiveManager.cs" />
+    <Compile Include="Jx.FileSystem\EngineComponentManager.cs" />
+    <Compile Include="Jx.FileSystem\MemoryVirtualFileStream.cs" />
+    <Compile Include="Jx.FileSystem\NativeLibraryManager.cs" />
+    <Compile Include="Jx.FileSystem\RelativePathUtils.cs" />
+    <Compile Include="Jx.FileSystem\TextBlock.cs" />
+    <Compile Include="Jx.FileSystem\TextBlockUtils.cs" />
+    <Compile Include="Jx.FileSystem\VirtualDirectory.cs" />
+    <Compile Include="Jx.FileSystem\VirtualFile.cs" />
+    <Compile Include="Jx.FileSystem\VirtualFileStream.cs" />
+    <Compile Include="Jx.FileSystem\VirtualFileSystem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jx\Jx.csproj">
+      <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
+      <Name>Jx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
