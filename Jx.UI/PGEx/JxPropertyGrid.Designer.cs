@@ -12,8 +12,12 @@ namespace Jx.UI.PGEx
 		
 		
 		//UserControl overrides dispose to clean up the component list.
-		[System.Diagnostics.DebuggerNonUserCode()]protected override void Dispose(bool disposing)
+		[System.Diagnostics.DebuggerNonUserCode()]
+        protected override void Dispose(bool disposing)
 		{
+            if (disposing)
+                typeDescriptionProviderDic.Clear();
+
 			if (disposing && (components != null))
 			{
 				components.Dispose();

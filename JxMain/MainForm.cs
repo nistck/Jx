@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Jx.UI.PGEx;
+
 namespace Jx
 {
     public partial class MainForm : Form
@@ -27,10 +29,15 @@ namespace Jx
             jxPropertyGrid1.SelectedObject = jxPropertyGrid1;
             jxPropertyGrid1.ReadOnly = true;
 
-            jxPropertyGrid2.SelectedObject = labelInfo;
+            jxPropertyGrid2.SelectedObject = jxPropertyGrid1;
 
             ToolStripItem tsi = jxPropertyGrid2.ToolStrip.Items.Add("T");
+            tsi.ToolTipText = "TTTTTTTTTTTTTT";
             tsi.Click += Tsi_Click;
+
+            JxCustomPropertyCollection propertiesCol = new JxCustomPropertyCollection();
+            propertiesCol.Add(new JxCustomProperty("Xf看看", DateTime.Now, false, "素材", "采茶...", true)); 
+            jxPropertyGrid3.SelectedObject = propertiesCol;
         }
 
         private void Tsi_Click(object sender, EventArgs e)

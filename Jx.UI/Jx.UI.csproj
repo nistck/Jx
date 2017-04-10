@@ -48,7 +48,6 @@
     <Compile Include="PGEx\JxCustomColorScheme.cs" />
     <Compile Include="PGEx\JxCustomProperty.cs" />
     <Compile Include="PGEx\JxCustomPropertyCollection.cs" />
-    <Compile Include="PGEx\JxCustomPropertyCollectionSet.cs" />
     <Compile Include="PGEx\JxUICustomEventEditor.cs" />
     <Compile Include="PGEx\JxUIFileNameEditor.cs" />
     <Compile Include="PGEx\JxUIListboxEditor.cs" />

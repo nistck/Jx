@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -14,14 +15,7 @@ namespace Jx.UI.PGEx
     public partial class JxPropertyGrid : PropertyGrid
 	{			
 		#region "Protected variables and objects"
-		// CustomPropertyCollection assigned to MyBase.SelectedObject
-		protected JxCustomPropertyCollection oCustomPropertyCollection;
-		protected bool bShowCustomProperties;
-		
-		// CustomPropertyCollectionSet assigned to MyBase.SelectedObjects
-		protected JxCustomPropertyCollectionSet oCustomPropertyCollectionSet;
-		protected bool bShowCustomPropertiesSet;
-
+ 
 		// Internal PropertyGrid Controls
 		protected object internalPropertyGridView;
 		protected object internalHotCommands;
@@ -49,11 +43,7 @@ namespace Jx.UI.PGEx
 			// Add any initialization after the InitializeComponent() call.
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-
-			// Initialize collections
-            oCustomPropertyCollection = new JxCustomPropertyCollection();
-            oCustomPropertyCollectionSet = new JxCustomPropertyCollectionSet();
-			
+ 
 			// Attach internal controls
 			internalPropertyGridView = base.GetType().BaseType.InvokeMember("gridView", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance, null, this, null);
 			internalHotCommands = base.GetType().BaseType.InvokeMember("hotcommands", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance, null, this, null);
@@ -109,10 +99,6 @@ namespace Jx.UI.PGEx
 		
 		public override void Refresh()
 		{
-			if (bShowCustomPropertiesSet)
-			{
-				base.SelectedObjects =  (object[]) oCustomPropertyCollectionSet.ToArray();
-			}
 			base.Refresh();
 			if (bAutoSizeProperties)
 			{
@@ -182,6 +168,9 @@ namespace Jx.UI.PGEx
 
         #region "Properties"
 
+        #region Ö»¶Á!
+        private readonly Dictionary<object, TypeDescriptionProvider> typeDescriptionProviderDic = new Dictionary<object, TypeDescriptionProvider>();
+
         private bool _readOnly;
         public bool ReadOnly
         {
@@ -201,31 +190,17 @@ namespace Jx.UI.PGEx
 
         private void SetObjectAsReadOnly(object selectedObject, bool isReadOnly)
         {
-            if (this.SelectedObject != null)
-            {
-                TypeDescriptionProvider provider = TypeDescriptor.AddAttributes(this.SelectedObject, new Attribute[] { new ReadOnlyAttribute(_readOnly) });
-                this.Refresh();                
-            }
-        }
+            if (this.SelectedObject == null)
+                return;
 
-        [Category("Behavior"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Set the collection of the CustomProperty. Set ShowCustomProperties to True to enable it."), RefreshProperties(RefreshProperties.Repaint)]
-        public JxCustomPropertyCollection Item
-        {
-			get
-			{
-				return oCustomPropertyCollection;
-			}
-		}
-
-		[Category("Behavior"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Set the CustomPropertyCollectionSet. Set ShowCustomPropertiesSet to True to enable it."), RefreshProperties(RefreshProperties.Repaint)]public JxCustomPropertyCollectionSet ItemSet
-        {
-			get
-			{
-				return oCustomPropertyCollectionSet;
-			}
-		}
-
-        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Move automatically the splitter to better fit all the properties shown.")]public bool AutoSizeProperties
+            TypeDescriptionProvider provider = TypeDescriptor.AddAttributes(this.SelectedObject, new Attribute[] { new ReadOnlyAttribute(_readOnly) });
+            //typeDescriptionProviderDic[this.SelectedObject] = provider;
+            this.Refresh();
+        }       
+        #endregion
+ 
+        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Move automatically the splitter to better fit all the properties shown.")]
+        public bool AutoSizeProperties
         {
 			get
 			{
@@ -240,42 +215,7 @@ namespace Jx.UI.PGEx
 				}
 			}
 		}
-
-        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Use the custom properties collection as SelectedObject."), RefreshProperties(RefreshProperties.All)]public bool ShowCustomProperties
-        {
-			get
-			{
-				return bShowCustomProperties;
-			}
-			set
-			{
-				if (value == true)
-				{
-					bShowCustomPropertiesSet = false;
-					base.SelectedObject = oCustomPropertyCollection;
-				}
-				bShowCustomProperties = value;
-			}
-		}
-
-        [Category("Behavior"), DefaultValue(false), DescriptionAttribute("Use the custom properties collections as SelectedObjects."), RefreshProperties(RefreshProperties.All)]
-        public bool ShowCustomPropertiesSet
-        {
-			get
-			{
-				return bShowCustomPropertiesSet;
-			}
-			set
-			{
-				if (value == true)
-				{
-					bShowCustomProperties = false;
-					base.SelectedObjects =  (object[]) oCustomPropertyCollectionSet.ToArray();
-				}
-				bShowCustomPropertiesSet = value;
-			}
-		}
-
+         
 		[Category("Appearance"), DefaultValue(false), DescriptionAttribute("Draw a flat toolbar")]
         public new bool DrawFlatToolbar
         {
@@ -299,7 +239,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[Category("Appearance"), DisplayName("Help"), DescriptionAttribute("DocComment object. Represent the comments area of the PropertyGrid."), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]public Control DocComment
+		[Category("Appearance"), DisplayName("Help"), DescriptionAttribute("DocComment object. Represent the comments area of the PropertyGrid."), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
+        public Control DocComment
 		{
 			get
 			{
@@ -307,7 +248,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[Category("Appearance"), DisplayName("HelpTitle"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Help Title Label."), Browsable(true)]public Label DocCommentTitle
+		[Category("Appearance"), DisplayName("HelpTitle"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Help Title Label."), Browsable(true)]
+        public Label DocCommentTitle
 		{
 			get
 			{
@@ -315,7 +257,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[Category("Appearance"), DisplayName("HelpDescription"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Help Description Label."), Browsable(true)]public Label DocCommentDescription
+		[Category("Appearance"), DisplayName("HelpDescription"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Help Description Label."), Browsable(true)]
+        public Label DocCommentDescription
 		{
 			get
 			{

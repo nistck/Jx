@@ -70,34 +70,34 @@ namespace Jx.UI.PGEx
 		
 		public JxCustomProperty()
 		{
-			sName = "New Property";
+			sName = "ÐÂ½¨ÊôÐÔ";
 			oValue = new string(' ',0);
 		}
 		
-		public JxCustomProperty(string strName, object objValue, bool boolIsReadOnly, string strCategory, string strDescription, bool boolVisible)
+		public JxCustomProperty(string name, object value, bool readOnly, string category, string description, bool visible = true)
 		{
-			sName = strName;
-			oValue = objValue;
-			bIsReadOnly = boolIsReadOnly;
-			sDescription = strDescription;
-			sCategory = strCategory;
-			bVisible = boolVisible;
+			sName = name;
+			oValue = value;
+			bIsReadOnly = readOnly;
+			sDescription = description;
+			sCategory = category;
+			bVisible = visible;
 			if (oValue != null)
 			{
 				oDefaultValue = oValue;
 			}
 		}
 		
-		public JxCustomProperty(string strName, ref object objRef, string strProp, bool boolIsReadOnly, string strCategory, string strDescription, bool boolVisible)
+		public JxCustomProperty(string name, ref object objRef, string prop, bool readOnly, string category, string description, bool visible = true)
 		{
-			sName = strName;
-			bIsReadOnly = boolIsReadOnly;
-			sDescription = strDescription;
-			sCategory = strCategory;
-			bVisible = boolVisible;
+			sName = name;
+			bIsReadOnly = readOnly;
+			sDescription = description;
+			sCategory = category;
+			bVisible = visible;
 			bRef = true;
 			oRef = objRef;
-			sProp = strProp;
+			sProp = prop;
 			if (Value != null)
 			{
 				oDefaultValue = Value;
@@ -629,7 +629,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 
-        [XmlIgnore()]public UITypeEditor CustomEditor
+        [XmlIgnore()]
+        public UITypeEditor CustomEditor
 		{
 			get
 			{
@@ -654,7 +655,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 				
-		[XmlIgnore()]public object Tag
+		[XmlIgnore()]
+        public object Tag
 		{
 			get
 			{
@@ -666,7 +668,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[XmlIgnore()]public object DefaultValue
+		[XmlIgnore()]
+        public object DefaultValue
 		{
 			get
 			{
@@ -678,7 +681,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[XmlIgnore()]public Type DefaultType
+		[XmlIgnore()]
+        public Type DefaultType
 		{
 			get
 			{
@@ -690,7 +694,8 @@ namespace Jx.UI.PGEx
 			}
 		}
 		
-		[XmlIgnore()]public JxUICustomEventEditor.OnClick OnClick
+		[XmlIgnore()]
+        public JxUICustomEventEditor.OnClick OnClick
 		{
 			get
 			{

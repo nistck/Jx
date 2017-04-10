@@ -22,14 +22,14 @@ namespace Jx.UI.PGEx
 			return base.List.Add(value);
 		}
 		
-		public virtual int Add(string strName, object objValue, bool boolIsReadOnly, string strCategory, string strDescription, bool boolVisible)
+		public virtual int Add(string name, object value, bool readOnly, string category, string description, bool visible = true)
 		{
-			return base.List.Add(new JxCustomProperty(strName, objValue, boolIsReadOnly, strCategory, strDescription, boolVisible));
+			return base.List.Add(new JxCustomProperty(name, value, readOnly, category, description, visible));
 		}
 		
-		public virtual int Add(string strName, ref object objRef, string strProp, bool boolIsReadOnly, string strCategory, string strDescription, bool boolVisible)
+		public virtual int Add(string name, ref object objRef, string prop, bool readOnly, string category, string description, bool visible = true)
 		{
-			return base.List.Add(new JxCustomProperty(strName, ref objRef, strProp, boolIsReadOnly, strCategory, strDescription, boolVisible));
+			return base.List.Add(new JxCustomProperty(name, ref objRef, prop, readOnly, category, description, visible));
 		}
 		
 		public virtual JxCustomProperty this[int index]
