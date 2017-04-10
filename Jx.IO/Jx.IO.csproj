@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="Internals\TextBlockHelper.cs" />
     <Compile Include="Internals\TextBlockParser.cs" />
-    <Compile Include="IPersist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextBlock.cs" />
   </ItemGroup>

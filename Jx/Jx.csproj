@@ -46,6 +46,8 @@
     <Compile Include="JxLog.cs" />
     <Compile Include="JxObject.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="LogicSystemBrowsableAttribute.cs" />
+    <Compile Include="ManualTypeCreateAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

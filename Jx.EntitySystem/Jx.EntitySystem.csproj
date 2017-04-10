@@ -42,6 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ci.cs" />
+    <Compile Include="Entities.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="EntityNetworkTypes.cs" />
+    <Compile Include="EntityType.cs" />
+    <Compile Include="EntityTypes.cs" />
+    <Compile Include="LogicComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
