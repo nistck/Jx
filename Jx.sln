@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.IO", "Jx.IO\Jx.IO.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.UI", "Jx.UI\Jx.UI.csproj", "{C09AF302-C508-4D5C-91A6-0669A9FA5BE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxTest", "JxTest\JxTest.csproj", "{A458CF70-8A22-4EE4-9079-FA8C571E6133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C09AF302-C508-4D5C-91A6-0669A9FA5BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C09AF302-C508-4D5C-91A6-0669A9FA5BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C09AF302-C508-4D5C-91A6-0669A9FA5BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A458CF70-8A22-4EE4-9079-FA8C571E6133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A458CF70-8A22-4EE4-9079-FA8C571E6133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A458CF70-8A22-4EE4-9079-FA8C571E6133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A458CF70-8A22-4EE4-9079-FA8C571E6133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
