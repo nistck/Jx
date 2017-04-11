@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -52,6 +52,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyEngineApp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -80,6 +81,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
+      <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
+      <Name>Jx.EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
+      <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
+      <Name>Jx.Ext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
       <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
       <Name>Jx.IO</Name>

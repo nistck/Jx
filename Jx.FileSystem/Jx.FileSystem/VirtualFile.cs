@@ -1,7 +1,9 @@
-using A;
 using Jx.FileSystem.Archives;
 using System;
 using System.IO;
+
+using Jx.FileSystem.Internals.VFStream;
+
 namespace Jx.FileSystem
 {
 	public static class VirtualFile
@@ -9,9 +11,9 @@ namespace Jx.FileSystem
 		public static bool Exists(string path)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = false;
@@ -23,7 +25,7 @@ namespace Jx.FileSystem
 						Log.Info("Logging File Operations: VirtualFile.Exists( \"{0}\" )", path);
 					}
 					path = VirtualFileSystem.NormalizePath(path);
-					path = VirtualFileSystem.A(path, true);
+					path = VirtualFileSystem.RedirectFile(path, true);
 					string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(path);
 					if (File.Exists(realPathByVirtual))
 					{
@@ -44,9 +46,9 @@ namespace Jx.FileSystem
 		public static VirtualFileStream Open(string path)
 		{
 			VirtualFileStream result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = null;
@@ -58,24 +60,25 @@ namespace Jx.FileSystem
 						Log.Info("Logging File Operations: VirtualFile.Open( \"{0}\" )", path);
 					}
 					path = VirtualFileSystem.NormalizePath(path);
-					path = VirtualFileSystem.A(path, true);
-					bool flag2 = VirtualFileSystem.A(path);
-					if (flag2)
+					path = VirtualFileSystem.RedirectFile(path, true);
+					bool cachingExtension = VirtualFileSystem.IsCachingExtension(path);
+					if (cachingExtension)
 					{
-						byte[] array = VirtualFileSystem.a(path);
-						if (array != null)
+						byte[] bytesCached = VirtualFileSystem.LoadCachedBytes(path);
+						if (bytesCached != null)
 						{
-							result = new MemoryVirtualFileStream(array);
+							result = new MemoryVirtualFileStream(bytesCached);
 							return result;
 						}
 					}
-					if (VirtualFileSystem.P.Count != 0)
+
+					if (VirtualFileSystem.preloadItems.Count != 0)
 					{
 						string key = path.ToLower();
 						VirtualFileSystem.PreloadFileToMemoryItem preloadFileToMemoryItem;
-						if (VirtualFileSystem.P.TryGetValue(key, out preloadFileToMemoryItem) && preloadFileToMemoryItem.aj)
+						if (VirtualFileSystem.preloadItems.TryGetValue(key, out preloadFileToMemoryItem) && preloadFileToMemoryItem.loaded)
 						{
-							result = new MemoryVirtualFileStream(preloadFileToMemoryItem.ak);
+							result = new MemoryVirtualFileStream(preloadFileToMemoryItem.data);
 							return result;
 						}
 					}
@@ -83,17 +86,17 @@ namespace Jx.FileSystem
 					string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(path);
 					try
 					{
-						if (D.Platform == D.A.Windows)
+						if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 						{
-							virtualFileStream = new g(realPathByVirtual);
+							virtualFileStream = new WindowsVirtualFileStream(realPathByVirtual);
 						}
-						else if (D.Platform == D.A.MacOSX)
+						else if (PlatformInfo.Platform == PlatformInfo.PlanformType.MacOSX)
 						{
-							virtualFileStream = new f(realPathByVirtual);
+							virtualFileStream = new MacOSXVirtualFileStream(realPathByVirtual);
 						}
 						else
 						{
-							virtualFileStream = new G(realPathByVirtual);
+							virtualFileStream = new DefaultVirtualFileStream(realPathByVirtual);
 						}
 					}
 					catch (FileNotFoundException)
@@ -111,12 +114,12 @@ namespace Jx.FileSystem
 							throw new FileNotFoundException("File not found.", path);
 						}
 					}
-					if (flag2)
+					if (cachingExtension)
 					{
 						byte[] array2 = new byte[virtualFileStream.Length];
 						if ((long)virtualFileStream.Read(array2, 0, (int)virtualFileStream.Length) == virtualFileStream.Length)
 						{
-							VirtualFileSystem.A(path, array2);
+							VirtualFileSystem.CacheBytes(path, array2);
 						}
 						virtualFileStream.Position = 0L;
 					}
@@ -128,9 +131,9 @@ namespace Jx.FileSystem
 		public static long GetLength(string path)
 		{
 			long result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = 0L;
@@ -142,7 +145,7 @@ namespace Jx.FileSystem
 						Log.Info("Logging File Operations: VirtualFile.GetLength( \"{0}\" )", path);
 					}
 					path = VirtualFileSystem.NormalizePath(path);
-					path = VirtualFileSystem.A(path, true);
+					path = VirtualFileSystem.RedirectFile(path, true);
 					string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(path);
 					try
 					{
@@ -166,9 +169,9 @@ namespace Jx.FileSystem
 		public static bool IsInArchive(string path)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = false;
@@ -180,7 +183,7 @@ namespace Jx.FileSystem
 						Log.Info("Logging File Operations: VirtualFile.IsInArchive( \"{0}\" )", path);
 					}
 					path = VirtualFileSystem.NormalizePath(path);
-					path = VirtualFileSystem.A(path, true);
+					path = VirtualFileSystem.RedirectFile(path, true);
 					string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(path);
 					if (File.Exists(realPathByVirtual))
 					{
@@ -195,33 +198,35 @@ namespace Jx.FileSystem
 			}
 			return result;
 		}
+
 		public static bool IsArchive(string path)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				if (VirtualFileSystem.LoggingFileOperations)
 				{
 					Log.Info("Logging File Operations: VirtualFile.IsArchive( \"{0}\" )", path);
 				}
 				path = VirtualFileSystem.NormalizePath(path);
-				path = VirtualFileSystem.A(path, true);
+				path = VirtualFileSystem.RedirectFile(path, true);
 				string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(path);
 				result = (ArchiveManager.Instance.GetArchive(realPathByVirtual) != null);
 			}
 			return result;
 		}
+
 		public static byte[] ReadAllBytes(string path)
 		{
 			byte[] result;
-			using (VirtualFileStream virtualFileStream = VirtualFile.Open(path))
+			using (VirtualFileStream virtualFileStream = Open(path))
 			{
-				byte[] array = new byte[virtualFileStream.Length];
-				if (virtualFileStream.Read(array, 0, array.Length) != array.Length)
+				byte[] bytesBuf = new byte[virtualFileStream.Length];
+				if (virtualFileStream.Read(bytesBuf, 0, bytesBuf.Length) != bytesBuf.Length)
 				{
 					throw new EndOfStreamException();
 				}
-				result = array;
+				result = bytesBuf;
 			}
 			return result;
 		}

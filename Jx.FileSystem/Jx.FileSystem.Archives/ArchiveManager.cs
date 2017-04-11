@@ -1,10 +1,10 @@
-using A;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices; 
+
 namespace Jx.FileSystem.Archives
 {
 	public class ArchiveManager
@@ -51,12 +51,12 @@ namespace Jx.FileSystem.Archives
 				this.aR = length;
 			}
 		}
-		private class a
+		private class ClassA
 		{
 			internal string ar;
 			internal bool aS;
 			internal List<string> @as;
-			internal Dictionary<string, ArchiveManager.a> aT;
+			internal Dictionary<string, ArchiveManager.ClassA> aT;
 			public string Name
 			{
 				get
@@ -78,20 +78,20 @@ namespace Jx.FileSystem.Archives
 					return this.@as;
 				}
 			}
-			public Dictionary<string, ArchiveManager.a> Directories
+			public Dictionary<string, ArchiveManager.ClassA> Directories
 			{
 				get
 				{
 					return this.aT;
 				}
 			}
-			public a(string name, bool realFileSystemDirectory)
+			public ClassA(string name, bool realFileSystemDirectory)
 			{
 				this.ar = name;
 				this.aS = realFileSystemDirectory;
 			}
 		}
-		private class B
+		private class ClassB
 		{
 			private ArchiveFactory at;
 			private string aU = "";
@@ -134,9 +134,9 @@ namespace Jx.FileSystem.Archives
 		private List<ArchiveFactory> S = new List<ArchiveFactory>();
 		private Dictionary<string, Archive> s = new Dictionary<string, Archive>();
 		private Dictionary<string, ArchiveManager.FileInfo> T = new Dictionary<string, ArchiveManager.FileInfo>(256);
-		private ArchiveManager.a t;
+		private ArchiveManager.ClassA t;
 		[CompilerGenerated]
-		private static Comparison<ArchiveManager.B> U;
+		private static Comparison<ArchiveManager.ClassB> U;
 		public static ArchiveManager Instance
 		{
 			get
@@ -221,7 +221,7 @@ namespace Jx.FileSystem.Archives
 				{
 					EngineComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
 					string fileName = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, pathInfo.Path);
-					Assembly item = global::A.c.LoadAssemblyByFileName(fileName);
+					Assembly item = AssemblyUtils.LoadAssemblyByFileName(fileName);
 					if (!list.Contains(item))
 					{
 						list.Add(item);
@@ -253,9 +253,9 @@ namespace Jx.FileSystem.Archives
 			}
 			return true;
 		}
-		private List<ArchiveManager.B> C()
+		private List<ArchiveManager.ClassB> C()
 		{
-			List<ArchiveManager.B> list = new List<ArchiveManager.B>();
+			List<ArchiveManager.ClassB> list = new List<ArchiveManager.ClassB>();
 			foreach (ArchiveFactory current in this.S)
 			{
 				string[] files = Directory.GetFiles(VirtualFileSystem.ResourceDirectoryPath, "*." + current.FileExtension, SearchOption.AllDirectories);
@@ -269,7 +269,7 @@ namespace Jx.FileSystem.Archives
 						TextBlock textBlock = TextBlockUtils.LoadFromRealFile(path);
 						if (textBlock != null)
 						{
-							ArchiveManager.B b = new ArchiveManager.B();
+							ArchiveManager.ClassB b = new ArchiveManager.ClassB();
 							b.Factory = current;
 							b.SourceRealFileName = text;
 							if (textBlock.IsAttributeExist("loadingPriority"))
@@ -281,19 +281,19 @@ namespace Jx.FileSystem.Archives
 					}
 				}
 			}
-			List<ArchiveManager.B> arg_FA_0 = list;
+			List<ArchiveManager.ClassB> arg_FA_0 = list;
 			if (ArchiveManager.U == null)
 			{
-				ArchiveManager.U = new Comparison<ArchiveManager.B>(ArchiveManager.A);
+				ArchiveManager.U = new Comparison<ArchiveManager.ClassB>(ArchiveManager.A);
 			}
-			ArchiveManager.A<ArchiveManager.B>(arg_FA_0, ArchiveManager.U);
+			ArchiveManager.A<ArchiveManager.ClassB>(arg_FA_0, ArchiveManager.U);
 			return list;
 		}
 		private bool c()
 		{
-			this.t = new ArchiveManager.a(null, true);
-			List<ArchiveManager.B> list = this.C();
-			foreach (ArchiveManager.B current in list)
+			this.t = new ArchiveManager.ClassA(null, true);
+			List<ArchiveManager.ClassB> list = this.C();
+			foreach (ArchiveManager.ClassB current in list)
 			{
 				Archive archive = current.Factory.OnLoadArchive(current.SourceRealFileName);
 				if (archive == null)
@@ -332,7 +332,7 @@ namespace Jx.FileSystem.Archives
 					string text4 = Path.Combine(virtualPathByReal, path2);
 					this.A(text4, true);
 					string text5 = Path.Combine(virtualPathByReal, text3);
-					ArchiveManager.a a = this.A(Path.GetDirectoryName(text5), false);
+					ArchiveManager.ClassA a = this.A(Path.GetDirectoryName(text5), false);
 					if (a.@as == null)
 					{
 						a.@as = new List<string>();
@@ -367,10 +367,10 @@ namespace Jx.FileSystem.Archives
 		public VirtualFileStream FileOpen(string virtualPath)
 		{
 			VirtualFileStream result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				ArchiveManager.FileInfo fileInfo;
-				if (!this.GetFileInfo(virtualPath, out fileInfo))
+				if (!GetFileInfo(virtualPath, out fileInfo))
 				{
 					result = null;
 				}
@@ -381,10 +381,11 @@ namespace Jx.FileSystem.Archives
 			}
 			return result;
 		}
+
 		public bool GetFileInfo(string virtualPath, out ArchiveManager.FileInfo fileInfo)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				string key = VirtualFileSystem.NormalizePath(virtualPath).ToLower();
 				if (!this.T.TryGetValue(key, out fileInfo))
@@ -399,10 +400,11 @@ namespace Jx.FileSystem.Archives
 			}
 			return result;
 		}
+
 		public Archive GetArchive(string realPath)
 		{
 			Archive result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				string key = VirtualFileSystem.NormalizePath(realPath).ToLower();
 				Archive archive;
@@ -417,7 +419,7 @@ namespace Jx.FileSystem.Archives
 			}
 			return result;
 		}
-		private ArchiveManager.a A(string text, bool flag)
+		private ArchiveManager.ClassA A(string text, bool flag)
 		{
 			string[] array = text.Split(new char[]
 			{
@@ -425,13 +427,13 @@ namespace Jx.FileSystem.Archives
 				'/'
 			}, StringSplitOptions.RemoveEmptyEntries);
 			string text2 = "";
-			ArchiveManager.a a = this.t;
+			ArchiveManager.ClassA a = this.t;
 			string[] array2 = array;
 			for (int i = 0; i < array2.Length; i++)
 			{
 				string text3 = array2[i];
 				text2 = Path.Combine(text2, text3);
-				ArchiveManager.a a2 = null;
+				ArchiveManager.ClassA a2 = null;
 				string key = text3.ToLower();
 				if (a.Directories != null)
 				{
@@ -445,10 +447,10 @@ namespace Jx.FileSystem.Archives
 					}
 					string path = Path.Combine(VirtualFileSystem.ResourceDirectoryPath, text2);
 					bool realFileSystemDirectory = Directory.Exists(path);
-					a2 = new ArchiveManager.a(text3, realFileSystemDirectory);
+					a2 = new ArchiveManager.ClassA(text3, realFileSystemDirectory);
 					if (a.aT == null)
 					{
-						a.aT = new Dictionary<string, ArchiveManager.a>();
+						a.aT = new Dictionary<string, ArchiveManager.ClassA>();
 					}
 					a.aT.Add(key, a2);
 				}
@@ -458,7 +460,7 @@ namespace Jx.FileSystem.Archives
 		}
 		internal bool A(string text)
 		{
-			ArchiveManager.a a = this.A(text, false);
+			ArchiveManager.ClassA a = this.A(text, false);
 			return a != null && !a.RealFileSystemDirectory;
 		}
 		private bool A(string text, string text2)
@@ -511,11 +513,11 @@ namespace Jx.FileSystem.Archives
 			}
 			return num2 == text4.Length && num == text3.Length;
 		}
-		private void A(string path, ArchiveManager.a a, string text, SearchOption searchOption, List<string> list)
+		private void A(string path, ArchiveManager.ClassA a, string text, SearchOption searchOption, List<string> list)
 		{
 			if (searchOption == SearchOption.AllDirectories && a.Directories != null)
 			{
-				foreach (ArchiveManager.a current in a.Directories.Values)
+				foreach (ArchiveManager.ClassA current in a.Directories.Values)
 				{
 					string text2 = Path.Combine(path, current.Name);
 					this.A(text2, current, text, searchOption, list);
@@ -534,19 +536,19 @@ namespace Jx.FileSystem.Archives
 				}
 			}
 		}
-		private void a(string path, ArchiveManager.a a, string text, SearchOption searchOption, List<string> list)
+		private void a(string path, ArchiveManager.ClassA a, string text, SearchOption searchOption, List<string> list)
 		{
 			if (a.Directories != null)
 			{
 				if (searchOption == SearchOption.AllDirectories)
 				{
-					foreach (ArchiveManager.a current in a.Directories.Values)
+					foreach (ArchiveManager.ClassA current in a.Directories.Values)
 					{
 						string text2 = Path.Combine(path, current.Name);
 						this.a(text2, current, text, searchOption, list);
 					}
 				}
-				foreach (ArchiveManager.a current2 in a.Directories.Values)
+				foreach (ArchiveManager.ClassA current2 in a.Directories.Values)
 				{
 					if (!current2.RealFileSystemDirectory)
 					{
@@ -562,7 +564,7 @@ namespace Jx.FileSystem.Archives
 		}
 		internal void A(string text, string text2, SearchOption searchOption, List<string> list)
 		{
-			ArchiveManager.a a = this.A(text, false);
+			ArchiveManager.ClassA a = this.A(text, false);
 			if (a != null)
 			{
 				this.A(text, a, text2, searchOption, list);
@@ -570,14 +572,14 @@ namespace Jx.FileSystem.Archives
 		}
 		internal void a(string text, string text2, SearchOption searchOption, List<string> list)
 		{
-			ArchiveManager.a a = this.A(text, false);
+			ArchiveManager.ClassA a = this.A(text, false);
 			if (a != null)
 			{
 				this.a(text, a, text2, searchOption, list);
 			}
 		}
 		[CompilerGenerated]
-		private static int A(ArchiveManager.B b, ArchiveManager.B b2)
+		private static int A(ArchiveManager.ClassB b, ArchiveManager.ClassB b2)
 		{
 			if (b.LoadingPriority > b2.LoadingPriority)
 			{

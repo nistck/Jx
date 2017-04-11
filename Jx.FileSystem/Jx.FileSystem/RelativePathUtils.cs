@@ -16,6 +16,7 @@ namespace Jx.FileSystem
 			}
 			return path;
 		}
+
 		public static string ConvertToRelativePath(string ownerDirectoryName, string path)
 		{
 			if (!string.IsNullOrEmpty(path))
@@ -33,5 +34,6 @@ namespace Jx.FileSystem
 			}
 			return path;
 		}
+
 	}
 }

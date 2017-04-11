@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Jx.UI.PGEx;
+using Jx.FileSystem;
 
 namespace Jx
 {
@@ -21,74 +22,26 @@ namespace Jx
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LabelInfo labelInfo = new LabelInfo()
-            {
-                Label = "New"
-            };
-
-            jxPropertyGrid1.SelectedObject = jxPropertyGrid1;
-            jxPropertyGrid1.ReadOnly = true;
-
-            jxPropertyGrid2.SelectedObject = jxPropertyGrid1;
-
-            ToolStripItem tsi = jxPropertyGrid2.ToolStrip.Items.Add("T");
-            tsi.ToolTipText = "TTTTTTTTTTTTTT";
-            tsi.Click += Tsi_Click;
-
-            JxCustomPropertyCollection propertiesCol = new JxCustomPropertyCollection();
-            propertiesCol.Add(new JxCustomProperty("Xf看看", DateTime.Now, false, "素材", "采茶...", true)); 
-            jxPropertyGrid3.SelectedObject = propertiesCol;
+            Bootstrap();
         }
-
-        private void Tsi_Click(object sender, EventArgs e)
+        
+        private void Bootstrap()
         {
-            MessageBox.Show("Tsi_Click: " + jxPropertyGrid2.SelectedGridItem.Label);
-        }
+            string logPath = string.Format("user:Logs/JxMain.log");
+            //initialize file sytem of the engine
+            if (!VirtualFileSystem.Init(logPath, true, null, null, null, null))
+                return;
 
-        public class LabelInfo : JxObject
-        {
-            private string label;
-            private object tag;
+            Log.Info(">> Log Path: {0}", logPath);
 
-            [JxProperty("中文标签")]
-            [Description("...")]
-            public string Label
+            EngineApp.Init(new MyEngineApp());
+
+            bool created = EngineApp.Instance.Create(); 
+            if( created)
             {
-                get { return label; }
-                set { this.label = value; }
+                EngineApp.Instance.Run();
             }
-
-
-            public object Tag
-            {
-                get { return tag; }
-                set { this.tag = value; }
-            }
-
-            private DateTime dt = DateTime.Now;
-
-            [Editor(typeof(Jx.UI.PGEx.JxUIDateTimeEditor), typeof(System.Drawing.Design.UITypeEditor))]
-            public DateTime Dt
-            {
-                get { return dt; }
-                set { this.dt = value; }
-            }
-
-            private DateTime t = DateTime.Now;
-            [Editor(typeof(Jx.UI.PGEx.JxUITimeOnlyEditor), typeof(System.Drawing.Design.UITypeEditor))]
-            public DateTime T
-            {
-                get { return t; }
-                set { this.t = value; }
-            }
-
-            private string filePath;
-            [Editor(typeof(Jx.UI.PGEx.JxUIFileNameEditor), typeof(System.Drawing.Design.UITypeEditor))]
-            public string FilePath
-            {
-                get { return filePath; }
-                set { this.filePath = value; }
-            }
+            EngineApp.Shutdown();
         }
     }
 }

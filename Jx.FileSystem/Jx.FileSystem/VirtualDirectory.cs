@@ -9,9 +9,9 @@ namespace Jx.FileSystem
 		public static bool Exists(string path)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = false;
@@ -42,9 +42,9 @@ namespace Jx.FileSystem
 		public static bool IsInArchive(string path)
 		{
 			bool result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = false;
@@ -79,9 +79,9 @@ namespace Jx.FileSystem
 		public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption)
 		{
 			string[] result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = null;
@@ -187,9 +187,9 @@ namespace Jx.FileSystem
 		public static string[] GetDirectories(string path, string searchPattern, SearchOption searchOption)
 		{
 			string[] result;
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (!VirtualFileSystem.k)
+				if (!VirtualFileSystem.Initialized)
 				{
 					Log.Fatal("VirtualFileSystem: File system is not initialized.");
 					result = null;

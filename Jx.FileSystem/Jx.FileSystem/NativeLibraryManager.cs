@@ -1,27 +1,27 @@
-using A;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
 using Jx;
+using Jx.FileSystem.Internals.Natives;
 
 namespace Jx.FileSystem
 {
 	public static class NativeLibraryManager
 	{
-		internal static string Q;
+		internal static string specialNativeLibrariesDirectoryPath;
 		private static object q = new object();
 		private static Dictionary<string, int> R = new Dictionary<string, int>();
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, EntryPoint = "SetDllDirectory")]
-		private static extern bool A(string s);
+		private static extern bool SetDllDirectory(string s);
 		public static string GetNativeLibrariesDirectory()
 		{
-			if (!string.IsNullOrEmpty(NativeLibraryManager.Q))
+			if (!string.IsNullOrEmpty(NativeLibraryManager.specialNativeLibrariesDirectoryPath))
 			{
-				return NativeLibraryManager.Q;
+				return NativeLibraryManager.specialNativeLibrariesDirectoryPath;
 			}
-			if (D.Platform == D.A.Windows)
+			if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 			{
 				if (IntPtr.Size == 8)
 				{
@@ -29,7 +29,7 @@ namespace Jx.FileSystem
 				}
 				return Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, "NativeDlls\\Windows_x86");
 			}
-			else if (D.Platform == D.A.MacOSX)
+			else if (PlatformInfo.Platform == PlatformInfo.PlanformType.MacOSX)
 			{
 				if (IntPtr.Size == 8)
 				{
@@ -39,7 +39,7 @@ namespace Jx.FileSystem
 			}
 			else
 			{
-				if (D.Platform == D.A.Android)
+				if (PlatformInfo.Platform == PlatformInfo.PlanformType.Android)
 				{
 					return Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, "NativeDlls/Android_x86");
 				}
@@ -54,11 +54,11 @@ namespace Jx.FileSystem
 				if (!NativeLibraryManager.R.ContainsKey(baseName))
 				{
 					NativeLibraryManager.R.Add(baseName, 0);
-					if (D.Platform == D.A.Windows)
+					if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 					{
 						baseName += ".dll";
 					}
-					else if (D.Platform == D.A.MacOSX)
+					else if (PlatformInfo.Platform == PlatformInfo.PlanformType.MacOSX)
 					{
 						string path = Path.Combine(NativeLibraryManager.GetNativeLibrariesDirectory(), baseName + ".bundle");
 						if (Directory.Exists(path))
@@ -70,7 +70,7 @@ namespace Jx.FileSystem
 							baseName += ".dylib";
 						}
 					}
-					else if (D.Platform == D.A.Android)
+					else if (PlatformInfo.Platform == PlatformInfo.PlanformType.Android)
 					{
 						string str = "lib";
 						if (baseName.Length > 3 && baseName.Substring(0, 3) == "lib")
@@ -85,18 +85,18 @@ namespace Jx.FileSystem
 					}
 					string currentDirectory = Directory.GetCurrentDirectory();
 					Directory.SetCurrentDirectory(NativeLibraryManager.GetNativeLibrariesDirectory());
-					if (D.Platform == D.A.Windows)
+					if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 					{
 						try
 						{
-							NativeLibraryManager.A(NativeLibraryManager.GetNativeLibrariesDirectory());
+							NativeLibraryManager.SetDllDirectory(NativeLibraryManager.GetNativeLibrariesDirectory());
 						}
 						catch
 						{
 						}
 					}
 					string text = Path.Combine(NativeLibraryManager.GetNativeLibrariesDirectory(), baseName);
-					if (E.Get().LoadLibrary(text) == IntPtr.Zero)
+					if (PlatformNative.Get().LoadLibrary(text) == IntPtr.Zero)
 					{
 						Log.Fatal("Loading native library failed ({0}).", text);
 					}

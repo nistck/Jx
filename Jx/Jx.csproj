@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,12 +43,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JxLog.cs" />
+    <Compile Include="CollectionItemPropertyDescriptor.cs" />
+    <Compile Include="CollectionTypeConverter.cs" />
+    <Compile Include="EngineApp.cs" />
+    <Compile Include="EngineRandom.cs" />
+    <Compile Include="ExtendedFunctionalityDescriptorAttribute.cs" />
+    <Compile Include="FunctionalityArea.cs" />
     <Compile Include="JxObject.cs" />
+    <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogicSystemBrowsableAttribute.cs" />
+    <Compile Include="LogicSystemCallStaticOverInstanceAttribute.cs" />
+    <Compile Include="LogicSystemClassDisplayAttribute.cs" />
+    <Compile Include="LogicSystemMethodDisplayAttribute.cs" />
+    <Compile Include="LongOperationCallbackManager.cs" />
     <Compile Include="ManualTypeCreateAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolsLocalization.cs" />
+    <Compile Include="_IWrappedCustomTypeDescriptor.cs" />
+    <Compile Include="_IWrappedPropertyDescriptor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,3 @@
-using A;
 using Jx.FileSystem.Archives;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Jx;
+using Jx.FileSystem.Internals;
+using Jx.FileSystem.Internals.Natives;
 
 namespace Jx.FileSystem
 {
@@ -16,114 +17,124 @@ namespace Jx.FileSystem
 	{
 		public class PreloadFileToMemoryItem
 		{
-			internal string aJ;
-			internal volatile bool aj;
-			internal volatile string aK = "";
-			internal volatile byte[] ak;
+			internal string path;
+			internal volatile bool loaded;
+			internal volatile string error = "";
+			internal volatile byte[] data;
 			public string Path
 			{
 				get
 				{
-					return this.aJ;
+					return this.path;
 				}
 			}
 			public bool Loaded
 			{
 				get
 				{
-					return this.aj;
+					return this.loaded;
 				}
 			}
 			public string Error
 			{
 				get
 				{
-					return this.aK;
+					return this.error;
 				}
 			}
 			public byte[] Data
 			{
 				get
 				{
-					return this.ak;
+					return this.data;
 				}
 			}
 		}
+
 		public sealed class DeploymentParametersClass
 		{
-			internal string aL = "";
+			internal string defaultLanguage = "";
 			public string DefaultLanguage
 			{
 				get
 				{
-					return this.aL;
+					return this.defaultLanguage;
 				}
 			}
 		}
-		private static string j;
-		private static string K;
-		internal static bool k;
-		private static Dictionary<string, string> L;
-		private static Dictionary<string, int> l = new Dictionary<string, int>();
-		private static Dictionary<string, byte[]> M = new Dictionary<string, byte[]>();
-		private static bool m;
-		private static string N = "";
-		private static VirtualFileSystem.DeploymentParametersClass n;
-		internal static object O = new object();
-		private static bool o;
-		internal static Dictionary<string, VirtualFileSystem.PreloadFileToMemoryItem> P = new Dictionary<string, VirtualFileSystem.PreloadFileToMemoryItem>();
+
+		private static string resourceDirectoryPath;
+		private static string executableDirectoryPath;
+		internal static bool Initialized;
+		private static Dictionary<string, string> fileRedirectionDefinitions;
+		private static Dictionary<string, int> cachingExtensions = new Dictionary<string, int>();
+		private static Dictionary<string, byte[]> bytesCache = new Dictionary<string, byte[]>();
+		private static bool deployed;
+		private static string userDirectoryPath = "";
+		private static DeploymentParametersClass deploymentParameters;
+		internal readonly static object syncVFS = new object();
+		private static bool loggingFileOperatations;
+		internal static Dictionary<string, PreloadFileToMemoryItem> preloadItems = new Dictionary<string, PreloadFileToMemoryItem>();
+
 		public static string ResourceDirectoryPath
 		{
 			get
 			{
-				return VirtualFileSystem.j;
+				return resourceDirectoryPath;
 			}
 		}
+
 		public static string ExecutableDirectoryPath
 		{
 			get
 			{
-				return VirtualFileSystem.K;
+				return executableDirectoryPath;
 			}
 		}
 		public static bool Deployed
 		{
 			get
 			{
-				return VirtualFileSystem.m;
+				return deployed;
 			}
 		}
-		public static VirtualFileSystem.DeploymentParametersClass DeploymentParameters
+		public static DeploymentParametersClass DeploymentParameters
 		{
 			get
 			{
-				return VirtualFileSystem.n;
+				return deploymentParameters;
 			}
 		}
 		public static string UserDirectoryPath
 		{
 			get
 			{
-				return VirtualFileSystem.N;
+				return userDirectoryPath;
 			}
 		}
 		public static bool LoggingFileOperations
 		{
 			get
 			{
-				return VirtualFileSystem.o;
+				return loggingFileOperatations;
 			}
 			set
 			{
-				VirtualFileSystem.o = value;
+				loggingFileOperatations = value;
 			}
 		}
+
+        /// <summary>
+        /// 替换 顺斜杠\\ -> 反斜杠/
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
 		public static string NormalizePath(string path)
 		{
 			string text = path;
 			if (text != null)
 			{
-				if (D.Platform == D.A.Windows)
+				if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 				{
 					text = text.Replace('/', '\\');
 				}
@@ -134,183 +145,208 @@ namespace Jx.FileSystem
 			}
 			return text;
 		}
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="logFileName">日志文件</param>
+        /// <param name="correctCurrentDirectory">!</param>
+        /// <param name="specialExecutableDirectoryPath">程序目录</param>
+        /// <param name="specialResourceDirectoryPath">资源目录</param>
+        /// <param name="specialUserDirectoryPath">用户目录</param>
+        /// <param name="specialNativeLibrariesDirectoryPath">DLL目录</param>
+        /// <returns></returns>
 		public static bool Init(string logFileName, bool correctCurrentDirectory, string specialExecutableDirectoryPath, string specialResourceDirectoryPath, string specialUserDirectoryPath, string specialNativeLibrariesDirectoryPath)
 		{
-			logFileName = VirtualFileSystem.NormalizePath(logFileName);
-			specialExecutableDirectoryPath = VirtualFileSystem.NormalizePath(specialExecutableDirectoryPath);
-			specialResourceDirectoryPath = VirtualFileSystem.NormalizePath(specialResourceDirectoryPath);
-			specialUserDirectoryPath = VirtualFileSystem.NormalizePath(specialUserDirectoryPath);
-			specialNativeLibrariesDirectoryPath = VirtualFileSystem.NormalizePath(specialNativeLibrariesDirectoryPath);
-			NativeLibraryManager.Q = specialNativeLibrariesDirectoryPath;
-			if (VirtualFileSystem.k)
+			logFileName = NormalizePath(logFileName);
+            specialExecutableDirectoryPath = NormalizePath(specialExecutableDirectoryPath);
+			specialResourceDirectoryPath = NormalizePath(specialResourceDirectoryPath);
+			specialUserDirectoryPath = NormalizePath(specialUserDirectoryPath);
+			specialNativeLibrariesDirectoryPath = NormalizePath(specialNativeLibrariesDirectoryPath);
+
+			NativeLibraryManager.specialNativeLibrariesDirectoryPath = specialNativeLibrariesDirectoryPath;
+			if (Initialized)
 			{
 				Log.Fatal("VirtualFileSystem: Init: File system already initialized.");
 				return false;
 			}
+
 			if (!string.IsNullOrEmpty(specialExecutableDirectoryPath) && !Path.IsPathRooted(specialExecutableDirectoryPath))
 			{
 				Log.Fatal("VirtualFileSystem: Init: Special executable directory path must be rooted.");
 				return false;
 			}
+
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-			VirtualFileSystem.K = specialExecutableDirectoryPath;
-			if (string.IsNullOrEmpty(VirtualFileSystem.K))
+			executableDirectoryPath = specialExecutableDirectoryPath;
+			if (string.IsNullOrEmpty(executableDirectoryPath))
 			{
-				VirtualFileSystem.K = E.Get().GetExecutableDirectoryPath();
+				executableDirectoryPath = PlatformNative.Get().GetExecutableDirectoryPath();
 			}
-			VirtualFileSystem.j = specialResourceDirectoryPath;
-			if (string.IsNullOrEmpty(VirtualFileSystem.j))
+			resourceDirectoryPath = specialResourceDirectoryPath;
+
+			if (string.IsNullOrEmpty(resourceDirectoryPath))
 			{
-				VirtualFileSystem.j = Path.Combine(VirtualFileSystem.K, "Data");
+				resourceDirectoryPath = Path.Combine(executableDirectoryPath, "Data");
 			}
+
 			if (!string.IsNullOrEmpty(specialUserDirectoryPath))
 			{
-				VirtualFileSystem.N = specialUserDirectoryPath;
+				userDirectoryPath = specialUserDirectoryPath;
 			}
 			bool flag = Type.GetType("Mono.Runtime", false) != null;
 			if (flag)
 			{
-				AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(VirtualFileSystem.A);
+				AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveAssembly);
 			}
-			if (D.Platform == D.A.MacOSX)
+			if (PlatformInfo.Platform == PlatformInfo.PlanformType.MacOSX)
 			{
 				NativeLibraryManager.PreLoadLibrary("MacAppNativeWrapper");
 			}
 			if (correctCurrentDirectory)
 			{
-				VirtualFileSystem._CorrectCurrentDirectory();
+				_CorrectCurrentDirectory();
 			}
-			EngineComponentManager.A();
+
+			EngineComponentManager.Init();
 			if (!ArchiveManager.A())
 			{
-				VirtualFileSystem.Shutdown();
+				Shutdown();
 				return false;
 			}
-			VirtualFileSystem.k = true;
-			VirtualFileSystem.A();
+			Initialized = true;
+			InitDeployment();
 			string dumpRealFileName = null;
 			if (!string.IsNullOrEmpty(logFileName))
 			{
-				dumpRealFileName = VirtualFileSystem.GetRealPathByVirtual(logFileName);
+				dumpRealFileName = GetRealPathByVirtual(logFileName);
 			}
 			Log._Init(Thread.CurrentThread, dumpRealFileName);
-			VirtualFileSystem.a();
+			InitCachingExtensions();
 			return true;
 		}
-		public static void Shutdown()
+
+        public static void Shutdown()
 		{
 			ArchiveManager.a();
-			EngineComponentManager.a();
-			VirtualFileSystem.k = false;
+			EngineComponentManager.Unload();
+			Initialized = false;
 		}
-		private static Assembly A(object obj, ResolveEventArgs resolveEventArgs)
+
+		private static Assembly ResolveAssembly(object obj, ResolveEventArgs resolveEventArgs)
 		{
 			string name = resolveEventArgs.Name;
 			string path = name.Substring(0, name.IndexOf(',')) + ".dll";
-			string fileName = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, path);
-			return c.LoadAssemblyByFileName(fileName);
+			string fileName = Path.Combine(ExecutableDirectoryPath, path);
+			return AssemblyUtils.LoadAssemblyByFileName(fileName);
 		}
+
 		public static void _CorrectCurrentDirectory()
 		{
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
-				if (D.Platform == D.A.Windows)
+				if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 				{
-					Directory.SetCurrentDirectory(VirtualFileSystem.ExecutableDirectoryPath);
+					Directory.SetCurrentDirectory(ExecutableDirectoryPath);
 				}
 			}
 		}
+
 		public static string GetVirtualPathByReal(string realPath)
 		{
 			if (realPath == null)
 			{
 				Log.Fatal("VirtualFileSystem: GetVirtualPathByReal: realPath == null.");
 			}
-			realPath = VirtualFileSystem.NormalizePath(realPath);
+			realPath = NormalizePath(realPath);
 			string text;
 			if (!Path.IsPathRooted(realPath))
 			{
-				text = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, realPath);
+				text = Path.Combine(ExecutableDirectoryPath, realPath);
 			}
 			else
 			{
 				text = realPath;
 			}
-			if (text.Length <= VirtualFileSystem.ResourceDirectoryPath.Length)
+			if (text.Length <= ResourceDirectoryPath.Length)
 			{
 				return "";
 			}
-			if (!string.Equals(text.Substring(0, VirtualFileSystem.ResourceDirectoryPath.Length), VirtualFileSystem.ResourceDirectoryPath, StringComparison.OrdinalIgnoreCase))
+			if (!string.Equals(text.Substring(0, ResourceDirectoryPath.Length), ResourceDirectoryPath, StringComparison.OrdinalIgnoreCase))
 			{
 				return "";
 			}
-			return text.Substring(VirtualFileSystem.ResourceDirectoryPath.Length + 1, text.Length - VirtualFileSystem.ResourceDirectoryPath.Length - 1);
+			return text.Substring(ResourceDirectoryPath.Length + 1, text.Length - ResourceDirectoryPath.Length - 1);
 		}
+
 		public static string GetRealPathByVirtual(string virtualPath)
 		{
-			if (D.Platform != D.A.Windows)
-			{
-				virtualPath = virtualPath.Replace('\\', '/');
-			}
-			if (virtualPath.Length >= 5 && virtualPath[4] == ':')
-			{
-				string a = virtualPath.Substring(0, 5);
-				if (a == "user:")
-				{
-					return Path.Combine(VirtualFileSystem.UserDirectoryPath, virtualPath.Substring(5));
-				}
-			}
-			return Path.Combine(VirtualFileSystem.ResourceDirectoryPath, virtualPath);
-		}
+            if (PlatformInfo.Platform != PlatformInfo.PlanformType.Windows)
+            {
+                virtualPath = virtualPath.Replace('\\', '/');
+            }
+            if (virtualPath.Length >= 5 && virtualPath[4] == ':')
+            {
+                string a = virtualPath.Substring(0, 5);
+                if (a == "user:")
+                {
+                    string p1 = Path.Combine(UserDirectoryPath, virtualPath.Substring(5));
+                    return NormalizePath(p1);
+                }
+            }
+            string p2 = Path.Combine(ResourceDirectoryPath, virtualPath);
+            return NormalizePath(p2);
+        }
+
 		public static void AddFileRedirection(string originalFileName, string newFileName)
 		{
-			lock (VirtualFileSystem.O)
+			lock (syncVFS)
 			{
-				if (VirtualFileSystem.L == null)
-				{
-					VirtualFileSystem.L = new Dictionary<string, string>();
-				}
-				string text = VirtualFileSystem.NormalizePath(originalFileName).ToLower();
-				string value = VirtualFileSystem.NormalizePath(newFileName);
-				if (VirtualFileSystem.L.ContainsKey(text))
+				if (fileRedirectionDefinitions == null)
+					fileRedirectionDefinitions = new Dictionary<string, string>();
+				
+				string text = NormalizePath(originalFileName).ToLower();
+				string value = NormalizePath(newFileName);
+				if (fileRedirectionDefinitions.ContainsKey(text))
 				{
 					Log.Fatal("VirtualFileSystem: AddFileRedirection: File redirection is already exists \"{0}\".", text);
 				}
-				VirtualFileSystem.L.Add(text, value);
+				fileRedirectionDefinitions.Add(text, value);
 			}
 		}
+
 		public static void RemoveFileRedirection(string originalFileName)
 		{
-			lock (VirtualFileSystem.O)
+			lock (syncVFS)
 			{
-				string key = VirtualFileSystem.NormalizePath(originalFileName).ToLower();
-				if (VirtualFileSystem.L != null)
-				{
-					VirtualFileSystem.L.Remove(key);
-				}
+				string key = NormalizePath(originalFileName).ToLower();
+				if (fileRedirectionDefinitions != null)
+					fileRedirectionDefinitions.Remove(key);
 			}
 		}
-		internal static string A(string text, bool flag)
+
+		internal static string RedirectFile(string p, bool flag)
 		{
 			string result;
-			lock (VirtualFileSystem.O)
+			lock (syncVFS)
 			{
-				if (VirtualFileSystem.L == null)
+				if (fileRedirectionDefinitions == null)
 				{
-					result = text;
+					result = p;
 				}
 				else
 				{
-					string text2 = text;
+					string text2 = p;
 					if (!flag)
 					{
-						text2 = VirtualFileSystem.NormalizePath(text2);
+						text2 = NormalizePath(text2);
 					}
 					text2 = text2.ToLower();
+
 					string text3;
-					if (!VirtualFileSystem.L.TryGetValue(text2, out text3))
+					if (!fileRedirectionDefinitions.TryGetValue(text2, out text3))
 					{
-						result = text;
+						result = p;
 					}
 					else
 					{
@@ -320,49 +356,50 @@ namespace Jx.FileSystem
 			}
 			return result;
 		}
+
 		public static string GetRedirectedFileName(string originalFileName)
 		{
-			return VirtualFileSystem.A(originalFileName, false);
+			return RedirectFile(originalFileName, false);
 		}
-		private static void A()
+
+		private static void InitDeployment()
 		{
-			string text = null;
-			string text2 = "Base/Constants/Deployment.config";
-			VirtualFileSystem.m = false;
-			if (VirtualFile.Exists(text2))
+			string userDirectory = null;
+			string deploymentCfgPath = "Base/Constants/Deployment.config";
+			deployed = false;
+			if (VirtualFile.Exists(deploymentCfgPath))
 			{
-				VirtualFileSystem.m = true;
-				VirtualFileSystem.n = new VirtualFileSystem.DeploymentParametersClass();
+				deployed = true;
+				deploymentParameters = new DeploymentParametersClass();
 				try
 				{
-					using (VirtualFileStream virtualFileStream = VirtualFile.Open(text2))
+					using (VirtualFileStream virtualFileStream = VirtualFile.Open(deploymentCfgPath))
 					{
 						using (StreamReader streamReader = new StreamReader(virtualFileStream))
 						{
 							while (true)
 							{
-								string text3 = streamReader.ReadLine();
-								if (text3 == null)
-								{
+								string line = streamReader.ReadLine();
+								if (line == null)
 									break;
-								}
-								text3 = text3.Trim();
-								if (!(text3 == "") && (text3.Length < 2 || !(text3.Substring(0, 2) == "//")))
+
+                                line = line.Trim();
+								if (!(line == "") && (line.Length < 2 || !(line.Substring(0, 2) == "//")))
 								{
-									int num = text3.IndexOf('=');
-									if (num != -1)
+									int eqPosition = line.IndexOf('=');
+									if (eqPosition != -1)
 									{
-										string a = text3.Substring(0, num).Trim();
-										string text4 = text3.Substring(num + 1).Trim();
-										if (text4 != "")
+										string name = line.Substring(0, eqPosition).Trim();
+										string value = line.Substring(eqPosition + 1).Trim();
+										if (value != "")
 										{
-											if (a == "userDirectory")
+											if (name == "userDirectory")
 											{
-												text = text4;
+												userDirectory = value;
 											}
-											if (a == "defaultLanguage")
+											if (name == "defaultLanguage")
 											{
-												VirtualFileSystem.n.aL = text4;
+												deploymentParameters.defaultLanguage = value;
 											}
 										}
 									}
@@ -373,38 +410,40 @@ namespace Jx.FileSystem
 				}
 				catch (Exception ex)
 				{
-					Log.Fatal("VirtualFileSystem: Loading file failed {0} ({1}).", text2, ex.Message);
+					Log.Fatal("VirtualFileSystem: Loading file failed {0} ({1}).", deploymentCfgPath, ex.Message);
 					return;
 				}
 			}
-			if (string.IsNullOrEmpty(VirtualFileSystem.N))
+
+			if (string.IsNullOrEmpty(userDirectoryPath))
 			{
-				if (!string.IsNullOrEmpty(text))
+				if (!string.IsNullOrEmpty(userDirectory))
 				{
 					string path = null;
-					if (D.Platform == D.A.Windows)
+					if (PlatformInfo.Platform == PlatformInfo.PlanformType.Windows)
 					{
 						path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 					}
-					else if (D.Platform == D.A.MacOSX)
+					else if (PlatformInfo.Platform == PlatformInfo.PlanformType.MacOSX)
 					{
 						path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Library/Application Support");
 					}
-					else if (D.Platform == D.A.Android)
+					else if (PlatformInfo.Platform == PlatformInfo.PlanformType.Android)
 					{
-						VirtualFileSystem.N = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, "UserSettings");
+						userDirectoryPath = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, "UserSettings");
 					}
 					else
 					{
 						Log.Fatal("VirtualFileSystem: InitDeploymentInfoAndUserDirectory: Unknown platform.");
 					}
-					VirtualFileSystem.N = Path.Combine(path, text);
+					userDirectoryPath = Path.Combine(path, userDirectory);
 					return;
 				}
-				VirtualFileSystem.N = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, "UserSettings");
+				userDirectoryPath = Path.Combine(ExecutableDirectoryPath, "UserSettings");
 			}
 		}
-		private static void a()
+
+		private static void InitCachingExtensions()
 		{
 			string path = "Base/Constants/FileSystem.config";
 			if (VirtualFile.Exists(path))
@@ -418,34 +457,37 @@ namespace Jx.FileSystem
 						foreach (TextBlock.Attribute current in textBlock2.Attributes)
 						{
 							string value = current.Value;
-							VirtualFileSystem.l.Add(value, 0);
+							cachingExtensions.Add(value, 0);
 						}
 					}
 				}
 			}
 		}
-		internal static bool A(string path)
+
+		internal static bool IsCachingExtension(string path)
 		{
-			if (VirtualFileSystem.IsUserDirectoryPath(path))
+			if (IsUserDirectoryPath(path))
 			{
 				return false;
 			}
 			string extension = Path.GetExtension(path);
-			return VirtualFileSystem.l.ContainsKey(extension);
+			return cachingExtensions.ContainsKey(extension);
 		}
-		internal static byte[] a(string key)
+
+		internal static byte[] LoadCachedBytes(string key)
 		{
 			byte[] result;
-			if (!VirtualFileSystem.M.TryGetValue(key, out result))
-			{
+			if (!bytesCache.TryGetValue(key, out result))
 				return null;
-			}
+			
 			return result;
 		}
-		internal static void A(string key, byte[] value)
+
+		internal static void CacheBytes(string key, byte[] value)
 		{
-			VirtualFileSystem.M.Add(key, value);
+			bytesCache.Add(key, value);
 		}
+
 		public static bool IsUserDirectoryPath(string path)
 		{
 			if (path.Length >= 5 && path[4] == ':')
@@ -458,44 +500,46 @@ namespace Jx.FileSystem
 			}
 			return false;
 		}
-		private static void A(object obj)
+
+		private static void PreloadFileToMemory(object obj)
 		{
-			VirtualFileSystem.PreloadFileToMemoryItem preloadFileToMemoryItem = (VirtualFileSystem.PreloadFileToMemoryItem)obj;
+			PreloadFileToMemoryItem preloadFileToMemoryItem = (PreloadFileToMemoryItem)obj;
 			try
 			{
 				using (VirtualFileStream virtualFileStream = VirtualFile.Open(preloadFileToMemoryItem.Path))
 				{
-					byte[] array = new byte[virtualFileStream.Length];
-					if (virtualFileStream.Read(array, 0, array.Length) != array.Length)
+					byte[] bytesBuf = new byte[virtualFileStream.Length];
+					if (virtualFileStream.Read(bytesBuf, 0, bytesBuf.Length) != bytesBuf.Length)
 					{
 						throw new Exception("Unable to load all data.");
 					}
-					preloadFileToMemoryItem.ak = array;
-					preloadFileToMemoryItem.aj = true;
+					preloadFileToMemoryItem.data = bytesBuf;
+					preloadFileToMemoryItem.loaded = true;
 				}
 			}
 			catch (Exception ex)
 			{
-				preloadFileToMemoryItem.aK = ex.Message;
+				preloadFileToMemoryItem.error = ex.Message;
 			}
 		}
-		public static VirtualFileSystem.PreloadFileToMemoryItem PreloadFileToMemoryFromBackgroundThread(string path)
+
+		public static PreloadFileToMemoryItem PreloadFileToMemoryFromBackgroundThread(string path)
 		{
-			VirtualFileSystem.PreloadFileToMemoryItem result;
-			lock (VirtualFileSystem.O)
+			PreloadFileToMemoryItem result;
+			lock (syncVFS)
 			{
 				string key = path.ToLower();
-				VirtualFileSystem.PreloadFileToMemoryItem preloadFileToMemoryItem;
-				if (VirtualFileSystem.P.TryGetValue(key, out preloadFileToMemoryItem))
+				PreloadFileToMemoryItem preloadFileToMemoryItem;
+				if (preloadItems.TryGetValue(key, out preloadFileToMemoryItem))
 				{
 					result = preloadFileToMemoryItem;
 				}
 				else
 				{
-					preloadFileToMemoryItem = new VirtualFileSystem.PreloadFileToMemoryItem();
-					preloadFileToMemoryItem.aJ = path;
-					VirtualFileSystem.P.Add(key, preloadFileToMemoryItem);
-					Task task = new Task(new Action<object>(VirtualFileSystem.A), preloadFileToMemoryItem);
+					preloadFileToMemoryItem = new PreloadFileToMemoryItem();
+					preloadFileToMemoryItem.path = path;
+					preloadItems.Add(key, preloadFileToMemoryItem);
+					Task task = new Task(new Action<object>(PreloadFileToMemory), preloadFileToMemoryItem);
 					task.Start();
 					result = preloadFileToMemoryItem;
 				}
@@ -504,15 +548,15 @@ namespace Jx.FileSystem
 		}
 		public static void UnloadPreloadedFileToMemory(string path)
 		{
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				string key = path.ToLower();
-				VirtualFileSystem.P.Remove(key);
+				VirtualFileSystem.preloadItems.Remove(key);
 			}
 		}
 		public static void UnloadPreloadedFileToMemory(VirtualFileSystem.PreloadFileToMemoryItem item)
 		{
-			lock (VirtualFileSystem.O)
+			lock (VirtualFileSystem.syncVFS)
 			{
 				VirtualFileSystem.UnloadPreloadedFileToMemory(item.Path);
 			}

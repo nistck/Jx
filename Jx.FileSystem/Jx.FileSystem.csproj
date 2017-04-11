@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,17 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="A\c.cs" />
-    <Compile Include="A\D.cs" />
-    <Compile Include="A\E.cs" />
-    <Compile Include="A\f.cs" />
-    <Compile Include="A\G.cs" />
-    <Compile Include="A\H.cs" />
-    <Compile Include="A\I.cs" />
+    <Compile Include="Jx.FileSystem\AssemblyUtils.cs" />
+    <Compile Include="Jx.FileSystem.Internals\Natives\PlatformNative.cs" />
+    <Compile Include="Jx.FileSystem.Internals\VFStream\MacOSXVirtualFileStream.cs" />
+    <Compile Include="Jx.FileSystem.Internals\VFStream\DefaultVirtualFileStream.cs" />
+    <Compile Include="Jx.FileSystem.Internals\Natives\MacOSXPlatformNative.cs" />
+    <Compile Include="Jx.FileSystem.Internals\Natives\AndroidPlatformNative.cs" />
+    <Compile Include="Jx.FileSystem.Internals\Natives\WindowsPlatformNative.cs" />
+    <Compile Include="Jx.FileSystem.Internals\VFStream\WindowsVirtualFileStream.cs" />
+    <Compile Include="Jx.FileSystem\PlatformInfo.cs" />
     <Compile Include="Jx.FileSystem.Archives\Archive.cs" />
     <Compile Include="Jx.FileSystem.Archives\ArchiveFactory.cs" />
     <Compile Include="Jx.FileSystem.Archives\ArchiveManager.cs" />
-    <Compile Include="Jx.FileSystem\EngineComponentManager.cs" />
+    <Compile Include="Jx.FileSystem\ComponentManager.cs" />
     <Compile Include="Jx.FileSystem\MemoryVirtualFileStream.cs" />
     <Compile Include="Jx.FileSystem\NativeLibraryManager.cs" />
     <Compile Include="Jx.FileSystem\RelativePathUtils.cs" />

@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,15 +45,22 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
     <Compile Include="TextBlockTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VirtualFileSystemUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
       <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
       <Name>Jx.IO</Name>

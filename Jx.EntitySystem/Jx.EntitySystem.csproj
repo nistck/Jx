@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,19 +42,107 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ci.cs" />
-    <Compile Include="Entities.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityNetworkTypes.cs" />
-    <Compile Include="EntityType.cs" />
-    <Compile Include="EntityTypes.cs" />
-    <Compile Include="LogicComponent.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\BooleanUtils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\Int32Utils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\SingleUtils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\StringUtils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAllowCallDotPathAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAllowCallDotPathActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAssignPropertyAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAssignPropertyActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAssignVariableAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicAssignVariableActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallAsIsMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallAsIsMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallGetEntityMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallGetEntityMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallNonStaticMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallNonStaticMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallStaticSystemMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallStaticSystemMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallStaticUserMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallStaticUserMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallThisMethodAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCallThisMethodActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCommentAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicCommentActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDeclareLocalVariableAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDeclareLocalVariableActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDesignerMethod.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDesignerMethodType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDotPathAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicDotPathActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicEditorFunctionality.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicEntityObject.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicEventAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicEventActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicExecuteMethodInformation.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicGetConstantValueAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicGetConstantValueActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicGetVariableAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicGetVariableActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicIfThenElseAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicIfThenElseActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicLocalVariable.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicMethodPropertyInfoUtils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicReturnAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicReturnActionType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicScriptMethod.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicScriptMethodType.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicSystemClass.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicSystemClasses.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicUtils.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileAction.cs" />
+    <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileActionType.cs" />
+    <Compile Include="Jx.EntitySystem\AllowToCreateTypeBasedOnThisClassAttribute.cs" />
+    <Compile Include="Jx.EntitySystem\Ci.cs" />
+    <Compile Include="Jx.EntitySystem\EditorEntityExtendedPropertiesUITypeEditor.cs" />
+    <Compile Include="Jx.EntitySystem\EditorEntityTypeUITypeEditor.cs" />
+    <Compile Include="Jx.EntitySystem\EditorEntityUITypeEditor.cs" />
+    <Compile Include="Jx.EntitySystem\Entities.cs" />
+    <Compile Include="Jx.EntitySystem\Entity.cs" />
+    <Compile Include="Jx.EntitySystem\EntityCustomTypeDescriptor.cs" />
+    <Compile Include="Jx.EntitySystem\EntityExtendedProperties.cs" />
+    <Compile Include="Jx.EntitySystem\EntityNetworkTypes.cs" />
+    <Compile Include="Jx.EntitySystem\EntityPropertyDescriptor.cs" />
+    <Compile Include="Jx.EntitySystem\EntitySystemWorld.cs" />
+    <Compile Include="Jx.EntitySystem\EntityType.cs" />
+    <Compile Include="Jx.EntitySystem\EntityTypes.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClass.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClassManager.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClassManagerType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClassMember.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClassMemberType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicClassType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicComponent.cs" />
+    <Compile Include="Jx.EntitySystem\LogicComponentType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicEntityClass.cs" />
+    <Compile Include="Jx.EntitySystem\LogicEntityClassType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicMethod.cs" />
+    <Compile Include="Jx.EntitySystem\LogicMethodType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicParameter.cs" />
+    <Compile Include="Jx.EntitySystem\LogicParameterType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicSystemManager.cs" />
+    <Compile Include="Jx.EntitySystem\LogicSystemManagerType.cs" />
+    <Compile Include="Jx.EntitySystem\LogicVariable.cs" />
+    <Compile Include="Jx.EntitySystem\LogicVariableType.cs" />
+    <Compile Include="Jx.EntitySystem\MapEditorInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Jx.EntitySystem\World.cs" />
+    <Compile Include="Jx.EntitySystem\WorldType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
       <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
       <Name>Jx.Ext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
       <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>

@@ -1,0 +1,11 @@
+fullName = "JxEntities classes"
+componentTypes = "EntityClasses"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "Jx.Entities.dll"
+	platforms = "Windows"
+	entryPoint = True
+}

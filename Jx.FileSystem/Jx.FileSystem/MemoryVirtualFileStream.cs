@@ -5,9 +5,10 @@ namespace Jx.FileSystem
 {
 	public sealed class MemoryVirtualFileStream : VirtualFileStream
 	{
-		private byte[] aO;
-		private int ao;
-		private bool aP;
+		private byte[] bytesBuffer;
+		private int currentPosition;
+		private bool disposed;
+
 		public override bool CanRead
 		{
 			get
@@ -33,18 +34,18 @@ namespace Jx.FileSystem
 		{
 			get
 			{
-				return (long)this.aO.Length;
+				return (long)bytesBuffer.Length;
 			}
 		}
 		public override long Position
 		{
 			get
 			{
-				if (this.aP)
+				if (this.disposed)
 				{
 					throw new ObjectDisposedException(null);
 				}
-				return (long)this.ao;
+				return currentPosition;
 			}
 			set
 			{
@@ -57,24 +58,28 @@ namespace Jx.FileSystem
 			{
 				throw new ArgumentNullException("buffer");
 			}
-			this.aO = buffer;
+			this.bytesBuffer = buffer;
 		}
+
 		public override void Close()
 		{
-			this.aP = true;
+			this.disposed = true;
 			base.Close();
 		}
+
 		protected override void Dispose(bool disposing)
 		{
-			this.aP = true;
+			this.disposed = true;
 			base.Dispose(disposing);
 		}
+
 		public override void Flush()
 		{
 		}
+
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			if (this.aP)
+			if (this.disposed)
 			{
 				throw new ObjectDisposedException(null);
 			}
@@ -85,38 +90,41 @@ namespace Jx.FileSystem
 				{
 					throw new IOException("Seek before begin.");
 				}
-				this.ao = (int)offset;
+				this.currentPosition = (int)offset;
 				break;
 			case SeekOrigin.Current:
-				if ((long)this.ao + offset < 0L)
+				if ((long)this.currentPosition + offset < 0L)
 				{
 					throw new IOException("Seek before begin.");
 				}
-				this.ao += (int)offset;
+				this.currentPosition += (int)offset;
 				break;
 			case SeekOrigin.End:
-				if ((long)this.aO.Length + offset < 0L)
+				if ((long)this.bytesBuffer.Length + offset < 0L)
 				{
 					throw new IOException("Seek before begin.");
 				}
-				this.ao = this.aO.Length + (int)offset;
+				this.currentPosition = this.bytesBuffer.Length + (int)offset;
 				break;
 			default:
 				throw new ArgumentException("Invalid seek origin.");
 			}
-			return (long)this.ao;
+			return (long)this.currentPosition;
 		}
+
 		public override void SetLength(long value)
 		{
 			throw new NotSupportedException("The method is not supported.");
 		}
+
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			throw new NotSupportedException("The method is not supported.");
 		}
+
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			if (this.aP)
+			if (this.disposed)
 			{
 				throw new ObjectDisposedException(null);
 			}
@@ -132,7 +140,7 @@ namespace Jx.FileSystem
 			{
 				throw new ArgumentException("Invalid offset length.");
 			}
-			int num = this.aO.Length - this.ao;
+			int num = this.bytesBuffer.Length - this.currentPosition;
 			if (num > count)
 			{
 				num = count;
@@ -146,19 +154,20 @@ namespace Jx.FileSystem
 				int num2 = num;
 				while (--num2 >= 0)
 				{
-					buffer[offset + num2] = this.aO[this.ao + num2];
+					buffer[offset + num2] = this.bytesBuffer[this.currentPosition + num2];
 				}
 			}
 			else
 			{
-				Buffer.BlockCopy(this.aO, this.ao, buffer, offset, num);
+				Buffer.BlockCopy(this.bytesBuffer, this.currentPosition, buffer, offset, num);
 			}
-			this.ao += num;
+			this.currentPosition += num;
 			return num;
 		}
+
 		public override int ReadUnmanaged(IntPtr buffer, int count)
 		{
-			if (this.aP)
+			if (this.disposed)
 			{
 				throw new ObjectDisposedException(null);
 			}
@@ -166,7 +175,7 @@ namespace Jx.FileSystem
 			{
 				throw new ArgumentOutOfRangeException("count");
 			}
-			int num = this.aO.Length - this.ao;
+			int num = this.bytesBuffer.Length - this.currentPosition;
 			if (num > count)
 			{
 				num = count;
@@ -175,21 +184,22 @@ namespace Jx.FileSystem
 			{
 				return 0;
 			}
-			Marshal.Copy(this.aO, this.ao, buffer, num);
-			this.ao += num;
+			Marshal.Copy(this.bytesBuffer, this.currentPosition, buffer, num);
+			this.currentPosition += num;
 			return num;
 		}
+
 		public override int ReadByte()
 		{
-			if (this.aP)
+			if (this.disposed)
 			{
 				throw new ObjectDisposedException(null);
 			}
-			if (this.ao >= this.aO.Length)
+			if (this.currentPosition >= this.bytesBuffer.Length)
 			{
 				return -1;
 			}
-			return (int)this.aO[this.ao++];
+			return (int)this.bytesBuffer[this.currentPosition++];
 		}
 	}
 }

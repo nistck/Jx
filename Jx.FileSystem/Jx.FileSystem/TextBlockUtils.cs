@@ -38,11 +38,13 @@ namespace Jx.FileSystem
 			}
 			return result;
 		}
+
 		public static TextBlock LoadFromVirtualFile(string path, out string errorString)
 		{
 			bool flag;
 			return TextBlockUtils.LoadFromVirtualFile(path, out errorString, out flag);
 		}
+
 		public static TextBlock LoadFromVirtualFile(string path)
 		{
 			string text;
@@ -53,6 +55,7 @@ namespace Jx.FileSystem
 			}
 			return textBlock;
 		}
+
 		public static TextBlock LoadFromRealFile(string path, out string errorString, out bool fileNotFound)
 		{
 			errorString = null;
@@ -87,11 +90,13 @@ namespace Jx.FileSystem
 			}
 			return result;
 		}
+
 		public static TextBlock LoadFromRealFile(string path, out string errorString)
 		{
 			bool flag;
 			return TextBlockUtils.LoadFromRealFile(path, out errorString, out flag);
 		}
+
 		public static TextBlock LoadFromRealFile(string path)
 		{
 			string text;
