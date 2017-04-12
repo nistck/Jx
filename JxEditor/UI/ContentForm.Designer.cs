@@ -1,6 +1,6 @@
 ﻿namespace JxEditor.UI
 {
-    partial class MainViewForm
+    partial class ContentForm
     {
         /// <summary>
         /// Required designer variable.

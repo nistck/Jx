@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JxEditorApp.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,11 +55,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\MainViewForm.cs">
+    <Compile Include="UI\ContentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\MainViewForm.Designer.cs">
-      <DependentUpon>MainViewForm.cs</DependentUpon>
+    <Compile Include="UI\ContentForm.Designer.cs">
+      <DependentUpon>ContentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ResourcesForm.cs">
       <SubType>Form</SubType>
@@ -78,8 +79,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="UI\MainViewForm.resx">
-      <DependentUpon>MainViewForm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ContentForm.resx">
+      <DependentUpon>ContentForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ResourcesForm.resx">
       <DependentUpon>ResourcesForm.cs</DependentUpon>

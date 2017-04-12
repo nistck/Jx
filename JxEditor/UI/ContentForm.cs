@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace JxEditor.UI
 {
-    public partial class MainViewForm : WeifenLuo.WinFormsUI.Docking.DockContent
+    public partial class ContentForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        public MainViewForm()
+        public ContentForm()
         {
             InitializeComponent();
         }

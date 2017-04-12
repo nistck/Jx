@@ -30,14 +30,14 @@
         {
             this.SuspendLayout();
             // 
-            // PropertyGridForm
+            // PropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 428);
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Name = "PropertyGridForm";
-            this.Text = "PropertyGridForm";
+            this.Name = "PropertiesForm";
+            this.Text = "属性编辑器";
             this.ResumeLayout(false);
 
         }
