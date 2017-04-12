@@ -310,6 +310,7 @@ namespace Jx.FileSystem
 				if (fileRedirectionDefinitions.ContainsKey(text))
 				{
 					Log.Fatal("VirtualFileSystem: AddFileRedirection: File redirection is already exists \"{0}\".", text);
+                    return;
 				}
 				fileRedirectionDefinitions.Add(text, value);
 			}

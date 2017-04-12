@@ -99,6 +99,7 @@ namespace Jx.FileSystem
 					if (PlatformNative.Get().LoadLibrary(text) == IntPtr.Zero)
 					{
 						Log.Fatal("Loading native library failed ({0}).", text);
+                        return;
 					}
 					Directory.SetCurrentDirectory(currentDirectory);
 				}

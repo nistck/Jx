@@ -161,6 +161,7 @@ namespace Jx.EntitySystem.LogicSystem
 			if (logicSystemScriptsAssemblyClassByClassName == null)
 			{
 				Log.Fatal("LogicCallStaticUserMethodAction: class not exists \"{0}\"", this.ClassName);
+                return null;
 			}
 			MethodInfo method = logicSystemScriptsAssemblyClassByClassName.GetMethod(base.MethodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 			object obj = method.Invoke(null, array);

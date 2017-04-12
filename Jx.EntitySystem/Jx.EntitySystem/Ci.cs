@@ -209,6 +209,7 @@ namespace Jx.EntitySystem
                                 if (flag21)
                                 {
                                     Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
+                                    return false;
                                 }
                                 result = false;
                             }
@@ -368,6 +369,7 @@ namespace Jx.EntitySystem
                     if (flag8)
                     {
                         Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
+                        return false;
                     }
                     bool flag9 = textBlock.IsAttributeExist(name);
                     if (flag9)
@@ -430,6 +432,7 @@ namespace Jx.EntitySystem
                                 if (flag16)
                                 {
                                     Log.Fatal("EntitySystem: Serialization: InvokeMember failed for \"{0}\"", type);
+                                    return false;
                                 }
                                 using (List<FieldInfo>.Enumerator enumerator3 = list3.GetEnumerator())
                                 {
@@ -477,6 +480,7 @@ namespace Jx.EntitySystem
                 if (flag3)
                 {
                     Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
+                    return false;
                 }
                 result = Ci.A(entitySerialize, owner, field, block, errorString);
             }
@@ -491,6 +495,7 @@ namespace Jx.EntitySystem
                     if (flag7)
                     {
                         Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                        return false;
                     }
                     bool flag8 = block.IsAttributeExist(text);
                     if (flag8)
@@ -618,6 +623,7 @@ namespace Jx.EntitySystem
                             if (flag5)
                             {
                                 Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
+                                return null;
                             }
                             result = null;
                         }
@@ -728,6 +734,7 @@ namespace Jx.EntitySystem
                     if (flag10)
                     {
                         Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
+                        return false;
                     }
                     char value2 = ';';
                     bool flag11 = type.IsPrimitive | flag8;
@@ -747,6 +754,7 @@ namespace Jx.EntitySystem
                             if (flag13)
                             {
                                 Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), text);
+                                return false;
                             }
                         }
                         bool flag14 = l != 0;
@@ -838,6 +846,7 @@ namespace Jx.EntitySystem
                     if (flag4)
                     {
                         Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
+                        return false;
                     }
                     result = Ci.A(entitySerialize, owner, field, block, defaultValue, errorString);
                 }
@@ -852,6 +861,7 @@ namespace Jx.EntitySystem
                         if (flag8)
                         {
                             Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                            return false;
                         }
                         bool flag9 = flag6;
                         if (flag9)
@@ -861,6 +871,7 @@ namespace Jx.EntitySystem
                             if (flag10)
                             {
                                 Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), errorString);
+                                return false;
                             }
                         }
                         string saveValueString = Ci.GetSaveValueString(field.FieldType, value, errorString);

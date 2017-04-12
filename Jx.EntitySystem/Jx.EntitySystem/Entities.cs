@@ -150,7 +150,9 @@ namespace Jx.EntitySystem
 			if (type == null)
 			{
 				Log.Fatal("Entities: Create: type == null.");
+                return null;
 			}
+            /*
 			if (EntitySystemWorld.Instance.IsDedicatedServer() && type.NetworkType == EntityNetworkTypes.ClientOnly)
 			{
 				Log.Fatal("Entities: Create: You cannot to create NetworkType.ClientOnly entity on the dedicated server. Entity type name: {0}.", type.Name);
@@ -166,6 +168,7 @@ namespace Jx.EntitySystem
 					Log.Fatal("Entities: Create: You cannot to create NetworkType.ClientServerSynchronized entity on the client. Entity type name: {0}.", type.Name);
 				}
 			}
+            //*/
 			return this._CreateInternal(type, parent, 0u, 0u);
 		}
 

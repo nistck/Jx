@@ -279,7 +279,7 @@ namespace Jx.EntitySystem
             entityTypeNetworkUIN += 1u;
             entityType.networkUIN = this.entityTypeNetworkUIN;
 #if DEBUG_ENTITY
-            Log.Info(">> 创建EntityType: {0}, TypeName: {1}, 路径: {2}", typeName, entityClassTypeName, filePath);
+            Log.Info(">> 创建EntityType: {0}, TypeName: {1}, 路径: {2}", entityType, entityClassTypeName, filePath);
 #endif
             return entityType;
         }
@@ -298,11 +298,7 @@ namespace Jx.EntitySystem
 
                     EntityType entityType = ManualCreateType(text, current);
                     if (entityType == null)
-                        return false;
-
-#if DEBUG_ENTITY
-                    Log.Info(">> 自动创建EntityType: {0}, 类型: {1}", entityType, current.TypeClassType);
-#endif
+                        return false; 
                 }
             }
             return true;
@@ -340,7 +336,7 @@ namespace Jx.EntitySystem
             if (tc.Name != "type")
                 return null;
 
-            EntityType entityType = loadEntityType(textBlock, p, p);
+            EntityType entityType = loadEntityType(textBlock, p, p);    // LoadType
             return entityType;
         }
 
@@ -418,7 +414,7 @@ namespace Jx.EntitySystem
             bool result;
             foreach (TextBlock current in blocks)
             {
-                EntityType entityType = loadEntityType(current, "", "");
+                EntityType entityType = loadEntityType(current, "", "");    // LoadGroupOfTypes
                 bool flag = entityType == null;
                 if (flag)
                 {
@@ -459,7 +455,7 @@ namespace Jx.EntitySystem
 
         public EntityType LoadTypeFromTextBlock(TextBlock block)
         {
-            EntityType entityType = loadEntityType(block, "", "");
+            EntityType entityType = loadEntityType(block, "", "");  // LoadTypeFromTextBlock
             if (entityType == null)
                 return null;
 
@@ -523,7 +519,7 @@ namespace Jx.EntitySystem
             if (textBlock == null)
                 return null; 
                         
-            EntityType result = loadEntityType(textBlock, p, p);
+            EntityType result = loadEntityType(textBlock, p, p);    // loadEntityTypeFromFile
             return result;
         }
 
@@ -726,6 +722,7 @@ namespace Jx.EntitySystem
                     if (flag16)
                     {
                         Log.Fatal("EntitySystem: NetworkSynchronizedAttribute is already defined for network message \"{0}\" for entity class \"{0}\". Method name is a \"{2}\"", messageIdentifier, classInfo.entityClassType.Name, methodInfo.Name);
+                        return null;
                     }
                     classInfo.networkSynchronizedMetaBuffer[(int)messageIdentifier] = new EntityTypes.ClassInfo.NetworkSynchronizedMeta(direction, methodInfo);
                 }

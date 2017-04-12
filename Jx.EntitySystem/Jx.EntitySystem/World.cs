@@ -128,6 +128,7 @@ namespace Jx.EntitySystem
             if (!StringUtils.IsCorrectIdentifierName(name))
             {
                 Log.Fatal("World: SetCustomSerializationValue: Incorrect identifier name \"{0}\".", name);
+                return;
             }
             this.customSerializationValues[name] = value;
             Entity entity = value as Entity;

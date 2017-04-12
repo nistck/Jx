@@ -280,6 +280,7 @@ namespace Jx.FileSystem
 					if (this.componentsDic.ContainsKey(componentInfo.aD))
 					{
 						Log.Fatal("EngineComponentManager: ParseComponentFile: The component with a name \"{0}\" is already registered.", componentInfo.aD);
+                        return;
 					}
 
 					this.componentsDic.Add(componentInfo.aD, componentInfo);

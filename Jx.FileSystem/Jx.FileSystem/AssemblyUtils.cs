@@ -37,6 +37,7 @@ namespace Jx.FileSystem
                     if (assemblyName == null)
                     {
                         Log.Fatal("The assembly is not found \"{0}\".", text);
+                        return null;
                     }
                     Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
                     for (int i = 0; i < assemblies.Length; i++)
@@ -56,6 +57,7 @@ namespace Jx.FileSystem
                 {
                     Log.Fatal("Loading assembly failed \"{0}\". Error: {1}", text, ex.Message);
                     result = null;
+                    return null;
                 }
             }
             return result;
@@ -83,6 +85,7 @@ namespace Jx.FileSystem
 					if (assemblyName == null)
 					{
 						Log.Fatal("The assembly is not found \"{0}\".", fileName);
+                        return null;
 					}
 					Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 					for (int i = 0; i < assemblies.Length; i++)
@@ -102,6 +105,7 @@ namespace Jx.FileSystem
 				{
 					Log.Fatal("Loading assembly failed \"{0}\". Error: {1}", fileName, ex.Message);
 					result = null;
+                    return null;
 				}
 			}
 			return result;

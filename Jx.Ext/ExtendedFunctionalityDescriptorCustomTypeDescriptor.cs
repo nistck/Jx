@@ -47,6 +47,7 @@ namespace Jx.Ext
                     if (array2.Length != 2)
                     {
                         Log.Fatal("ExtendedPropertyDescriptor: Invalid type name \"{0}\".", descriptorTypeName);
+                        return null;
                     }
                     string text = array2[0].Trim();
                     string text2 = array2[1].Trim() + ".dll";
@@ -55,6 +56,7 @@ namespace Jx.Ext
                     if (type2 == null)
                     {
                         Log.Fatal("ExtendedPropertyDescriptor: Type \"{0}\" not exist in assembly \"{1}\".", text, text2);
+                        return null;
                     }
                     return type2;
                 }

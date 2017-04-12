@@ -19,8 +19,9 @@ namespace Jx.EntitySystem
 		private List<Assembly> entityClassAssemblies;
  
 		private List<string> logicSystemSystemClassesAssemblies = new List<string>();
- 
-		private bool isDedicatedServer;
+
+        private WorldSimulationTypes worldSimulationType;
+        private bool isDedicatedServer;
 		private bool isServer;
 		private bool isClientOnly;
 		private bool isSingle;
@@ -45,9 +46,22 @@ namespace Jx.EntitySystem
 			{
 				return instance;
 			}
-		} 
+		}
 
-		public ReadOnlyCollection<Assembly> EntityClassAssemblies
+        public WorldType DefaultWorldType
+        {
+            get { return defaultWorldType; }
+        }
+
+        public WorldSimulationTypes WorldSimulationType
+        {
+            get
+            {
+                return worldSimulationType;
+            }
+        }
+
+        public ReadOnlyCollection<Assembly> EntityClassAssemblies
 		{
 			get
 			{
@@ -173,11 +187,13 @@ namespace Jx.EntitySystem
 				if (string.IsNullOrEmpty(defaultWorldType))
 				{
 					Log.Fatal("EntitySystemWorld: Init: Default world type is not defined. (Base\\Constants\\EntitySystem.config: \"defaultWorldType\" attribute)");
+                    return false;
 				}
 				this.defaultWorldType = (EntityTypes.Instance.GetByName(defaultWorldType) as WorldType);
 				if (this.defaultWorldType == null)
 				{
 					Log.Fatal("EntitySystemWorld: Init: World type \"{0}\" is not defined or it is not a WorldType (Base\\Constants\\EntitySystem.config: \"defaultWorldType\" attribute).", defaultWorldType);
+                    return false;
 				}
 			}
 
@@ -199,9 +215,11 @@ namespace Jx.EntitySystem
 			return false;
 		}
 
-		public bool WorldCreateWithoutPostCreate(WorldType worldType)
+		private bool WorldCreateWithoutPostCreate(WorldSimulationTypes worldSimulationType, WorldType worldType)
 		{
-			this.WorldDestroy();
+			WorldDestroy();
+            if (worldType == null)
+                return false; 
 
 			Entities.Init();
 			uint networkUIN = 0u;
@@ -209,13 +227,15 @@ namespace Jx.EntitySystem
 			return true;
 		}
 
-		public bool WorldCreate(WorldType worldType)
+		public bool WorldCreate(WorldSimulationTypes worldSimulationType, WorldType worldType)
 		{
-			if (worldType == null)
-			{
-				Log.Fatal("EntitySystemWorld: WorldCreate: worldType == null.");
-			}
-			if (!this.WorldCreateWithoutPostCreate(worldType))
+            if (worldType == null)
+            {
+                Log.Fatal("EntitySystemWorld: WorldCreate: worldType == null.");
+                return false;
+            }
+			
+			if (!WorldCreateWithoutPostCreate(worldSimulationType, worldType))
 			{
 				return false;
 			}

@@ -17,7 +17,14 @@ namespace Jx
             {
                 Log.Info(">> EntitySystemWorld 初始化失败!");
                 return false;
-            } 
+            }
+
+            WorldType worldType = EntitySystemWorld.Instance.DefaultWorldType;
+            if ( !EntitySystemWorld.Instance.WorldCreate(WorldSimulationTypes.Editor, worldType) )
+            {
+                Log.Info(">> 创建世界失败, WorldType: {0}", worldType);
+                return false;
+            }
 
             return true;
         }
