@@ -8,18 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JxEditor.UI
+namespace JxRes.UI
 {
-    public partial class OKCancelTextBoxDialog : Form
+    public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        public OKCancelTextBoxDialog(string s1, string s2, string s3, Func<string, bool> callback)
+        public ResourcesForm()
         {
             InitializeComponent();
         }
 
-        public string TextBoxText
+        public bool WatchFileSystem { get; set; }
+
+        public void UpdateAddResource(string p)
         {
-            get { return ">TextBoxText>"; }
+
+        }
+
+        public void SelectNodeByPath(string p)
+        {
+
         }
     }
 }

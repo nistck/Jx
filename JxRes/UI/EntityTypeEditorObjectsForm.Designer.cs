@@ -1,6 +1,6 @@
-﻿namespace JxEditor.UI
+﻿namespace JxRes.UI
 {
-    partial class EntityTypeNewResourceDialog
+    partial class EntityTypeEditorObjectsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "EntityTypeNewResourceDialog";
+            this.Text = "EntityTypeEditorObjectsForm";
         }
 
         #endregion

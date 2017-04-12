@@ -1,4 +1,4 @@
-﻿namespace JxEditor
+﻿namespace JxRes
 {
     partial class MainForm
     {

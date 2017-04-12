@@ -9,9 +9,9 @@ using Jx;
 using Jx.Editors;
 using Jx.EntitySystem; 
 
-using JxEditor.UI;
+using JxRes.UI;
 
-namespace JxEditor.Editors
+namespace JxRes.Editors
 {
     internal class EntityTypeResourceEditor : ResourceObjectEditor
     {

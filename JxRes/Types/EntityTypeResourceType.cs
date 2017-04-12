@@ -11,10 +11,10 @@ using Jx;
 using Jx.FileSystem;
 using Jx.Editors;
 using Jx.EntitySystem;
-using JxEditor.Editors;
-using JxEditor.UI;
+using JxRes.Editors;
+using JxRes.UI;
 
-namespace JxEditor.Types
+namespace JxRes.Types
 {
     internal class EntityTypeResourceType : ResourceType
     {

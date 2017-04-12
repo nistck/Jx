@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Jx;
 using Jx.Editors;
 using Jx.EntitySystem;
-using JxEditor.Types;
+using JxRes.Types;
 
-namespace JxEditor
+namespace JxRes
 {
     class JxEditorApp : EngineApp
     {

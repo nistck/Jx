@@ -8,19 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Jx.EntitySystem;
-
-namespace JxEditor.UI
+namespace JxRes.UI
 {
-    public partial class EntityTypeNewResourceDialog : Form
+    public partial class EntityTypeEditorObjectsForm : Form
     {
-        public EntityTypeNewResourceDialog(string directory)
+        public EntityTypeEditorObjectsForm()
         {
             InitializeComponent();
         }
-
-        public string TypeName { get; private set; }
-
-        public EntityTypes.ClassInfo TypeClass { get; }
     }
 }

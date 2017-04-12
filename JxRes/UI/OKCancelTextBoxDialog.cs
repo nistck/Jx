@@ -8,18 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JxEditor.UI
+namespace JxRes.UI
 {
-    public partial class ContentForm : WeifenLuo.WinFormsUI.Docking.DockContent
+    public partial class OKCancelTextBoxDialog : Form
     {
-        public ContentForm()
+        public OKCancelTextBoxDialog(string s1, string s2, string s3, Func<string, bool> callback)
         {
             InitializeComponent();
         }
 
-        private void MainViewForm_Load(object sender, EventArgs e)
+        public string TextBoxText
         {
-
+            get { return ">TextBoxText>"; }
         }
     }
 }

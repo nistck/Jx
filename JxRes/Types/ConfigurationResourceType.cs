@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using System.Drawing;
 using Jx.Editors;
-using JxEditor.Editors;
+using JxRes.Editors;
 
-namespace JxEditor.Types
+namespace JxRes.Types
 {
     internal class ConfigurationResourceType : ResourceType
     {

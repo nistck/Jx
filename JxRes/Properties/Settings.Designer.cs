@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace JxEditor.Properties
+namespace JxRes.Properties
 {
 
 

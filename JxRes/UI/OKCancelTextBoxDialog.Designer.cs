@@ -1,6 +1,6 @@
-﻿namespace JxEditor.UI
+﻿namespace JxRes.UI
 {
-    partial class EntityTypeEditorObjectsForm
+    partial class OKCancelTextBoxDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "EntityTypeEditorObjectsForm";
+            this.Text = "OKCancelTextBoxDialog";
         }
 
         #endregion

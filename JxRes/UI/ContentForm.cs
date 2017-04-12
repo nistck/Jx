@@ -8,23 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JxEditor.UI
+namespace JxRes.UI
 {
-    public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
+    public partial class ContentForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        public ResourcesForm()
+        public ContentForm()
         {
             InitializeComponent();
         }
 
-        public bool WatchFileSystem { get; set; }
-
-        public void UpdateAddResource(string p)
-        {
-
-        }
-
-        public void SelectNodeByPath(string p)
+        private void MainViewForm_Load(object sender, EventArgs e)
         {
 
         }

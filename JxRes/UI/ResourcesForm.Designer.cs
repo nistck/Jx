@@ -1,6 +1,6 @@
-﻿namespace JxEditor.UI
+﻿namespace JxRes.UI
 {
-    partial class ContentForm
+    partial class ResourcesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,22 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.SuspendLayout();
             // 
-            // MainViewForm
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(263, 387);
+            this.treeView1.TabIndex = 0;
+            // 
+            // ResourcesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(263, 387);
+            this.Controls.Add(this.treeView1);
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.HideOnClose = true;
-            this.Name = "MainViewForm";
-            this.Text = "MainViewForm";
-            this.Load += new System.EventHandler(this.MainViewForm_Load);
+            this.Name = "ResourcesForm";
+            this.Text = "资源管理器";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TreeView treeView1;
     }
 }

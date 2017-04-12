@@ -9,14 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using JxEditor.UI;
+using JxRes.UI;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Jx;
 using Jx.UI.Forms;
 using Jx.FileSystem;
 
-namespace JxEditor
+namespace JxRes
 {
     public partial class MainForm : Form
     {

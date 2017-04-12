@@ -9,7 +9,7 @@ using Jx;
 using Jx.FileSystem;
 using Jx.Editors;
 
-namespace JxEditor.Editors
+namespace JxRes.Editors
 {
     internal class ConfigurationEditor : ResourceObjectEditor
     {
