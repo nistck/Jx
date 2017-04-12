@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Jx;
+using Jx.Editors;
 using Jx.EntitySystem;
+using JxEditor.Types;
 
 namespace JxEditor
 {
@@ -26,8 +28,26 @@ namespace JxEditor
                 Log.Info(">> 创建世界失败, WorldType: {0}", worldType);
                 return false;
             }
+            InitResourceTypeManager();
 
             return true;
+        }
+
+        private void InitResourceTypeManager()
+        {
+            ResourceTypeManager.Init();
+
+            ResourceTypeManager.Instance.Register(new EntityTypeResourceType("EntityType", "Entity Type", new string[]
+            {
+                "type"
+            }, DefaultResourceTypeImages.GetByName("Config_16")));
+
+            ResourceTypeManager.Instance.Register(new ConfigurationResourceType("Configuration", "Configuration File", new string[]
+            {
+                "config"
+            }, DefaultResourceTypeImages.GetByName("Config_16")));
+
+
         }
     }
 }

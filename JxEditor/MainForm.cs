@@ -20,6 +20,12 @@ namespace JxEditor
 {
     public partial class MainForm : Form
     {
+        private static MainForm instance;
+        public static MainForm Instance
+        {
+            get { return instance; }
+        }
+
         private ResourcesForm resourcesForm = new ResourcesForm();
         private PropertiesForm propertiesForm = new PropertiesForm();
         private ConsoleForm consoleForm = new ConsoleForm();
@@ -30,6 +36,17 @@ namespace JxEditor
         public MainForm()
         {
             InitializeComponent();
+            instance = this;
+        }
+
+        public PropertiesForm PropertiesForm
+        {
+            get { return propertiesForm; }
+        }
+
+        public ResourcesForm ResourcesForm
+        {
+            get { return resourcesForm; }
         }
 
         private string LayoutConfig;

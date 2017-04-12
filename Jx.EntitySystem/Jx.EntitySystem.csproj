@@ -111,6 +111,8 @@
     <Compile Include="Jx.EntitySystem\EntityPropertyDescriptor.cs" />
     <Compile Include="Jx.EntitySystem\EntitySystemWorld.cs" />
     <Compile Include="Jx.EntitySystem\EntityType.cs" />
+    <Compile Include="Jx.EntitySystem\EntityTypeCustomTypeDescriptor.cs" />
+    <Compile Include="Jx.EntitySystem\EntityTypePropertyDescriptor.cs" />
     <Compile Include="Jx.EntitySystem\EntityTypes.cs" />
     <Compile Include="Jx.EntitySystem\LogicClass.cs" />
     <Compile Include="Jx.EntitySystem\LogicClassManager.cs" />

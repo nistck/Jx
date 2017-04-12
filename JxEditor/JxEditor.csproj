@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editors\ConfigurationEditor.cs" />
+    <Compile Include="Editors\EntityTypeResourceEditor.cs" />
+    <Compile Include="Types\ConfigurationResourceType.cs" />
     <Compile Include="JxEditorApp.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -55,11 +58,30 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\EntityTypeResourceType.cs" />
     <Compile Include="UI\ContentForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\ContentForm.Designer.cs">
       <DependentUpon>ContentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EntityTypeEditorObjectsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EntityTypeEditorObjectsForm.Designer.cs">
+      <DependentUpon>EntityTypeEditorObjectsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EntityTypeNewResourceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EntityTypeNewResourceDialog.Designer.cs">
+      <DependentUpon>EntityTypeNewResourceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OKCancelTextBoxDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OKCancelTextBoxDialog.Designer.cs">
+      <DependentUpon>OKCancelTextBoxDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ResourcesForm.cs">
       <SubType>Form</SubType>
@@ -99,6 +121,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.Editors\Jx.Editors.csproj">
+      <Project>{762d1435-8784-448d-9486-3ce30787b6bb}</Project>
+      <Name>Jx.Editors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.Entities\Jx.Entities.csproj">
       <Project>{ba2442d4-cb7b-4032-b5f6-0bc2f8151115}</Project>
       <Name>Jx.Entities</Name>
@@ -136,6 +162,7 @@
       <Name>WinFormsUI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -10,23 +10,11 @@ using System.Windows.Forms;
 
 namespace JxEditor.UI
 {
-    public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
+    public partial class EntityTypeEditorObjectsForm : Form
     {
-        public ResourcesForm()
+        public EntityTypeEditorObjectsForm()
         {
             InitializeComponent();
-        }
-
-        public bool WatchFileSystem { get; set; }
-
-        public void UpdateAddResource(string p)
-        {
-
-        }
-
-        public void SelectNodeByPath(string p)
-        {
-
         }
     }
 }

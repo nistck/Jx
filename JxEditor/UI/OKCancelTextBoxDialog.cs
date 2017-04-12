@@ -10,23 +10,16 @@ using System.Windows.Forms;
 
 namespace JxEditor.UI
 {
-    public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
+    public partial class OKCancelTextBoxDialog : Form
     {
-        public ResourcesForm()
+        public OKCancelTextBoxDialog(string s1, string s2, string s3, Func<string, bool> callback)
         {
             InitializeComponent();
         }
 
-        public bool WatchFileSystem { get; set; }
-
-        public void UpdateAddResource(string p)
+        public string TextBoxText
         {
-
-        }
-
-        public void SelectNodeByPath(string p)
-        {
-
+            get { return ">TextBoxText>"; }
         }
     }
 }

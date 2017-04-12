@@ -1,6 +1,6 @@
-﻿namespace Jx.UI.Forms
+﻿namespace JxEditor.UI
 {
-    partial class PropertiesForm
+    partial class OKCancelTextBoxDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -28,18 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // PropertiesForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 428);
-            this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Name = "PropertiesForm";
-            this.Text = "属性编辑器";
-            this.ResumeLayout(false);
-
+            this.Text = "OKCancelTextBoxDialog";
         }
 
         #endregion

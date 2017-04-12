@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsUI", "Support\DockP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeVS2015", "Support\DockPanelSuite\WinFormsUI\ThemeVS2015.csproj", "{007D4AC8-948F-4816-86AD-B9D1343672C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Editors", "Jx.Editors\Jx.Editors.csproj", "{762D1435-8784-448D-9486-3CE30787B6BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762D1435-8784-448D-9486-3CE30787B6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762D1435-8784-448D-9486-3CE30787B6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762D1435-8784-448D-9486-3CE30787B6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762D1435-8784-448D-9486-3CE30787B6BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
