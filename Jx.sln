@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeVS2015", "Support\Dock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Editors", "Jx.Editors\Jx.Editors.csproj", "{762D1435-8784-448D-9486-3CE30787B6BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxDesign", "JxDesign\JxDesign.csproj", "{B30DDF74-390D-479D-96C0-3E768C31AB4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{762D1435-8784-448D-9486-3CE30787B6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{762D1435-8784-448D-9486-3CE30787B6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{762D1435-8784-448D-9486-3CE30787B6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
