@@ -33,17 +33,17 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.dddToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiResourcesForm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPropertiesForm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiContentForm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOthers = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiConsoleForm = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.tsmiResourcesForm = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiPropertiesForm = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiContentForm = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiOthers = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiConsoleForm = new System.Windows.Forms.ToolStripMenuItem();
             this.UIStatus_TIMER = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -84,6 +84,42 @@
             this.tsmiView.Size = new System.Drawing.Size(64, 21);
             this.tsmiView.Text = "视 图(&V)";
             // 
+            // tsmiResourcesForm
+            // 
+            this.tsmiResourcesForm.Name = "tsmiResourcesForm";
+            this.tsmiResourcesForm.Size = new System.Drawing.Size(136, 22);
+            this.tsmiResourcesForm.Text = "资源管理器";
+            this.tsmiResourcesForm.Click += new System.EventHandler(this.tsmiResourcesForm_Click);
+            // 
+            // tsmiPropertiesForm
+            // 
+            this.tsmiPropertiesForm.Name = "tsmiPropertiesForm";
+            this.tsmiPropertiesForm.Size = new System.Drawing.Size(136, 22);
+            this.tsmiPropertiesForm.Text = "属性编辑器";
+            this.tsmiPropertiesForm.Click += new System.EventHandler(this.tsmiPropertiesForm_Click);
+            // 
+            // tsmiContentForm
+            // 
+            this.tsmiContentForm.Name = "tsmiContentForm";
+            this.tsmiContentForm.Size = new System.Drawing.Size(136, 22);
+            this.tsmiContentForm.Text = "内容编辑器";
+            this.tsmiContentForm.Click += new System.EventHandler(this.tsmiContentForm_Click);
+            // 
+            // tsmiOthers
+            // 
+            this.tsmiOthers.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiConsoleForm});
+            this.tsmiOthers.Name = "tsmiOthers";
+            this.tsmiOthers.Size = new System.Drawing.Size(136, 22);
+            this.tsmiOthers.Text = "其 他";
+            // 
+            // tsmiConsoleForm
+            // 
+            this.tsmiConsoleForm.Name = "tsmiConsoleForm";
+            this.tsmiConsoleForm.Size = new System.Drawing.Size(124, 22);
+            this.tsmiConsoleForm.Text = "信息输出";
+            this.tsmiConsoleForm.Click += new System.EventHandler(this.tsmiConsoleForm_Click);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
@@ -94,6 +130,7 @@
             // 
             // dockPanel
             // 
+            this.dockPanel.BackColor = System.Drawing.SystemColors.Control;
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.Location = new System.Drawing.Point(0, 0);
             this.dockPanel.Name = "dockPanel";
@@ -104,42 +141,6 @@
             // vsToolStripExtender1
             // 
             this.vsToolStripExtender1.DefaultRenderer = null;
-            // 
-            // tsmiResourcesForm
-            // 
-            this.tsmiResourcesForm.Name = "tsmiResourcesForm";
-            this.tsmiResourcesForm.Size = new System.Drawing.Size(152, 22);
-            this.tsmiResourcesForm.Text = "资源管理器";
-            this.tsmiResourcesForm.Click += new System.EventHandler(this.tsmiResourcesForm_Click);
-            // 
-            // tsmiPropertiesForm
-            // 
-            this.tsmiPropertiesForm.Name = "tsmiPropertiesForm";
-            this.tsmiPropertiesForm.Size = new System.Drawing.Size(152, 22);
-            this.tsmiPropertiesForm.Text = "属性编辑器";
-            this.tsmiPropertiesForm.Click += new System.EventHandler(this.tsmiPropertiesForm_Click);
-            // 
-            // tsmiContentForm
-            // 
-            this.tsmiContentForm.Name = "tsmiContentForm";
-            this.tsmiContentForm.Size = new System.Drawing.Size(152, 22);
-            this.tsmiContentForm.Text = "内容编辑器";
-            this.tsmiContentForm.Click += new System.EventHandler(this.tsmiContentForm_Click);
-            // 
-            // tsmiOthers
-            // 
-            this.tsmiOthers.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiConsoleForm});
-            this.tsmiOthers.Name = "tsmiOthers";
-            this.tsmiOthers.Size = new System.Drawing.Size(152, 22);
-            this.tsmiOthers.Text = "其 他";
-            // 
-            // tsmiConsoleForm
-            // 
-            this.tsmiConsoleForm.Name = "tsmiConsoleForm";
-            this.tsmiConsoleForm.Size = new System.Drawing.Size(152, 22);
-            this.tsmiConsoleForm.Text = "信息输出";
-            this.tsmiConsoleForm.Click += new System.EventHandler(this.tsmiConsoleForm_Click);
             // 
             // UIStatus_TIMER
             // 

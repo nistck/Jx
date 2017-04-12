@@ -74,7 +74,7 @@
             this.jxPropertyGrid.DocCommentTitle.TabIndex = 0;
             this.jxPropertyGrid.DocCommentTitle.UseMnemonic = false;
             this.jxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jxPropertyGrid.LabelRatio = 2.3272727272727272D;
+            this.jxPropertyGrid.LabelRatio = 2.4955752212389379D;
             this.jxPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.jxPropertyGrid.Name = "jxPropertyGrid";
             this.jxPropertyGrid.ReadOnly = false;
@@ -105,6 +105,7 @@
             this.ClientSize = new System.Drawing.Size(284, 428);
             this.Controls.Add(this.SplitView);
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.HideOnClose = true;
             this.Name = "PropertiesForm";
             this.Text = "属性编辑器";
             this.Load += new System.EventHandler(this.PropertiesForm_Load);
