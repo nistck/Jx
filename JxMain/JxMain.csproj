@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,14 @@
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
       <Name>Jx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\ThemeVS2015.csproj">
+      <Project>{007d4ac8-948f-4816-86ad-b9d1343672c1}</Project>
+      <Name>ThemeVS2015</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

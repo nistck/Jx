@@ -21,6 +21,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.FileSystem", "Jx.FileSys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Entities", "Jx.Entities\Jx.Entities.csproj", "{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxEditor", "JxEditor\JxEditor.csproj", "{1B73D577-4C27-46C7-8F65-FE05F7721BAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support", "Support", "{14D507CD-C8EB-41BF-96B4-8AFC47C858C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockPanelSuite", "DockPanelSuite", "{6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsUI", "Support\DockPanelSuite\WinFormsUI\WinFormsUI.csproj", "{C75532C4-765B-418E-B09B-46D36B2ABDB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeVS2015", "Support\DockPanelSuite\WinFormsUI\ThemeVS2015.csproj", "{007D4AC8-948F-4816-86AD-B9D1343672C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,8 +73,25 @@ Global
 		{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B73D577-4C27-46C7-8F65-FE05F7721BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B73D577-4C27-46C7-8F65-FE05F7721BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B73D577-4C27-46C7-8F65-FE05F7721BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B73D577-4C27-46C7-8F65-FE05F7721BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75532C4-765B-418E-B09B-46D36B2ABDB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75532C4-765B-418E-B09B-46D36B2ABDB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75532C4-765B-418E-B09B-46D36B2ABDB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75532C4-765B-418E-B09B-46D36B2ABDB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007D4AC8-948F-4816-86AD-B9D1343672C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6} = {14D507CD-C8EB-41BF-96B4-8AFC47C858C1}
+		{C75532C4-765B-418E-B09B-46D36B2ABDB1} = {6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6}
+		{007D4AC8-948F-4816-86AD-B9D1343672C1} = {6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6}
 	EndGlobalSection
 EndGlobal

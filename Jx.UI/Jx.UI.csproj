@@ -43,22 +43,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PGEx\JxBrowsableTypeConverter.cs" />
-    <Compile Include="PGEx\JxCustomChoices.cs" />
-    <Compile Include="PGEx\JxCustomColorScheme.cs" />
-    <Compile Include="PGEx\JxCustomProperty.cs" />
-    <Compile Include="PGEx\JxCustomPropertyCollection.cs" />
-    <Compile Include="PGEx\JxUICustomEventEditor.cs" />
-    <Compile Include="PGEx\JxUIFileNameEditor.cs" />
-    <Compile Include="PGEx\JxUIListboxEditor.cs" />
-    <Compile Include="PGEx\JxUITimeEditor.cs" />
+    <Compile Include="Controls\PGEx\JxBrowsableTypeConverter.cs" />
+    <Compile Include="Controls\PGEx\JxCustomChoices.cs" />
+    <Compile Include="Controls\PGEx\JxCustomColorScheme.cs" />
+    <Compile Include="Controls\PGEx\JxCustomProperty.cs" />
+    <Compile Include="Controls\PGEx\JxCustomPropertyCollection.cs" />
+    <Compile Include="Controls\PGEx\JxUICustomEventEditor.cs" />
+    <Compile Include="Controls\PGEx\JxUIFileNameEditor.cs" />
+    <Compile Include="Controls\PGEx\JxUIListboxEditor.cs" />
+    <Compile Include="Controls\PGEx\JxUITimeEditor.cs" />
+    <Compile Include="Forms\ConsoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConsoleForm.Designer.cs">
+      <DependentUpon>ConsoleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PropertyGridForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PropertyGridForm.Designer.cs">
+      <DependentUpon>PropertyGridForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PGEx\JxPropertyGrid.cs">
+    <Compile Include="Controls\PGEx\JxPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PGEx\JxPropertyGrid.Designer.cs">
+    <Compile Include="Controls\PGEx\JxPropertyGrid.Designer.cs">
       <DependentUpon>JxPropertyGrid.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\ThemeVS2015.csproj">
+      <Project>{007d4ac8-948f-4816-86ad-b9d1343672c1}</Project>
+      <Name>ThemeVS2015</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\ConsoleForm.resx">
+      <DependentUpon>ConsoleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PropertyGridForm.resx">
+      <DependentUpon>PropertyGridForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

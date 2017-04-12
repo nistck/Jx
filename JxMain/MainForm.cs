@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Jx.UI.PGEx;
+using Jx.UI.Controls.PGEx;
 using Jx.FileSystem;
 
 namespace Jx

@@ -1,5 +1,5 @@
 *.exe
-*.dll
+# *.dll
 *.lib
 *.apk
 *.pak
@@ -22,6 +22,8 @@ x64/
 build/
 #[Bb]in/
 [Oo]bj/
+
+[Bb]in/*.dll
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
@@ -175,6 +177,8 @@ $RECYCLE.BIN/
 *.m
 *.m2
 _Temp/
+
+![lL]ib/
 
 # ÆµÄ»Ð§¹û
 !*.cg_hlsl
