@@ -61,7 +61,8 @@ namespace Jx.EntitySystem
         private EntityNetworkTypes entityNetworkType;
         internal TextBlock textBlock;
         internal bool manualCreated;
-        internal Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object> za = new Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object>();
+        internal Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object> entityTypeSerializableFields = 
+            new Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object>();
         internal uint networkUIN;
         /// <summary>
         /// Gets the class information of type.
@@ -219,7 +220,7 @@ namespace Jx.EntitySystem
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
-                    object defaultValue = this.za[current];
+                    object defaultValue = entityTypeSerializableFields[current];
                     bool flag = !Ci.SaveFieldValue(false, this, current.Field, block, defaultValue, errorString);
                     if (flag)
                     {

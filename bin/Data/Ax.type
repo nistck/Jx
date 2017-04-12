@@ -1,0 +1,6 @@
+type Ax
+{
+	class = SimpleBean
+	id = 20892
+	scope = "property"
+}

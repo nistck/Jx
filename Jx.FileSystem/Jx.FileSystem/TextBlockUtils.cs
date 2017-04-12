@@ -42,13 +42,13 @@ namespace Jx.FileSystem
 		public static TextBlock LoadFromVirtualFile(string path, out string errorString)
 		{
 			bool flag;
-			return TextBlockUtils.LoadFromVirtualFile(path, out errorString, out flag);
+			return LoadFromVirtualFile(path, out errorString, out flag);
 		}
 
 		public static TextBlock LoadFromVirtualFile(string path)
 		{
 			string text;
-			TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(path, out text);
+			TextBlock textBlock = LoadFromVirtualFile(path, out text);
 			if (textBlock == null)
 			{
 				Log.Error(text);
@@ -94,13 +94,13 @@ namespace Jx.FileSystem
 		public static TextBlock LoadFromRealFile(string path, out string errorString)
 		{
 			bool flag;
-			return TextBlockUtils.LoadFromRealFile(path, out errorString, out flag);
+			return LoadFromRealFile(path, out errorString, out flag);
 		}
 
 		public static TextBlock LoadFromRealFile(string path)
 		{
 			string text;
-			TextBlock textBlock = TextBlockUtils.LoadFromRealFile(path, out text);
+			TextBlock textBlock = LoadFromRealFile(path, out text);
 			if (textBlock == null)
 			{
 				Log.Error(text);

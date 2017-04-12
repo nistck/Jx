@@ -180,46 +180,51 @@ namespace Jx.EntitySystem
         /// <summary>
         /// Gets the class informations list.
         /// </summary>
-        public IList<EntityTypes.ClassInfo> Classes
+        public IList<ClassInfo> Classes
         {
             get
             {
-                return this.readonlyClasses;
+                return readonlyClasses;
             }
         }
 
         internal static bool Init()
         { 
             instance = new EntityTypes();
-            bool flag = instance.Setup();
-            bool flag2 = !flag;
-            if (flag2)
+            bool ok = instance.Setup(); 
+            if (!ok)
             {
                 Shutdown();
             }
-            return flag;
+            return ok;
         }
 
         internal static void Shutdown()
         {
-            bool flag = EntityTypes.instance != null;
-            if (flag)
+            if (instance != null)
             {
-                EntityTypes.instance.Free();
-                EntityTypes.instance = null;
+                instance.Free();
+                instance = null;
             }
         }
+
         internal EntityTypes()
         {
             this.readonlyClasses = this.classes.AsReadOnly();
             this.readonlyTypes = this.types.AsReadOnly();
         }
+
         private bool Setup()
         {
-            this.loadEntityFromAssembly();
+            loadEntityFromAssembly();
             List<EntityType> list;
-            return ManualCreateTypes() && LoadGroupOfTypes("", SearchOption.AllDirectories, out list);
+
+            bool b1 = ManualCreateTypes(); 
+            bool b2 = LoadGroupOfTypes("", SearchOption.AllDirectories, out list);
+
+            return b1 && b2;
         }
+
         private void Free()
         {
             foreach (EntityType current in this.types)
@@ -227,6 +232,7 @@ namespace Jx.EntitySystem
                 current.Dispose();
             }
         }
+
         /// <summary>
         /// Finds the entity type by the name.
         /// </summary>
@@ -239,215 +245,172 @@ namespace Jx.EntitySystem
             this.entityTypeNameDic.TryGetValue(name, out result);
             return result;
         }
+
         private EntityType CreateEntityType(string typeName, string entityClassTypeName, string filePath)
         {
             EntityType byName = this.GetByName(typeName);
-            bool flag = byName != null;
-            EntityType result;
-            if (flag)
+            if( byName != null )
             {
                 Log.Error(string.Format("EntityTypes: Entity type with name \"{0}\" is already exists.\nFiles:\n\"{1}\",\n\"{2}\".", typeName, byName.FilePath, filePath), typeName);
-                result = null;
+                return null; 
             }
-            else
+
+            ClassInfo classInfoByEntityClassName = GetClassInfoByEntityClassName(entityClassTypeName);
+            if (classInfoByEntityClassName == null)
             {
-                EntityTypes.ClassInfo classInfoByEntityClassName = this.GetClassInfoByEntityClassName(entityClassTypeName);
-                bool flag2 = classInfoByEntityClassName == null;
-                if (flag2)
+                Log.Error("EntityTypes: The class with name \"{0}\" is not exists. File \"{1}\".", entityClassTypeName, filePath);
+                return null;
+            }
+
+            ConstructorInfo constructor = classInfoByEntityClassName.TypeClassType.GetConstructor(new Type[0]);
+            EntityType entityType = (EntityType)constructor.Invoke(null);
+            for (ClassInfo classInfo = classInfoByEntityClassName; classInfo != null; classInfo = classInfo.BaseClassInfo)
+            {
+                foreach (ClassInfo.EntityTypeSerializableFieldItem current in classInfo.EntityTypeSerializableFields)
                 {
-                    Log.Error("EntityTypes: The class with name \"{0}\" is not exists. File \"{1}\".", entityClassTypeName, filePath);
-                    result = null;
-                }
-                else
-                {
-                    ConstructorInfo constructor = classInfoByEntityClassName.TypeClassType.GetConstructor(new Type[0]);
-                    EntityType entityType = (EntityType)constructor.Invoke(null);
-                    for (EntityTypes.ClassInfo classInfo = classInfoByEntityClassName; classInfo != null; classInfo = classInfo.BaseClassInfo)
-                    {
-                        foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in classInfo.EntityTypeSerializableFields)
-                        {
-                            object value = current.Field.GetValue(entityType);
-                            entityType.za.Add(current, value);
-                        }
-                    }
-                    entityType.classInfo = classInfoByEntityClassName;
-                    entityType.name = typeName;
-                    this.types.Add(entityType);
-                    this.entityTypeNameDic.Add(typeName, entityType);
-                    this.entityTypeNetworkUIN += 1u;
-                    entityType.networkUIN = this.entityTypeNetworkUIN;
-                    result = entityType;
+                    object value = current.Field.GetValue(entityType);
+                    entityType.entityTypeSerializableFields.Add(current, value);
                 }
             }
-            return result;
+            entityType.classInfo = classInfoByEntityClassName;
+            entityType.name = typeName;
+            types.Add(entityType);
+            entityTypeNameDic.Add(typeName, entityType);
+            entityTypeNetworkUIN += 1u;
+            entityType.networkUIN = this.entityTypeNetworkUIN;
+#if DEBUG_ENTITY
+            Log.Info(">> 创建EntityType: {0}, TypeName: {1}, 路径: {2}", typeName, entityClassTypeName, filePath);
+#endif
+            return entityType;
         }
+
         private bool ManualCreateTypes()
         {
-            bool result;
-            foreach (EntityTypes.ClassInfo current in this.classes)
+            foreach (ClassInfo current in classes)
             {
-                ManualTypeCreateAttribute[] array = (ManualTypeCreateAttribute[])current.typeClassType.GetCustomAttributes(typeof(ManualTypeCreateAttribute), false);
-                for (int i = 0; i < array.Length; i++)
+                ManualTypeCreateAttribute[] attrs = (ManualTypeCreateAttribute[])current.typeClassType.GetCustomAttributes(typeof(ManualTypeCreateAttribute), false);
+                for (int i = 0; i < attrs.Length; i++)
                 {
-                    ManualTypeCreateAttribute manualTypeCreateAttribute = array[i];
+                    ManualTypeCreateAttribute manualTypeCreateAttribute = attrs[i];
                     string text = manualTypeCreateAttribute.TypeName;
-                    bool flag = text == null || text == "";
-                    if (flag)
-                    {
+                    if (string.IsNullOrEmpty(text))
                         text = current.entityClassType.Name;
-                    }
-                    bool flag2 = this.ManualCreateType(text, current) == null;
-                    if (flag2)
-                    {
-                        result = false;
-                        return result;
-                    }
+
+                    EntityType entityType = ManualCreateType(text, current);
+                    if (entityType == null)
+                        return false;
+
+#if DEBUG_ENTITY
+                    Log.Info(">> 自动创建EntityType: {0}, 类型: {1}", entityType, current.TypeClassType);
+#endif
                 }
             }
-            result = true;
-            return result;
+            return true;
         }
+
         public EntityType ManualCreateType(string typeName, EntityTypes.ClassInfo classInfo)
         {
-            bool flag = this.GetByName(typeName) != null;
-            if (flag)
+            EntityType entityTypeExists = GetByName(typeName);
+            if( entityTypeExists != null ) 
             {
                 Log.Fatal("EntityTypes: ManualCreateType: type with name \"{0}\" already created.", typeName);
+                return null; 
             }
-            EntityType entityType = this.CreateEntityType(typeName, classInfo.EntityClassType.Name, null);
-            bool flag2 = entityType == null;
-            EntityType result;
-            if (flag2)
-            {
-                result = null;
-            }
-            else
-            {
-                entityType.filePath = "";
-                bool flag3 = string.IsNullOrEmpty(entityType.fullName);
-                if (flag3)
-                {
-                    entityType.fullName = entityType.name;
-                }
-                entityType.manualCreated = true;
-                result = entityType;
-            }
-            return result;
+
+            EntityType entityType = CreateEntityType(typeName, classInfo.EntityClassType.Name, null);
+            if (entityType == null)
+                return null; 
+
+            entityType.filePath = "";
+            if(string.IsNullOrEmpty(entityType.fullName) )
+                entityType.fullName = entityType.name;
+            entityType.manualCreated = true;
+
+            return entityType; 
         }
+
         public EntityType LoadType(string p)
         {
             LongOperationCallbackManager.CallCallback("EntityTypes: PreLoadTypeFromFile: " + p);
             TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
-            bool flag = textBlock == null;
-            EntityType result;
-            if (flag)
-            {
-                result = null;
-            }
-            else
-            {
-                bool flag2 = textBlock.Children.Count != 1;
-                if (flag2)
-                {
-                    result = null;
-                }
-                else
-                {
-                    TextBlock textBlock2 = textBlock.Children[0];
-                    bool flag3 = textBlock2.Name != "type";
-                    if (flag3)
-                    {
-                        result = null;
-                    }
-                    else
-                    {
-                        string data = textBlock2.Data;
-                        EntityType entityType = this.loadEntityType(textBlock, p, p);
-                        result = entityType;
-                    }
-                }
-            }
-            return result;
+            if (textBlock == null || textBlock.Children.Count != 1)
+                return null; 
+
+            TextBlock tc = textBlock.Children[0];
+            if (tc.Name != "type")
+                return null;
+
+            EntityType entityType = loadEntityType(textBlock, p, p);
+            return entityType;
         }
+
         public void DestroyType(string p)
         {
-            EntityType entityTypeByPath = this.GetEntityTypeByPath(p);
-            this.DestroyType(entityTypeByPath);
+            EntityType entityTypeByPath = GetEntityTypeByPath(p);
+            DestroyType(entityTypeByPath);
         }
+
         public EntityType GetEntityTypeByPath(string p)
         {
-            bool flag = p == null;
-            EntityType result;
-            if (flag)
-            {
-                result = null;
-            }
-            else
-            {
-                foreach (EntityType current in this.types)
-                {
-                    bool flag2 = p.Equals(current.FilePath, StringComparison.CurrentCultureIgnoreCase);
-                    if (flag2)
-                    {
-                        result = current;
-                        return result;
-                    }
-                }
-                result = null;
-            }
-            return result;
+            if (p == null)
+                return null;
+
+            EntityType entityType = types.Where(_t => p.Equals(_t.FilePath, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            return entityType;
         }
+
         public void DestroyType(EntityType type)
         {
-            this.types.Remove(type);
-            this.entityTypeNameDic.Remove(type.name);
+            types.Remove(type);
+            entityTypeNameDic.Remove(type.name);
             type.Dispose();
         }
+
         public bool LoadGroupOfTypes(string virtualDirectory, SearchOption searchOption, out List<EntityType> loadedTypes)
         {
             LongOperationCallbackManager.CallCallback("EntityTypes: LoadGroupOfTypes: " + virtualDirectory);
             loadedTypes = null;
-            string[] array = new string[0];
-            bool result;
+            string[] typeFiles = new string[0]; 
             try
             {
-                array = VirtualDirectory.GetFiles(virtualDirectory, "*.type", searchOption);
+                typeFiles = VirtualDirectory.GetFiles(virtualDirectory, "*.type", searchOption);
             }
             catch
             {
                 Log.Error("EntityTypes: Getting list of type files failed.");
-                bool flag = false;
-                result = flag;
-                return result;
+                return false;
             }
-            loadedTypes = new List<EntityType>(array.Length);
-            for (int i = 0; i < array.Length; i++)
+
+#if DEBUG_ENTITY
+            string _targetDirectory = VirtualFileSystem.GetRealPathByVirtual(virtualDirectory);
+            Log.Info(">> 搜索资源目录: {0}, 找到{1}个type文件", _targetDirectory, typeFiles.Length);
+#endif
+            loadedTypes = new List<EntityType>(typeFiles.Length);
+            for (int i = 0; i < typeFiles.Length; i++)
             {
-                string text = array[i];
-                EntityType entityType = this.loadEntityTypeFromFile(text);
-                bool flag2 = entityType == null;
-                if (flag2)
+                string typeFile = typeFiles[i];
+                EntityType entityType = loadEntityTypeFromFile(typeFile);
+                if (entityType == null)
                 {
-                    Log.Error("EntityTypes: Entity type loading failed \"{0}\".", text);
-                    bool flag3 = false;
-                    result = flag3;
-                    return result;
+                    Log.Error("EntityTypes: Entity type loading failed \"{0}\".", typeFile);
+                    return false;
                 }
                 loadedTypes.Add(entityType);
+
+#if DEBUG_ENTITY
+                Log.Info(">> #{0:000} EntityType: {1}, 文件: {2}", i + 1, entityType, typeFile);
+#endif
             }
-            foreach (EntityType current in loadedTypes)
+
+            foreach (EntityType type in loadedTypes)
             {
-                bool flag4 = !this.loadTypeFromLoadedTextBlock(current);
-                if (flag4)
-                {
-                    bool flag5 = false;
-                    result = flag5;
-                    return result;
-                }
+                bool loadFailure = !loadTypeFromLoadedTextBlock(type);
+                if (loadFailure)
+                    return false; 
             }
-            result = true;
-            return result;
+            return true;
         }
+
         public bool LoadGroupOfTypes(IList<TextBlock> blocks, out List<EntityType> loadedTypes)
         {
             LongOperationCallbackManager.CallCallback("EntityTypes: LoadGroupOfTypes");
@@ -455,7 +418,7 @@ namespace Jx.EntitySystem
             bool result;
             foreach (TextBlock current in blocks)
             {
-                EntityType entityType = this.loadEntityType(current, "", "");
+                EntityType entityType = loadEntityType(current, "", "");
                 bool flag = entityType == null;
                 if (flag)
                 {
@@ -478,196 +441,136 @@ namespace Jx.EntitySystem
             result = true;
             return result;
         }
+
         public EntityType LoadTypeFromFile(string virtualFileName)
         {
-            EntityType entityType = this.loadEntityTypeFromFile(virtualFileName);
-            bool flag = entityType == null;
-            EntityType result;
-            if (flag)
+            EntityType entityType = loadEntityTypeFromFile(virtualFileName);
+            if( entityType == null)
             {
                 Log.Error("EntityTypes: LoadTypeFromFile: Entity type loading failed \"{0}\".", virtualFileName);
-                result = null;
+                return null; 
             }
-            else
-            {
-                bool flag2 = !this.loadTypeFromLoadedTextBlock(entityType);
-                if (flag2)
-                {
-                    result = null;
-                }
-                else
-                {
-                    result = entityType;
-                }
-            }
-            return result;
+
+            if (!loadTypeFromLoadedTextBlock(entityType))
+                return null;
+
+            return entityType; 
         }
+
         public EntityType LoadTypeFromTextBlock(TextBlock block)
         {
-            EntityType entityType = this.loadEntityType(block, "", "");
-            bool flag = entityType == null;
-            EntityType result;
-            if (flag)
-            {
-                result = null;
-            }
-            else
-            {
-                bool flag2 = !this.loadTypeFromLoadedTextBlock(entityType);
-                if (flag2)
-                {
-                    result = null;
-                }
-                else
-                {
-                    result = entityType;
-                }
-            }
-            return result;
+            EntityType entityType = loadEntityType(block, "", "");
+            if (entityType == null)
+                return null;
+
+            if (!loadTypeFromLoadedTextBlock(entityType))
+                return null;
+
+            return entityType;
         }
+
         public List<EntityType> Editor_FindTypesWhoHasReferenceToType(EntityType type)
-        {
+        { 
             List<EntityType> list = new List<EntityType>();
             foreach (EntityType current in this.Types)
             {
-                bool flag = current.OnIsExistsReferenceToObject(type);
-                if (flag)
+                bool r = current.OnIsExistsReferenceToObject(type);
+                if (r)
                 {
                     list.Add(current);
                 }
             }
             return list;
         }
+
         private EntityType loadEntityType(TextBlock textBlock, string text, string filePath)
         {
-            bool flag = textBlock.Children.Count != 1;
-            EntityType result;
-            if (flag)
+            if( textBlock == null || textBlock.Children.Count != 1 )
             {
                 Log.Error(string.Format("EntityTypes: Need one root block \"{0}\".", filePath));
-                result = null;
+                return null; 
             }
-            else
+
+            TextBlock tc = textBlock.Children[0];
+            if( tc.Name != "type" )
             {
-                TextBlock textBlock2 = textBlock.Children[0];
-                bool flag2 = textBlock2.Name != "type";
-                if (flag2)
-                {
-                    Log.Error(string.Format("EntityTypes: Need block named \"type\" \"{0}\".", filePath));
-                    result = null;
-                }
-                else
-                {
-                    bool flag3 = string.IsNullOrEmpty(textBlock2.Data);
-                    if (flag3)
-                    {
-                        Log.Error(string.Format("EntityTypes: Need define entity type name \"{0}\".", filePath));
-                        result = null;
-                    }
-                    else
-                    {
-                        string data = textBlock2.Data;
-                        string attribute = textBlock2.GetAttribute("class");
-                        EntityType entityType = this.CreateEntityType(data, attribute, filePath);
-                        bool flag4 = entityType == null;
-                        if (flag4)
-                        {
-                            result = null;
-                        }
-                        else
-                        {
-                            entityType.filePath = text;
-                            entityType.fullName = entityType.name;
-                            entityType.textBlock = textBlock2;
-                            result = entityType;
-                        }
-                    }
-                }
+                Log.Error(string.Format("EntityTypes: Need block named \"type\" \"{0}\".", filePath));
+                return null;
             }
-            return result;
+
+            if( string.IsNullOrEmpty(tc.Data))
+            {
+                Log.Error(string.Format("EntityTypes: Need define entity type name \"{0}\".", filePath));
+                return null; 
+            }
+
+            string data = tc.Data;
+            string attribute = tc.GetAttribute("class");
+            EntityType entityType = CreateEntityType(data, attribute, filePath);
+            if (entityType == null)
+                return null;
+
+            entityType.filePath = text;
+            entityType.fullName = entityType.name;
+            entityType.textBlock = tc;
+            return entityType;
         }
+
         private EntityType loadEntityTypeFromFile(string p)
         {
             LongOperationCallbackManager.CallCallback("EntityTypes: PreLoadTypeFromFile: " + p);
             TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
-            bool flag = textBlock == null;
-            EntityType result;
-            if (flag)
-            {
-                result = null;
-            }
-            else
-            {
-                result = this.loadEntityType(textBlock, p, p);
-            }
+            if (textBlock == null)
+                return null; 
+                        
+            EntityType result = loadEntityType(textBlock, p, p);
             return result;
         }
+
         private bool loadTypeFromLoadedTextBlock(EntityType entityType)
         {
             LongOperationCallbackManager.CallCallback("EntityTypes: LoadTypeFromLoadTextBlock: " + entityType.FilePath);
-            bool flag = !entityType.loadEntityTypeFromTextBlock(entityType.textBlock);
-            bool result;
-            if (flag)
-            {
-                result = false;
-            }
-            else
-            {
-                bool flag2 = !entityType.OnLoad(entityType.textBlock);
-                if (flag2)
-                {
-                    result = false;
-                }
-                else
-                {
-                    entityType.OnLoaded();
-                    entityType.textBlock = null;
-                    result = true;
-                }
-            }
-            return result;
+            bool loadFromTextBlockFailure = !entityType.loadEntityTypeFromTextBlock(entityType.textBlock);
+            if (loadFromTextBlockFailure)
+                return false;
+
+            bool initByTextBlockFailure = !entityType.OnLoad(entityType.textBlock);
+            if (initByTextBlockFailure)
+                return false;
+
+            entityType.OnLoaded();
+            entityType.textBlock = null;
+            return true;
         }
 
         public bool SaveTypeToFile(EntityType type)
         {
             TextBlock textBlock = new TextBlock();
-            TextBlock textBlock2 = textBlock.AddChild("type", type.Name);
-            textBlock2.SetAttribute("class", type.ClassInfo.EntityClassType.Name);
-            bool flag = !type.Save(textBlock2);
-            bool result;
-            if (flag)
+            TextBlock typeBlock = textBlock.AddChild("type", type.Name);
+            typeBlock.SetAttribute("class", type.ClassInfo.EntityClassType.Name);
+
+            if (!type.Save(typeBlock))
+                return false;
+
+            if (!type.OnSave(typeBlock))
+                return false;
+
+            try
             {
-                result = false;
-            }
-            else
-            {
-                bool flag2 = !type.OnSave(textBlock2);
-                if (flag2)
+                using (FileStream fileStream = new FileStream(VirtualFileSystem.GetRealPathByVirtual(type.FilePath), FileMode.Create))
                 {
-                    result = false;
-                }
-                else
-                {
-                    try
+                    using (StreamWriter streamWriter = new StreamWriter(fileStream))
                     {
-                        using (FileStream fileStream = new FileStream(VirtualFileSystem.GetRealPathByVirtual(type.FilePath), FileMode.Create))
-                        {
-                            using (StreamWriter streamWriter = new StreamWriter(fileStream))
-                            {
-                                streamWriter.Write(textBlock.DumpToString());
-                            }
-                        }
+                        streamWriter.Write(textBlock.DumpToString());
                     }
-                    catch (Exception ex)
-                    {
-                        Log.Warning("Save type to file failed: {0}", ex.ToString());
-                        result = false;
-                        return result;
-                    }
-                    result = true;
                 }
             }
-            return result;
+            catch (Exception ex)
+            {
+                Log.Warning("Save type to file failed: {0}", ex.ToString());
+                return false; 
+            }
+            return true;
         }
 
         public ClassInfo GetClassInfoByEntityClassType(Type entityClassType)
@@ -690,172 +593,172 @@ namespace Jx.EntitySystem
 
         private ClassInfo addClassInfo(Type type)
         {
-            ClassInfo classInfo = this.GetClassInfoByEntityClassType(type);
-            bool flag = classInfo != null;
-            ClassInfo result;
-            if (flag)
+            if (type == null)
+                return null; 
+
+            ClassInfo classInfo = GetClassInfoByEntityClassType(type);
+            if (classInfo != null)
+                return classInfo;
+
+            Type typeEntityType = null;
+            string name = type.FullName + "Type";
+            foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
             {
-                result = classInfo;
+                Type typeFound = current.GetType(name);
+                if (typeFound != null)
+                {
+                    typeEntityType = typeFound;
+                    break;
+                }
             }
-            else
+
+            if (typeEntityType == null)
             {
-                Type type2 = null;
-                string name = type.FullName + "Type";
-                foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
-                {
-                    Type type3 = current.GetType(name);
-                    bool flag2 = type3 != null;
-                    if (flag2)
-                    {
-                        type2 = type3;
-                        break;
-                    }
-                }
-                bool flag3 = type2 == null;
-                if (flag3)
-                {
-                    Log.Fatal(string.Format("Type class not defined for \"{0}\"", type.FullName));
-                }
-                bool flag4 = !typeof(EntityType).IsAssignableFrom(type2);
-                if (flag4)
-                {
-                    Log.Fatal(string.Format("Type class not inherited by EntityType \"{0}\"", type2.FullName));
-                }
-                Type baseType = type.BaseType;
-                EntityTypes.ClassInfo baseClassInfo = null;
-                bool flag5 = baseType != null && typeof(Entity).IsAssignableFrom(baseType);
-                if (flag5)
-                {
-                    baseClassInfo = this.addClassInfo(baseType);
-                }
-                classInfo = new EntityTypes.ClassInfo();
-                classInfo.baseClassInfo = baseClassInfo;
-                classInfo.typeClassType = type2;
-                classInfo.entityClassType = type;
-                classInfo.entityTypeSerializableFieldItemList = new List<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem>();
-                classInfo.entityTypeSerializableFields = new ReadOnlyCollection<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem>(classInfo.entityTypeSerializableFieldItemList);
-                FieldInfo[] fields = classInfo.typeClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                FieldInfo[] array = fields;
-                for (int i = 0; i < array.Length; i++)
-                {
-                    FieldInfo fieldInfo = array[i];
-                    bool flag6 = !(fieldInfo.DeclaringType != type2);
-                    if (flag6)
-                    {
-                        EntityType.FieldSerializeAttribute fieldSerializeAttribute = null;
-                        EntityType.FieldSerializeAttribute[] array2 = (EntityType.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true);
-                        bool flag7 = array2.Length != 0;
-                        if (flag7)
-                        {
-                            fieldSerializeAttribute = array2[0];
-                        }
-                        bool flag8 = fieldSerializeAttribute != null;
-                        if (flag8)
-                        {
-                            EntityTypes.ClassInfo.EntityTypeSerializableFieldItem entityTypeSerializableFieldItem = new EntityTypes.ClassInfo.EntityTypeSerializableFieldItem();
-                            entityTypeSerializableFieldItem.field = fieldInfo;
-                            classInfo.entityTypeSerializableFieldItemList.Add(entityTypeSerializableFieldItem);
-                        }
-                    }
-                }
-                classInfo.entitySerializableFieldItemList = new List<EntityTypes.ClassInfo.EntitySerializableFieldItem>();
-                classInfo.entitySerializableFields = new ReadOnlyCollection<EntityTypes.ClassInfo.EntitySerializableFieldItem>(classInfo.entitySerializableFieldItemList);
-                FieldInfo[] fields2 = classInfo.entityClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                FieldInfo[] array3 = fields2;
-                for (int j = 0; j < array3.Length; j++)
-                {
-                    FieldInfo fieldInfo2 = array3[j];
-                    bool flag9 = !(fieldInfo2.DeclaringType != type);
-                    if (flag9)
-                    {
-                        Entity.FieldSerializeAttribute fieldSerializeAttribute2 = null;
-                        Entity.FieldSerializeAttribute[] array4 = (Entity.FieldSerializeAttribute[])fieldInfo2.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                        bool flag10 = array4.Length != 0;
-                        if (flag10)
-                        {
-                            fieldSerializeAttribute2 = array4[0];
-                        }
-                        bool flag11 = fieldSerializeAttribute2 != null;
-                        if (flag11)
-                        {
-                            EntityTypes.ClassInfo.EntitySerializableFieldItem entitySerializableFieldItem = new EntityTypes.ClassInfo.EntitySerializableFieldItem();
-                            entitySerializableFieldItem.field = fieldInfo2; 
-                            classInfo.entitySerializableFieldItemList.Add(entitySerializableFieldItem);
-                        }
-                    }
-                }
+                Log.Fatal(string.Format("Type class not defined for \"{0}\"", type.FullName));
+                return null;
+            }
+
+            if (!typeof(EntityType).IsAssignableFrom(typeEntityType))
+            {
+                Log.Fatal(string.Format("Type class not inherited by EntityType \"{0}\"", typeEntityType.FullName));
+                return null;
+            }
+
+            Type baseType = type.BaseType;
+            ClassInfo baseClassInfo = null;
+            if (baseType != null && typeof(Entity).IsAssignableFrom(baseType))
+            {
+                baseClassInfo = addClassInfo(baseType);
+            }
+
+            classInfo = new ClassInfo();
+            classInfo.baseClassInfo = baseClassInfo;
+            classInfo.typeClassType = typeEntityType;
+            classInfo.entityClassType = type;
+
+            #region EntityType 序列化字段
+            classInfo.entityTypeSerializableFieldItemList = new List<ClassInfo.EntityTypeSerializableFieldItem>();
+            classInfo.entityTypeSerializableFields = new ReadOnlyCollection<ClassInfo.EntityTypeSerializableFieldItem>(classInfo.entityTypeSerializableFieldItemList);
+            FieldInfo[] entityTypeFields = classInfo.typeClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            for (int i = 0; i < entityTypeFields.Length; i++)
+            {
+                FieldInfo fieldInfo = entityTypeFields[i];
+                if (fieldInfo.DeclaringType != typeEntityType)
+                    continue;
+
+                EntityType.FieldSerializeAttribute fieldSerializeAttribute = null;
+                EntityType.FieldSerializeAttribute[] rAttrs = (EntityType.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true);
+                if (rAttrs.Length > 0)
+                    fieldSerializeAttribute = rAttrs[0];
+
+                if (fieldSerializeAttribute == null)
+                    continue;
+
+                ClassInfo.EntityTypeSerializableFieldItem entityTypeSerializableFieldItem = new ClassInfo.EntityTypeSerializableFieldItem();
+                entityTypeSerializableFieldItem.field = fieldInfo;
+                classInfo.entityTypeSerializableFieldItemList.Add(entityTypeSerializableFieldItem);
+            }
+            #endregion
+
+            #region Entity 序列化字段
+            classInfo.entitySerializableFieldItemList = new List<ClassInfo.EntitySerializableFieldItem>();
+            classInfo.entitySerializableFields = new ReadOnlyCollection<EntityTypes.ClassInfo.EntitySerializableFieldItem>(classInfo.entitySerializableFieldItemList);
+            FieldInfo[] entityFields = classInfo.entityClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            for (int j = 0; j < entityFields.Length; j++)
+            {
+                FieldInfo fieldInfo = entityFields[j];
+                if (fieldInfo.DeclaringType != typeEntityType)
+                    continue;
+
+                Entity.FieldSerializeAttribute fieldSerializeAttribute = null;
+                Entity.FieldSerializeAttribute[] rAttrs = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
+                if (rAttrs.Length > 0)
+                    fieldSerializeAttribute = rAttrs[0];
+
+                if (fieldSerializeAttribute == null)
+                    continue;
+
+                ClassInfo.EntitySerializableFieldItem entitySerializableFieldItem = new ClassInfo.EntitySerializableFieldItem();
+                entitySerializableFieldItem.field = fieldInfo;
+                classInfo.entitySerializableFieldItemList.Add(entitySerializableFieldItem);
+            }
+            #endregion
+
+            #region _type字段
+            FieldInfo[] typeFields = classInfo.entityClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            for (int k = 0; k < typeFields.Length; k++)
+            {
+                FieldInfo fieldInfo = typeFields[k];
+                object[] attrs = fieldInfo.GetCustomAttributes(typeof(Entity.TypeFieldAttribute), false);
+                if (attrs.Length == 0)
+                    continue;
+                classInfo.fieldInfo = fieldInfo;
+                break;
+            }
+            
+            if (classInfo.fieldInfo == null)
                 classInfo.fieldInfo = classInfo.entityClassType.GetField("_type", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                bool flag12 = classInfo.fieldInfo == null;
-                if (flag12)
-                {
-                    FieldInfo[] fields3 = classInfo.entityClassType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    FieldInfo[] array5 = fields3;
-                    for (int k = 0; k < array5.Length; k++)
-                    {
-                        FieldInfo fieldInfo3 = array5[k];
-                        bool flag13 = fieldInfo3.GetCustomAttributes(typeof(Entity.TypeFieldAttribute), false).Length != 0;
-                        if (flag13)
-                        {
-                            classInfo.fieldInfo = fieldInfo3;
-                            break;
-                        }
-                    }
-                }
-                bool flag14 = classInfo.fieldInfo == null && !typeof(LogicComponent).IsAssignableFrom(type);
-                if (flag14)
-                {
-                    Log.Fatal("Field \"_type\" not defined for \"{0}\"", type.FullName);
-                }
-                MethodInfo[] methods = classInfo.entityClassType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                MethodInfo[] array6 = methods;
-                for (int l = 0; l < array6.Length; l++)
-                {
-                    MethodInfo methodInfo = array6[l];
-                    Entity.NetworkReceiveAttribute[] array7 = (Entity.NetworkReceiveAttribute[])methodInfo.GetCustomAttributes(typeof(Entity.NetworkReceiveAttribute), false);
-                    bool flag15 = array7.Length != 0;
-                    if (flag15)
-                    {
-                        Entity.NetworkReceiveAttribute networkReceiveAttribute = array7[0];
-                        Entity.NetworkDirections direction = networkReceiveAttribute.Direction;
-                        ushort messageIdentifier = networkReceiveAttribute.MessageIdentifier;
-                        while (classInfo.networkSynchronizedMetaBuffer.Count <= (int)messageIdentifier)
-                        {
-                            classInfo.networkSynchronizedMetaBuffer.Add(null);
-                        }
-                        bool flag16 = classInfo.networkSynchronizedMetaBuffer[(int)messageIdentifier] != null;
-                        if (flag16)
-                        {
-                            Log.Fatal("EntitySystem: NetworkSynchronizedAttribute is already defined for network message \"{0}\" for entity class \"{0}\". Method name is a \"{2}\"", messageIdentifier, classInfo.entityClassType.Name, methodInfo.Name);
-                        }
-                        classInfo.networkSynchronizedMetaBuffer[(int)messageIdentifier] = new EntityTypes.ClassInfo.NetworkSynchronizedMeta(direction, methodInfo);
-                    }
-                }
-                this.classInfoNetworkUIN += 1u;
-                classInfo.networkUIN = this.classInfoNetworkUIN;
-                this.classes.Add(classInfo);
-                this.typeClassInfoDic.Add(type, classInfo);
-                this.typeNameClassInfoDic.Add(type.Name, classInfo);
-                result = classInfo;
+
+            if (classInfo.fieldInfo == null && !typeof(LogicComponent).IsAssignableFrom(type))
+            {
+                Log.Fatal("Field \"_type\" not defined for \"{0}\"", type.FullName);
+                return null;
             }
-            return result;
+            #endregion
+
+            #region 网络处理函数
+            MethodInfo[] methods = classInfo.entityClassType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            for (int l = 0; l < methods.Length; l++)
+            {
+                MethodInfo methodInfo = methods[l];
+                Entity.NetworkReceiveAttribute[] array7 = (Entity.NetworkReceiveAttribute[])methodInfo.GetCustomAttributes(typeof(Entity.NetworkReceiveAttribute), false);
+                bool flag15 = array7.Length != 0;
+                if (flag15)
+                {
+                    Entity.NetworkReceiveAttribute networkReceiveAttribute = array7[0];
+                    Entity.NetworkDirections direction = networkReceiveAttribute.Direction;
+                    ushort messageIdentifier = networkReceiveAttribute.MessageIdentifier;
+                    while (classInfo.networkSynchronizedMetaBuffer.Count <= (int)messageIdentifier)
+                    {
+                        classInfo.networkSynchronizedMetaBuffer.Add(null);
+                    }
+                    bool flag16 = classInfo.networkSynchronizedMetaBuffer[(int)messageIdentifier] != null;
+                    if (flag16)
+                    {
+                        Log.Fatal("EntitySystem: NetworkSynchronizedAttribute is already defined for network message \"{0}\" for entity class \"{0}\". Method name is a \"{2}\"", messageIdentifier, classInfo.entityClassType.Name, methodInfo.Name);
+                    }
+                    classInfo.networkSynchronizedMetaBuffer[(int)messageIdentifier] = new EntityTypes.ClassInfo.NetworkSynchronizedMeta(direction, methodInfo);
+                }
+            }
+            #endregion
+
+            classInfoNetworkUIN += 1u;
+            classInfo.networkUIN = classInfoNetworkUIN;
+            classes.Add(classInfo);
+            typeClassInfoDic.Add(type, classInfo);
+            typeNameClassInfoDic.Add(type.Name, classInfo);
+            return classInfo;
         }
+
         private void loadEntityFromAssembly()
         {
             foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
             {
-                Type[] array = current.GetTypes();
-                Type[] array2 = array;
-                for (int i = 0; i < array2.Length; i++)
+                Type[] types = current.GetTypes(); 
+                for (int i = 0; i < types.Length; i++)
                 {
-                    Type type = array2[i];
-                    bool flag = typeof(Entity).IsAssignableFrom(type);
-                    if (flag)
+                    Type type = types[i];
+                    if (typeof(Entity).IsAssignableFrom(type))
                     {
-                        this.addClassInfo(type);
+                        addClassInfo(type);
+#if DEBUG_ENTITY
+                        Log.Info(">> Entity类型: {0}, Assembly: {1}", type, current);
+#endif
                     }
                 }
             }
         }
+
         /// <summary>
         /// Finds the type on his file path.
         /// </summary>
@@ -863,20 +766,15 @@ namespace Jx.EntitySystem
         /// <returns>The entity type or <b>null</b>.</returns>
         public EntityType FindByFilePath(string virtualFileName)
         {
-            string strB = VirtualFileSystem.NormalizePath(virtualFileName);
-            EntityType result;
+            string filePath = VirtualFileSystem.NormalizePath(virtualFileName);
             foreach (EntityType current in EntityTypes.Instance.Types)
             {
-                bool flag = string.Compare(current.FilePath, strB, true) == 0;
-                if (flag)
-                {
-                    result = current;
-                    return result;
-                }
+                if (string.Compare(current.FilePath, filePath, true) == 0)
+                    return current;
             }
-            result = null;
-            return result;
+            return null;
         }
+
         public void Editor_ChangeAllReferencesToType(string oldVirtualPathByReal, string newVirtualPathByReal)
         {
             EntityType entityType = this.GetEntityTypeByPath(newVirtualPathByReal);
@@ -892,6 +790,7 @@ namespace Jx.EntitySystem
                 this.Editor_ChangeAllReferencesToType(entityTypeByPath, entityType);
             }
         }
+
         /// <summary>
         /// </summary>
         /// <param name="type"></param>
@@ -903,20 +802,20 @@ namespace Jx.EntitySystem
                 current.OnChangeReferencesToObject(type, newValue);
             }
         }
+
         /// <summary>
         /// Returns the list of types which are based on set class information.
         /// </summary>
         /// <param name="classInfo">The class information.</param>
         /// <returns>The list of types which are based on set class information.</returns>
-        public List<EntityType> GetTypesBasedOnClass(EntityTypes.ClassInfo classInfo)
+        public List<EntityType> GetTypesBasedOnClass(ClassInfo classInfo)
         {
             List<EntityType> list = new List<EntityType>();
             foreach (EntityType current in this.types)
             {
-                for (EntityTypes.ClassInfo classInfo2 = current.classInfo; classInfo2 != null; classInfo2 = classInfo2.BaseClassInfo)
+                for (ClassInfo classInfo2 = current.classInfo; classInfo2 != null; classInfo2 = classInfo2.BaseClassInfo)
                 {
-                    bool flag = classInfo2 == classInfo;
-                    if (flag)
+                    if (classInfo2 == classInfo)
                     {
                         list.Add(current);
                         break;
