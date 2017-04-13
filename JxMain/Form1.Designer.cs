@@ -51,7 +51,7 @@
             this.wizardPage5,
             this.wizardPage6,
             this.wizardPage7});
-            this.wizard1.Size = new System.Drawing.Size(522, 315);
+            this.wizard1.Size = new System.Drawing.Size(697, 514);
             this.wizard1.TabIndex = 0;
             // 
             // wizardPage1
@@ -59,7 +59,7 @@
             this.wizardPage1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardPage1.Location = new System.Drawing.Point(3, 3);
             this.wizardPage1.Name = "wizardPage1";
-            this.wizardPage1.Size = new System.Drawing.Size(516, 269);
+            this.wizardPage1.Size = new System.Drawing.Size(691, 468);
             this.wizardPage1.TabIndex = 11;
             // 
             // wizardPage2
@@ -81,7 +81,7 @@
             this.wizardPage4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardPage4.Location = new System.Drawing.Point(3, 3);
             this.wizardPage4.Name = "wizardPage4";
-            this.wizardPage4.Size = new System.Drawing.Size(516, 269);
+            this.wizardPage4.Size = new System.Drawing.Size(592, 374);
             this.wizardPage4.TabIndex = 11;
             // 
             // wizardPage5
@@ -110,7 +110,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(522, 315);
+            this.ClientSize = new System.Drawing.Size(697, 514);
             this.Controls.Add(this.wizard1);
             this.Name = "Form1";
             this.Text = "Form1";
