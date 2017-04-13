@@ -43,9 +43,8 @@ namespace JxRes.Types
             base.OnNewResource(directory);
             EntityTypeNewResourceDialog cd = new EntityTypeNewResourceDialog(directory);
             if (cd.ShowDialog(MainForm.Instance) != DialogResult.OK)
-            {
                 return;
-            }
+            
             string text = "";
             if (directory != "")
             {
@@ -53,8 +52,8 @@ namespace JxRes.Types
             }
             text = text + cd.TypeName + ".type";
             TextBlock textBlock = new TextBlock();
-            TextBlock textBlock2 = textBlock.AddChild("type", cd.TypeName);
-            textBlock2.SetAttribute("class", cd.TypeClass.EntityClassType.Name);
+            TextBlock typeBlock = textBlock.AddChild("type", cd.TypeName);
+            typeBlock.SetAttribute("class", cd.TypeClass.EntityClassType.Name);
             try
             {
                 using (Stream stream = new FileStream(VirtualFileSystem.GetRealPathByVirtual(text), FileMode.Create))
@@ -78,10 +77,12 @@ namespace JxRes.Types
             }
             Log.Fatal("OnNewResource: EntityTypes.Instance.LoadType: Internal error.");
         }
+
         protected override bool OnLoadResource(string path)
         {
             return EntityTypes.Instance.LoadTypeFromFile(path) != null && base.OnLoadResource(path);
         }
+
         protected override bool OnUnloadResource(string path)
         {
             EntityType entityType = EntityTypes.Instance.FindByFilePath(path);
@@ -92,10 +93,12 @@ namespace JxRes.Types
             }
             return base.OnUnloadResource(path);
         }
+
         public override bool IsSpecialRenameResourceMode()
         {
             return true;
         }
+
         public override bool OnResourceRenamed(string path, string oldPath)
         {
             try
@@ -128,6 +131,7 @@ namespace JxRes.Types
             }
             return true;
         }
+
         private void A(string text, string virtualPath, string data)
         {
             TextBlock textBlock;
@@ -168,6 +172,7 @@ namespace JxRes.Types
                 Log.Warning(this.A("Unable to save file \"{0}\" ({1})."), realPathByVirtual, ex2.Message);
             }
         }
+
         protected override string OnUserRenameResource(string path)
         {
             EntityType entityType = EntityTypes.Instance.FindByFilePath(path);
@@ -268,6 +273,7 @@ namespace JxRes.Types
             }
             return result;
         }
+
         protected override bool OnOutsideAddResource(string path)
         {
             string data;
@@ -316,6 +322,7 @@ namespace JxRes.Types
             }
             return base.OnOutsideAddResource(path);
         }
+
         private string A(string text)
         {
             return ToolsLocalization.Translate("EntityTypeResourceType", text);

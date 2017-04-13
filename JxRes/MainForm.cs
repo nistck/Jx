@@ -53,15 +53,8 @@ namespace JxRes
         private bool SaveLayoutFlag = true;
 
         private void Bootstrap()
-        {
-            string logPath = string.Format("user:Logs/{0}.log", Program.ExecutableName);
-            //initialize file sytem of the engine
-            if (!VirtualFileSystem.Init(logPath, true, null, null, null, null))
-                return;
-
-            Log.Info(">> Log Path: {0}", logPath);
-
-            EngineApp.Init(new JxEditorApp());
+        { 
+            EngineApp.Init(new JxResApp());
 
             bool created = EngineApp.Instance.Create();
             if (created)
@@ -86,6 +79,15 @@ namespace JxRes
                 contentForm.Show(dockPanel, DockState.Document);
                 consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
             }
+
+            resourcesForm.UpdateView();
+        }
+
+        public void UpdateLastSelectedResourcePath(string resourcePath)
+        {
+#if DEBUG_RES
+            Log.Info(">> Update Last Selected ResourcePath: {0}", resourcePath);
+#endif
         }
 
         private bool LoadLayoutConfig()

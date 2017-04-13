@@ -50,9 +50,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ResourceObjectEditor.cs" />
     <Compile Include="ResourceType.cs" />
     <Compile Include="ResourceTypeManager.cs" />
+    <Compile Include="TreeViewUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">

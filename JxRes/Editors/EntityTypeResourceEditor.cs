@@ -22,7 +22,7 @@ namespace JxRes.Editors
         private EntityType currentEntityType;
         private Entity awq;
         private bool awR;
-        internal List<object> awr = new List<object>();
+        internal List<object> objectSelection = new List<object>();
  
         private string aws;
         private int awT; 
@@ -147,17 +147,17 @@ namespace JxRes.Editors
 
         protected override bool OnSave()
         {
-            bool flag;
+            bool savingResult = true;
             try
             {
                 MainForm.Instance.ResourcesForm.WatchFileSystem = false;
-                flag = EntityTypes.Instance.SaveTypeToFile(this.currentEntityType);
+                savingResult = EntityTypes.Instance.SaveTypeToFile(this.currentEntityType);
             }
             finally
             {
                 MainForm.Instance.ResourcesForm.WatchFileSystem = true;
             }
-            return flag && base.OnSave();
+            return savingResult && base.OnSave();
         }
 
         protected override void OnBeginEditMode()
@@ -183,7 +183,7 @@ namespace JxRes.Editors
                 //PhysicsModelResourceEditor.PreviewMapObjectType = null;
                 return false;
             }
-            this.awr.Clear();
+            this.objectSelection.Clear();
             this.b();
             if (this.awo != null)
             {
@@ -263,7 +263,7 @@ namespace JxRes.Editors
          
         public bool IsObjectSelected(object obj)
         {
-            return this.awr.Contains(obj);
+            return this.objectSelection.Contains(obj);
         }
 
         public void SetSelectObject(object obj, bool select, bool updatePropertiesForm)
@@ -274,28 +274,28 @@ namespace JxRes.Editors
             }
             if (select)
             {
-                if (!this.awr.Contains(obj))
+                if (!this.objectSelection.Contains(obj))
                 {
-                    this.awr.Add(obj); 
+                    this.objectSelection.Add(obj); 
                 }
             }
             else
             {
-                this.awr.Remove(obj); 
+                this.objectSelection.Remove(obj); 
             }
             if (this.awo != null)
             {
                 //this.awo.SetObjectSelected(obj, select);
             }
+
             if (updatePropertiesForm)
-            {
-                this.C();
-            }
+                UpdateProperties();
         }
-        private void C()
+
+        private void UpdateProperties()
         {
-            List<object> list = new List<object>(this.awr.Count);
-            foreach (object current in this.awr)
+            List<object> list = new List<object>(this.objectSelection.Count);
+            foreach (object current in this.objectSelection)
             {
                 object item = current;
                 if (current is EntityType)
@@ -311,11 +311,12 @@ namespace JxRes.Editors
             }
             MainForm.Instance.PropertiesForm.SelectObjects(null, false);
         }
+
         public void ClearObjectSelection(bool refreshPropertiesForm)
         {
-            while (this.awr.Count != 0)
+            while (this.objectSelection.Count != 0)
             {
-                this.SetSelectObject(this.awr[this.awr.Count - 1], false, false);
+                this.SetSelectObject(this.objectSelection[this.objectSelection.Count - 1], false, false);
             }
             if (refreshPropertiesForm)
             {

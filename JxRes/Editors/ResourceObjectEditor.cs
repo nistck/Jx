@@ -6,9 +6,11 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Drawing;
 
+using Jx;
 using Jx.FileSystem;
+using Jx.Editors;
 
-namespace Jx.Editors
+namespace JxRes.Editors 
 {
     public class ResourceObjectEditor : IDisposable
     {
@@ -109,13 +111,15 @@ namespace Jx.Editors
             ChooseResourceForm.CurrentHelperDirectoryName = null;
             //*/
         }
+
         protected virtual void OnBeginEditMode()
         {
             if( !this.editModeActive )
             {
-
+                MainForm.Instance.PropertiesForm.PropertyValueChanged += PropertiesForm_PropertyValueChanged;
             }
             this.editModeActive = true;
+            MainForm.Instance.PropertiesForm.ReadOnly = false;
 
             /*
             if (!this.editModeActive)
@@ -131,6 +135,12 @@ namespace Jx.Editors
             }
             //*/
         }
+
+        private void PropertiesForm_PropertyValueChanged(object sender, GridItem item, object oldValue)
+        {
+            this.Modified = true;
+        }
+
         protected virtual bool OnEndEditMode()
         {
             if (this.modified)
@@ -148,6 +158,9 @@ namespace Jx.Editors
                     return false;
                 }
             }
+            this.editModeActive = false;
+            MainForm.Instance.PropertiesForm.ReadOnly = true;
+            MainForm.Instance.PropertiesForm.PropertyValueChanged -= PropertiesForm_PropertyValueChanged;
 
             return true;
 
@@ -180,10 +193,12 @@ namespace Jx.Editors
             return true;
             //*/
         }
+
         private void A()
         {
             this.Modified = true;
         }
+
         private void A(object obj, GridItem gridItem, object obj2)
         {
             this.Modified = true;

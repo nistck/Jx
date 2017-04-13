@@ -71,10 +71,12 @@ namespace Jx.EntitySystem
 		{
 			return this;
 		}
+
 		public override object GetExtendedFunctionalityDescriptorObject()
 		{
 			return this.aaa;
 		}
+
 		public EntityPropertyDescriptor GetProperty(string propertyName)
 		{
 			foreach (PropertyDescriptor propertyDescriptor in this.aaB)

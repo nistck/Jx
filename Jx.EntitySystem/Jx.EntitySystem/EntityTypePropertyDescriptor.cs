@@ -8,82 +8,92 @@ namespace Jx.EntitySystem
 	public class EntityTypePropertyDescriptor : PropertyDescriptor, _IWrappedPropertyDescriptor
 	{
 		public delegate void ValueChangeDelegate();
-		private EntityType aap;
-		private PropertyInfo aaQ;
-		private EntityTypePropertyDescriptor.ValueChangeDelegate aaq;
-		public event EntityTypePropertyDescriptor.ValueChangeDelegate ValueChange
-		{
-			add
-			{
-				EntityTypePropertyDescriptor.ValueChangeDelegate valueChangeDelegate = this.aaq;
-				EntityTypePropertyDescriptor.ValueChangeDelegate valueChangeDelegate2;
-				do
-				{
-					valueChangeDelegate2 = valueChangeDelegate;
-					EntityTypePropertyDescriptor.ValueChangeDelegate value2 = (EntityTypePropertyDescriptor.ValueChangeDelegate)Delegate.Combine(valueChangeDelegate2, value);
-					valueChangeDelegate = Interlocked.CompareExchange<EntityTypePropertyDescriptor.ValueChangeDelegate>(ref this.aaq, value2, valueChangeDelegate2);
-				}
-				while (valueChangeDelegate != valueChangeDelegate2);
-			}
-			remove
-			{
-				EntityTypePropertyDescriptor.ValueChangeDelegate valueChangeDelegate = this.aaq;
-				EntityTypePropertyDescriptor.ValueChangeDelegate valueChangeDelegate2;
-				do
-				{
-					valueChangeDelegate2 = valueChangeDelegate;
-					EntityTypePropertyDescriptor.ValueChangeDelegate value2 = (EntityTypePropertyDescriptor.ValueChangeDelegate)Delegate.Remove(valueChangeDelegate2, value);
-					valueChangeDelegate = Interlocked.CompareExchange<EntityTypePropertyDescriptor.ValueChangeDelegate>(ref this.aaq, value2, valueChangeDelegate2);
-				}
-				while (valueChangeDelegate != valueChangeDelegate2);
-			}
-		}
+		private EntityType entityType;
+		private PropertyInfo propertyInfo;
+        public event ValueChangeDelegate ValueChange;
+
 		public override Type ComponentType
 		{
 			get
 			{
-				return this.aap.GetType();
+				return this.entityType.GetType();
 			}
 		}
 		public override Type PropertyType
 		{
 			get
 			{
-				return this.aaQ.PropertyType;
+				return this.propertyInfo.PropertyType;
 			}
 		}
 		public override bool IsReadOnly
 		{
 			get
 			{
-				return !this.aaQ.CanWrite;
+				return !this.propertyInfo.CanWrite;
 			}
 		}
-		public EntityTypePropertyDescriptor(EntityType entityType, PropertyInfo property, Attribute[] attrs) : base(property.Name, attrs)
+		public EntityTypePropertyDescriptor(EntityType entityType, PropertyInfo property, Attribute[] attrs) 
+            : base(property.Name, attrs)
 		{
-			this.aap = entityType;
-			this.aaQ = property;
+			this.entityType = entityType;
+			this.propertyInfo = property;
 		}
+
 		public override object GetValue(object component)
 		{
-			return this.aaQ.GetValue(this.aap, null);
+			return this.propertyInfo.GetValue(this.entityType, null);
 		}
+
 		public override void SetValue(object component, object value)
 		{
-			this.aaQ.SetValue(this.aap, value, null);
-			if (this.aaq != null)
+			this.propertyInfo.SetValue(this.entityType, value, null);
+			if (this.ValueChange != null)
 			{
-				this.aaq();
+				this.ValueChange();
 			}
 		}
-		public override bool CanResetValue(object component)
+
+        public override string DisplayName
+        {
+            get
+            {
+                if( propertyInfo != null )
+                {
+                    JxNameAttribute attrFound = propertyInfo.GetCustomAttribute<JxNameAttribute>();
+                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
+                        return attrFound.Name;
+                }
+                return base.DisplayName;
+            }
+        }
+
+        public override string Category
+        {
+            get
+            {
+                if( propertyInfo != null )
+                {
+                    JxNameAttribute attrFound = propertyInfo.DeclaringType.GetCustomAttribute<JxNameAttribute>();
+                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
+                    {
+                        string categoryInfo = string.Format("{0} ({1})", attrFound.Name, base.Category);
+                        return categoryInfo;
+                    } 
+                }
+                return base.Category;
+            }
+        }
+
+        public override bool CanResetValue(object component)
 		{
-			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.aaQ.GetCustomAttributes(typeof(DefaultValueAttribute), true);
+			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
 			return array.Length != 0 && !object.Equals(array[0].Value, this.GetValue(component));
 		}
+
 		public override void ResetValue(object component)
 		{
-			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.aaQ.GetCustomAttributes(typeof(DefaultValueAttribute), true);
+			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
 			if (array.Length != 0 && !object.Equals(array[0].Value, this.GetValue(component)))
 			{
 				this.SetValue(component, array[0].Value);
@@ -91,16 +101,18 @@ namespace Jx.EntitySystem
 		}
 		public override bool ShouldSerializeValue(object component)
 		{
-			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.aaQ.GetCustomAttributes(typeof(DefaultValueAttribute), true);
+			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
 			return array.Length == 0 || !object.Equals(array[0].Value, this.GetValue(component));
 		}
+
 		public object GetWrappedOwner()
 		{
-			return this.aap;
+			return this.entityType;
 		}
+
 		public PropertyInfo GetWrappedProperty()
 		{
-			return this.aaQ;
+			return this.propertyInfo;
 		}
 	}
 }

@@ -7,8 +7,8 @@
     <ProjectGuid>{1B73D577-4C27-46C7-8F65-FE05F7721BAA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JxEditor</RootNamespace>
-    <AssemblyName>JxEditor</AssemblyName>
+    <RootNamespace>JxRes</RootNamespace>
+    <AssemblyName>JxRes</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG_RES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -48,8 +48,9 @@
   <ItemGroup>
     <Compile Include="Editors\ConfigurationEditor.cs" />
     <Compile Include="Editors\EntityTypeResourceEditor.cs" />
+    <Compile Include="Editors\ResourceObjectEditor.cs" />
     <Compile Include="Types\ConfigurationResourceType.cs" />
-    <Compile Include="JxEditorApp.cs" />
+    <Compile Include="JxResApp.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +101,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="UI\ContentForm.resx">
       <DependentUpon>ContentForm.cs</DependentUpon>
@@ -162,7 +164,10 @@
       <Name>WinFormsUI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\file_16.png" />
+    <Content Include="Resources\folder_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

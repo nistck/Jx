@@ -9,6 +9,7 @@ using Jx.FileSystem;
 
 namespace Jx.Entities
 {
+    [JxName("简单Bean")]
     public class SimpleBeanType : EntityType
     {
         [FieldSerialize]
@@ -16,12 +17,14 @@ namespace Jx.Entities
         [FieldSerialize]
         private string scope; 
 
+        [JxName("Id")]
         public int Id
         {
             get { return id; }
             set { this.id = value; }
         }
 
+        [JxName("作用域")]
         public string Scope
         {
             get { return scope; }

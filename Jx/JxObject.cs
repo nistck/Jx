@@ -125,44 +125,16 @@ namespace Jx
 
             foreach (PropertyDescriptor pd in pds)
             {
-                JxPropertyAttribute attr = pd.Attributes.OfType<JxPropertyAttribute>().FirstOrDefault();
+                JxNameAttribute attr = pd.Attributes.OfType<JxNameAttribute>().FirstOrDefault();
                 string name = pd.Name;
-                if (attr != null)
-                    name = attr.Name;
+                if (attr != null && !string.IsNullOrEmpty(attr.Name) && attr.Name.Trim().Length > 0)
+                    name = attr.Name.Trim();
+
                 JxPropertyDescriptor bpd = new JxPropertyDescriptor(name, pd);
                 r.Add(bpd);
             }
 
             return r;
-        }
-
-        [AttributeUsage(AttributeTargets.Property)]
-        protected class JxPropertyAttribute : Attribute
-        {
-
-            public JxPropertyAttribute(string name)
-            {
-                this.Name = name;
-            }
-
-            public JxPropertyAttribute(
-                string name, string description, string category,
-                Type type, bool readOnly, bool expandable)
-            {
-                this.Name = name;
-                this.Description = description;
-                this.Category = category;
-                this.Type = type;
-                this.ReadOnly = readOnly;
-                this.Expandable = expandable;
-            }
-
-            public string Name { get; private set; }
-            public string Description { get; private set; }
-            public string Category { get; private set; }
-            public Type Type { get; private set; }
-            public bool ReadOnly { get; private set; }
-            public bool Expandable { get; private set; }
         }
 
         class JxPropertyDescriptor : PropertyDescriptor

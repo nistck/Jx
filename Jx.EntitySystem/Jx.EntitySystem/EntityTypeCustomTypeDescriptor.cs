@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Linq;
  
 using Jx.Ext; 
 
@@ -12,36 +13,11 @@ namespace Jx.EntitySystem
 	public class EntityTypeCustomTypeDescriptor : ExtendedFunctionalityDescriptorCustomTypeDescriptor, _IWrappedCustomTypeDescriptor
 	{
 		public delegate void ValueChangeDelegate();
-		private EntityType entityType;
-		private EntityTypeCustomTypeDescriptor.ValueChangeDelegate aar;
-		private Type aaS;
-		public event EntityTypeCustomTypeDescriptor.ValueChangeDelegate ValueChange
-		{
-			add
-			{
-				EntityTypeCustomTypeDescriptor.ValueChangeDelegate valueChangeDelegate = this.aar;
-				EntityTypeCustomTypeDescriptor.ValueChangeDelegate valueChangeDelegate2;
-				do
-				{
-					valueChangeDelegate2 = valueChangeDelegate;
-					EntityTypeCustomTypeDescriptor.ValueChangeDelegate value2 = (EntityTypeCustomTypeDescriptor.ValueChangeDelegate)Delegate.Combine(valueChangeDelegate2, value);
-					valueChangeDelegate = Interlocked.CompareExchange<EntityTypeCustomTypeDescriptor.ValueChangeDelegate>(ref this.aar, value2, valueChangeDelegate2);
-				}
-				while (valueChangeDelegate != valueChangeDelegate2);
-			}
-			remove
-			{
-				EntityTypeCustomTypeDescriptor.ValueChangeDelegate valueChangeDelegate = this.aar;
-				EntityTypeCustomTypeDescriptor.ValueChangeDelegate valueChangeDelegate2;
-				do
-				{
-					valueChangeDelegate2 = valueChangeDelegate;
-					EntityTypeCustomTypeDescriptor.ValueChangeDelegate value2 = (EntityTypeCustomTypeDescriptor.ValueChangeDelegate)Delegate.Remove(valueChangeDelegate2, value);
-					valueChangeDelegate = Interlocked.CompareExchange<EntityTypeCustomTypeDescriptor.ValueChangeDelegate>(ref this.aar, value2, valueChangeDelegate2);
-				}
-				while (valueChangeDelegate != valueChangeDelegate2);
-			}
-		}
+		private EntityType entityType; 
+		private Type extendedFunctionalityDescriptorType;
+
+        public event ValueChangeDelegate ValueChange;
+
 		public EntityType EntityType
 		{
 			get
@@ -49,85 +25,71 @@ namespace Jx.EntitySystem
 				return this.entityType;
 			}
 		}
+
 		public EntityTypeCustomTypeDescriptor(EntityType entityType, Type extendedFunctionalityDescriptorType)
 		{
 			this.entityType = entityType;
-			this.aaS = extendedFunctionalityDescriptorType;
+			this.extendedFunctionalityDescriptorType = extendedFunctionalityDescriptorType;
 		}
+
 		public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
 		{
 			return this.GetProperties();
 		}
+
 		public override PropertyDescriptorCollection GetProperties()
 		{
-			EntityTypePropertyDescriptor.ValueChangeDelegate valueChangeDelegate = null;
 			PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(null);
 			Type type = this.entityType.GetType();
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			PropertyInfo[] array = properties;
-			for (int i = 0; i < array.Length; i++)
+			for (int i = 0; i < properties.Length; i++)
 			{
-				PropertyInfo propertyInfo = array[i];
-				List<Attribute> list = new List<Attribute>();
-				object[] customAttributes = propertyInfo.GetCustomAttributes(true);
-				object[] array2 = customAttributes;
-				for (int j = 0; j < array2.Length; j++)
-				{
-					object obj = array2[j];
-					list.Add((Attribute)obj);
-				}
-				bool flag = false;
-				foreach (Attribute current in list)
-				{
-					if (current is CategoryAttribute)
-					{
-						flag = true;
-						break;
-					}
-				}
-				if (!flag)
+				PropertyInfo propertyInfo = properties[i];
+				List<Attribute> attributes = propertyInfo.GetCustomAttributes(true).OfType<Attribute>().ToList();
+				bool categoryFound = attributes.OfType<CategoryAttribute>().Count() > 0;                
+				if (!categoryFound)
 				{
 					string text = propertyInfo.DeclaringType.Name;
 					text = text.Substring(0, text.Length - 4);
-					list.Add(new CategoryAttribute(text));
+					attributes.Add(new CategoryAttribute(text));
 				}
-				EntityTypePropertyDescriptor entityTypePropertyDescriptor = new EntityTypePropertyDescriptor(this.entityType, propertyInfo, list.ToArray());
-				EntityTypePropertyDescriptor arg_107_0 = entityTypePropertyDescriptor;
-				if (valueChangeDelegate == null)
-				{
-					valueChangeDelegate = new EntityTypePropertyDescriptor.ValueChangeDelegate(this.A);
-				}
-				arg_107_0.ValueChange += valueChangeDelegate;
+
+				EntityTypePropertyDescriptor entityTypePropertyDescriptor = new EntityTypePropertyDescriptor(this.entityType, propertyInfo, attributes.ToArray());
+                entityTypePropertyDescriptor.ValueChange += OnValueChange;
 				propertyDescriptorCollection.Add(entityTypePropertyDescriptor);
 			}
 			return propertyDescriptorCollection;
 		}
+
 		public override object GetPropertyOwner(PropertyDescriptor pd)
 		{
 			return this;
 		}
+
 		public override object GetExtendedFunctionalityDescriptorObject()
 		{
 			return this.entityType;
 		}
+
 		public override Type GetExtendedFunctionalityDescriptorType(object obj)
 		{
-			if (this.aaS != null)
+			if (this.extendedFunctionalityDescriptorType != null)
 			{
-				return this.aaS;
+				return this.extendedFunctionalityDescriptorType;
 			}
 			return base.GetExtendedFunctionalityDescriptorType(obj);
 		}
+
 		public object GetWrapperOwner()
 		{
 			return this.entityType;
-		}
-		[CompilerGenerated]
-		private void A()
+		} 
+ 
+		private void OnValueChange()
 		{
-			if (this.aar != null)
+			if (this.ValueChange != null)
 			{
-				this.aar();
+				this.ValueChange();
 			}
 		}
 	}

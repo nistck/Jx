@@ -28,33 +28,74 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourcesForm));
+            this.ResourcesView = new System.Windows.Forms.TreeView();
+            this.IL16 = new System.Windows.Forms.ImageList(this.components);
+            this.aTP = new System.Windows.Forms.ImageList(this.components);
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // treeView1
+            // ResourcesView
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(263, 387);
-            this.treeView1.TabIndex = 0;
+            this.ResourcesView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ResourcesView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.ResourcesView.ImageIndex = 0;
+            this.ResourcesView.ImageList = this.IL16;
+            this.ResourcesView.Location = new System.Drawing.Point(0, 0);
+            this.ResourcesView.Name = "ResourcesView";
+            this.ResourcesView.SelectedImageIndex = 0;
+            this.ResourcesView.Size = new System.Drawing.Size(263, 387);
+            this.ResourcesView.TabIndex = 0;
+            this.ResourcesView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnBeforeNodeLabelEdit);
+            this.ResourcesView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnAfterNodeLabelEdit);
+            this.ResourcesView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.OnDrawTreeNode);
+            this.ResourcesView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.OnTreeBeforeSelect);
+            this.ResourcesView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTreeAfterSelect);
+            this.ResourcesView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.OnTreeNodeMouseClick);
+            this.ResourcesView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnTreeKeyDown);
+            this.ResourcesView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnTreeKeyUp);
+            this.ResourcesView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnTreeMouseClick);
+            this.ResourcesView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnTreeMouseUp);
+            // 
+            // IL16
+            // 
+            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
+            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16.Images.SetKeyName(0, "folder_16.png");
+            this.IL16.Images.SetKeyName(1, "file_16.png");
+            // 
+            // aTP
+            // 
+            this.aTP.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.aTP.ImageSize = new System.Drawing.Size(16, 16);
+            this.aTP.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.Timer_Tick);
             // 
             // ResourcesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(263, 387);
-            this.Controls.Add(this.treeView1);
+            this.Controls.Add(this.ResourcesView);
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.HideOnClose = true;
             this.Name = "ResourcesForm";
             this.Text = "资源管理器";
+            this.Load += new System.EventHandler(this.ResourcesForm_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TreeView ResourcesView;
+        private System.Windows.Forms.ImageList aTP;
+        private System.Windows.Forms.ImageList IL16;
+        private System.Windows.Forms.Timer timer1;
     }
 }

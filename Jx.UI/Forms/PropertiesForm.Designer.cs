@@ -74,10 +74,10 @@
             this.jxPropertyGrid.DocCommentTitle.TabIndex = 0;
             this.jxPropertyGrid.DocCommentTitle.UseMnemonic = false;
             this.jxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jxPropertyGrid.LabelRatio = 2.4955752212389379D;
+            this.jxPropertyGrid.LabelRatio = 2.8484848484848486D;
             this.jxPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.jxPropertyGrid.Name = "jxPropertyGrid";
-            this.jxPropertyGrid.ReadOnly = false;
+            this.jxPropertyGrid.ReadOnly = true;
             this.jxPropertyGrid.Size = new System.Drawing.Size(284, 428);
             this.jxPropertyGrid.TabIndex = 0;
             // 
@@ -97,6 +97,7 @@
             this.jxPropertyGrid.ToolStrip.TabIndex = 1;
             this.jxPropertyGrid.ToolStrip.TabStop = true;
             this.jxPropertyGrid.ToolStrip.Text = "PropertyGridToolBar";
+            this.jxPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.jxPropertyGrid_PropertyValueChanged);
             // 
             // PropertiesForm
             // 

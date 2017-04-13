@@ -65,29 +65,36 @@ namespace Jx.Editors
             this.extensions = extensions;
             this.icon = icon;
         }
+
         public override string ToString()
         {
             return this.name;
         }
+
         protected virtual void OnNewResource(string directory)
         {
         }
+
         public void DoNewResource(string directory)
         {
             this.OnNewResource(directory);
         }
+
         protected virtual bool OnLoadResource(string path)
         {
             return true;
         }
+
         public bool DoLoadResource(string path)
         {
             return this.OnLoadResource(path);
         }
+
         protected virtual bool OnUnloadResource(string path)
         {
             return true;
         }
+
         public bool DoUnloadResource(string path)
         {
             return this.OnUnloadResource(path);

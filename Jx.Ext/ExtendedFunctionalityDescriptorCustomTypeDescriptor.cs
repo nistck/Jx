@@ -8,7 +8,7 @@ using Jx.FileSystem;
 namespace Jx.Ext
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public abstract class ExtendedFunctionalityDescriptorCustomTypeDescriptor : CustomTypeDescriptor
+    public abstract class ExtendedFunctionalityDescriptorCustomTypeDescriptor :  CustomTypeDescriptor
     {
         public abstract object GetExtendedFunctionalityDescriptorObject();
         private static Assembly A(AssemblyName assemblyName)

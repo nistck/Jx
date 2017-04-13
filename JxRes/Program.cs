@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Jx;
+using Jx.FileSystem;
+
 namespace JxRes
 {
     static class Program
@@ -16,7 +19,17 @@ namespace JxRes
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Bootstrap();
             Application.Run(new MainForm());
+        }
+
+        private static void Bootstrap()
+        {
+            string logPath = string.Format("user:Logs/{0}.log", Program.ExecutableName);
+            //initialize file sytem of the engine
+            if (!VirtualFileSystem.Init(logPath, true, null, null, null, null))
+                return;
+            Log.Info(">> Log Path: {0}", logPath);
         }
 
         public static string ExecutableName

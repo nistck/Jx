@@ -150,6 +150,7 @@ namespace Jx.EntitySystem
         /// Gets or sets a value indicating the network type of entity.
         /// </summary>
         [DefaultValue(EntityNetworkTypes.NotSynchronized), Description("The network type of entity.")]
+        [Browsable(false)]
         public EntityNetworkTypes NetworkType
         {
             get
