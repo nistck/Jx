@@ -51,7 +51,7 @@
             this.wizardPage5,
             this.wizardPage6,
             this.wizardPage7});
-            this.wizard1.Size = new System.Drawing.Size(522, 315);
+            this.wizard1.Size = new System.Drawing.Size(697, 514);
             this.wizard1.TabIndex = 0;
             // 
             // wizardPage1
@@ -59,15 +59,13 @@
             this.wizardPage1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardPage1.Location = new System.Drawing.Point(3, 3);
             this.wizardPage1.Name = "wizardPage1";
-            this.wizardPage1.ShowGlyphPlaceHolder = true;
-            this.wizardPage1.Size = new System.Drawing.Size(516, 269);
+            this.wizardPage1.Size = new System.Drawing.Size(691, 468);
             this.wizardPage1.TabIndex = 11;
             // 
             // wizardPage2
             // 
             this.wizardPage2.Location = new System.Drawing.Point(3, 3);
             this.wizardPage2.Name = "wizardPage2";
-            this.wizardPage2.ShowGlyphPlaceHolder = true;
             this.wizardPage2.Size = new System.Drawing.Size(200, 100);
             this.wizardPage2.TabIndex = 11;
             // 
@@ -75,7 +73,6 @@
             // 
             this.wizardPage3.Location = new System.Drawing.Point(3, 3);
             this.wizardPage3.Name = "wizardPage3";
-            this.wizardPage3.ShowGlyphPlaceHolder = true;
             this.wizardPage3.Size = new System.Drawing.Size(200, 100);
             this.wizardPage3.TabIndex = 11;
             // 
@@ -84,15 +81,13 @@
             this.wizardPage4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardPage4.Location = new System.Drawing.Point(3, 3);
             this.wizardPage4.Name = "wizardPage4";
-            this.wizardPage4.ShowGlyphPlaceHolder = true;
-            this.wizardPage4.Size = new System.Drawing.Size(516, 269);
+            this.wizardPage4.Size = new System.Drawing.Size(592, 374);
             this.wizardPage4.TabIndex = 11;
             // 
             // wizardPage5
             // 
             this.wizardPage5.Location = new System.Drawing.Point(3, 3);
             this.wizardPage5.Name = "wizardPage5";
-            this.wizardPage5.ShowGlyphPlaceHolder = true;
             this.wizardPage5.Size = new System.Drawing.Size(200, 100);
             this.wizardPage5.TabIndex = 11;
             // 
@@ -100,7 +95,6 @@
             // 
             this.wizardPage6.Location = new System.Drawing.Point(3, 3);
             this.wizardPage6.Name = "wizardPage6";
-            this.wizardPage6.ShowGlyphPlaceHolder = true;
             this.wizardPage6.Size = new System.Drawing.Size(200, 100);
             this.wizardPage6.TabIndex = 11;
             // 
@@ -108,8 +102,7 @@
             // 
             this.wizardPage7.Location = new System.Drawing.Point(3, 3);
             this.wizardPage7.Name = "wizardPage7";
-            this.wizardPage7.ShowGlyphPlaceHolder = true;
-            this.wizardPage7.Size = new System.Drawing.Size(516, 267);
+            this.wizardPage7.Size = new System.Drawing.Size(200, 100);
             this.wizardPage7.Style = Jx.UI.Controls.Wizards.WizardPageStyle.Finish;
             this.wizardPage7.TabIndex = 11;
             // 
@@ -117,7 +110,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(522, 315);
+            this.ClientSize = new System.Drawing.Size(697, 514);
             this.Controls.Add(this.wizard1);
             this.Name = "Form1";
             this.Text = "Form1";

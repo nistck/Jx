@@ -56,8 +56,8 @@ namespace Jx.UI.Controls.Wizards
 		private System.Windows.Forms.Button buttonNext;
 		private System.Windows.Forms.Button buttonBack;
 		private System.Windows.Forms.Button buttonHelp;
-        private TableLayoutPanel tableLayoutPanel1;
-        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel TPL;
+        private TableLayoutPanel TPLCtrl;
 
         /// <summary> 
         /// Required designer variable.
@@ -115,10 +115,9 @@ namespace Jx.UI.Controls.Wizards
             this.buttonNext = new System.Windows.Forms.Button();
             this.buttonBack = new System.Windows.Forms.Button();
             this.buttonHelp = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.TPL = new System.Windows.Forms.TableLayoutPanel();
+            this.TPLCtrl = new System.Windows.Forms.TableLayoutPanel();
+            this.TPLCtrl.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -126,7 +125,7 @@ namespace Jx.UI.Controls.Wizards
             this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCancel.Location = new System.Drawing.Point(513, 5);
+            this.buttonCancel.Location = new System.Drawing.Point(515, 6);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(80, 27);
             this.buttonCancel.TabIndex = 8;
@@ -137,7 +136,7 @@ namespace Jx.UI.Controls.Wizards
             // 
             this.buttonNext.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonNext.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonNext.Location = new System.Drawing.Point(423, 5);
+            this.buttonNext.Location = new System.Drawing.Point(425, 6);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(80, 27);
             this.buttonNext.TabIndex = 7;
@@ -148,7 +147,7 @@ namespace Jx.UI.Controls.Wizards
             // 
             this.buttonBack.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonBack.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonBack.Location = new System.Drawing.Point(333, 5);
+            this.buttonBack.Location = new System.Drawing.Point(335, 6);
             this.buttonBack.Name = "buttonBack";
             this.buttonBack.Size = new System.Drawing.Size(80, 27);
             this.buttonBack.TabIndex = 6;
@@ -159,7 +158,7 @@ namespace Jx.UI.Controls.Wizards
             // 
             this.buttonHelp.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonHelp.Location = new System.Drawing.Point(3, 5);
+            this.buttonHelp.Location = new System.Drawing.Point(3, 6);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
             this.buttonHelp.Size = new System.Drawing.Size(80, 27);
@@ -168,50 +167,48 @@ namespace Jx.UI.Controls.Wizards
             this.buttonHelp.Visible = false;
             this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
-            // tableLayoutPanel1
+            // TPL
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(1);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(598, 420);
-            this.tableLayoutPanel1.TabIndex = 10;
+            this.TPL.BackColor = System.Drawing.SystemColors.Control;
+            this.TPL.ColumnCount = 1;
+            this.TPL.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TPL.Dock = System.Windows.Forms.DockStyle.Top;
+            this.TPL.Location = new System.Drawing.Point(0, 0);
+            this.TPL.Margin = new System.Windows.Forms.Padding(1);
+            this.TPL.Name = "TPL";
+            this.TPL.RowCount = 1;
+            this.TPL.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TPL.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.TPL.Size = new System.Drawing.Size(598, 319);
+            this.TPL.TabIndex = 10;
             // 
-            // tableLayoutPanel2
+            // TPLCtrl
             // 
-            this.tableLayoutPanel2.ColumnCount = 5;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Controls.Add(this.buttonBack, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.buttonCancel, 4, 0);
-            this.tableLayoutPanel2.Controls.Add(this.buttonHelp, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.buttonNext, 3, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(1, 381);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(1);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(596, 38);
-            this.tableLayoutPanel2.TabIndex = 0;
+            this.TPLCtrl.ColumnCount = 5;
+            this.TPLCtrl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.TPLCtrl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TPLCtrl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.TPLCtrl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.TPLCtrl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.TPLCtrl.Controls.Add(this.buttonHelp, 0, 0);
+            this.TPLCtrl.Controls.Add(this.buttonBack, 2, 0);
+            this.TPLCtrl.Controls.Add(this.buttonCancel, 4, 0);
+            this.TPLCtrl.Controls.Add(this.buttonNext, 3, 0);
+            this.TPLCtrl.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.TPLCtrl.Location = new System.Drawing.Point(0, 381);
+            this.TPLCtrl.Name = "TPLCtrl";
+            this.TPLCtrl.RowCount = 1;
+            this.TPLCtrl.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TPLCtrl.Size = new System.Drawing.Size(598, 39);
+            this.TPLCtrl.TabIndex = 11;
             // 
             // Wizard
             // 
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.TPLCtrl);
+            this.Controls.Add(this.TPL);
             this.Name = "Wizard";
             this.Size = new System.Drawing.Size(598, 420);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
+            this.TPLCtrl.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -714,7 +711,7 @@ namespace Jx.UI.Controls.Wizards
 
                 //Make it fill the space
                 //this.selectedPage.SetBounds(0, 0, this.Width, this.Height - FOOTER_AREA_HEIGHT);
-                tableLayoutPanel1.Controls.Add(this.selectedPage, 0, 0);
+                TPL.Controls.Add(this.selectedPage, 0, 0);
 
                 this.selectedPage.Visible = true;
 				this.selectedPage.BringToFront();
@@ -909,13 +906,16 @@ namespace Jx.UI.Controls.Wizards
 			// raise the Resize event
 			base.OnResize(e);
 
+            TPL.Height = this.Height - FOOTER_AREA_HEIGHT - 2;
+            TPLCtrl.Height = FOOTER_AREA_HEIGHT - 1;
+
+            /*
 			// resize the selected page to fit the wizard
 			if (this.selectedPage != null)
 			{
 				this.selectedPage.SetBounds(0, 0, this.Width, this.Height - FOOTER_AREA_HEIGHT);
-			}
-
-            /*
+			} 
+            
 			// position navigation buttons
 			this.buttonCancel.Location = new Point(this.Width - this.offsetCancel.X,
 													this.Height - this.offsetCancel.Y);
@@ -926,20 +926,24 @@ namespace Jx.UI.Controls.Wizards
 			this.buttonHelp.Location = new Point(this.buttonHelp.Location.X,
 												this.Height - this.offsetBack.Y);
             //*/
-		}
+        }
 
-		/// <summary>
-		/// Raises the Paint event.
-		/// </summary>
-		protected override void OnPaint(PaintEventArgs e)
+        /// <summary>
+        /// Raises the Paint event.
+        /// </summary>
+        protected override void OnPaint(PaintEventArgs e)
 		{
 			// raise the Paint event
 			base.OnPaint(e);
-			
+            			
 			Rectangle bottomRect = this.ClientRectangle;
 			bottomRect.Y = this.Height - FOOTER_AREA_HEIGHT;
 			bottomRect.Height = FOOTER_AREA_HEIGHT;
-			ControlPaint.DrawBorder3D(e.Graphics, bottomRect, Border3DStyle.Etched, Border3DSide.Top);
+
+            e.Graphics.DrawRectangle(Pens.Red, bottomRect);
+
+
+            ControlPaint.DrawBorder3D(e.Graphics, bottomRect, Border3DStyle.Etched, Border3DSide.Top);
 		}
 
 		/// <summary>
