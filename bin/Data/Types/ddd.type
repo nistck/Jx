@@ -1,0 +1,6 @@
+type ddd
+{
+	class = SimpleBean
+	id = 232
+	scope = dddd
+}

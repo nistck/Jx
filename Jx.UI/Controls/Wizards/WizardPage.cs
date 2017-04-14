@@ -66,7 +66,8 @@ namespace Jx.UI.Controls.Wizards
 
 		#region Fields
 		private WizardPageStyle style = WizardPageStyle.Standard;
-		private string title = String.Empty;
+        private bool showGlyphPlaceHolder = true;
+        private string title = String.Empty;
 		private string description = String.Empty;
 		#endregion
 
@@ -121,6 +122,19 @@ namespace Jx.UI.Controls.Wizards
 				}
 			}
 		}
+
+        [Category("Wizard")]
+        [Description("Show Glyph Place Holder if Image is Missing")]
+        public bool ShowGlyphPlaceHolder
+        {
+            get { return showGlyphPlaceHolder; }
+            set {
+                bool bx = this.showGlyphPlaceHolder;
+                this.showGlyphPlaceHolder = value;
+                if (bx != value)
+                    Invalidate();
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets the title of the wizard page.
@@ -236,8 +250,11 @@ namespace Jx.UI.Controls.Wizards
 					// check if we have an image
 					if (headerImage == null)
 					{
-						// display a focus rect as a place holder
-						ControlPaint.DrawFocusRectangle(e.Graphics, glyphRect);
+                        if (ShowGlyphPlaceHolder)
+                        {
+                            // display a focus rect as a place holder
+                            ControlPaint.DrawFocusRectangle(e.Graphics, glyphRect);
+                        }
 					}
 					else
 					{
@@ -296,8 +313,11 @@ namespace Jx.UI.Controls.Wizards
 					// check if we have an image
 					if (welcomeImage == null)
 					{
-						// display a focus rect as a place holder
-						ControlPaint.DrawFocusRectangle(e.Graphics, glyphRect);
+                        if (ShowGlyphPlaceHolder)
+                        {
+                            // display a focus rect as a place holder
+                            ControlPaint.DrawFocusRectangle(e.Graphics, glyphRect);
+                        }
 					}
 					else
 					{

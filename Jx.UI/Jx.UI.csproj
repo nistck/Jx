@@ -44,6 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\JxTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\JxTextBox.designer.cs">
+      <DependentUpon>JxTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ImageComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PGEx\JxBrowsableTypeConverter.cs" />
     <Compile Include="Controls\PGEx\JxCustomChoices.cs" />
     <Compile Include="Controls\PGEx\JxCustomColorScheme.cs" />
@@ -72,6 +81,7 @@
     <Compile Include="Forms\PropertiesForm.Designer.cs">
       <DependentUpon>PropertiesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\IViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\PGEx\JxPropertyGrid.cs">
       <SubType>Component</SubType>

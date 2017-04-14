@@ -106,6 +106,9 @@
     <EmbeddedResource Include="UI\ContentForm.resx">
       <DependentUpon>ContentForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\EntityTypeNewResourceDialog.resx">
+      <DependentUpon>EntityTypeNewResourceDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ResourcesForm.resx">
       <DependentUpon>ResourcesForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -165,8 +168,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\config_16.png" />
+    <Content Include="Resources\edit_16.png" />
+    <Content Include="Resources\delete_16.png" />
     <Content Include="Resources\file_16.png" />
     <Content Include="Resources\folder_16.png" />
+    <Content Include="Resources\no_16.png" />
+    <Content Include="Resources\yes_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
