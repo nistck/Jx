@@ -34,6 +34,7 @@
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.aTP = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.ILCache16 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // ResourcesView
@@ -76,6 +77,38 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.Timer_Tick);
             // 
+            // ILCache16
+            // 
+            this.ILCache16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ILCache16.ImageStream")));
+            this.ILCache16.TransparentColor = System.Drawing.Color.Transparent;
+            this.ILCache16.Images.SetKeyName(0, "default");
+            this.ILCache16.Images.SetKeyName(1, "config");
+            this.ILCache16.Images.SetKeyName(2, "delete");
+            this.ILCache16.Images.SetKeyName(3, "file");
+            this.ILCache16.Images.SetKeyName(4, "folder");
+            this.ILCache16.Images.SetKeyName(5, "no");
+            this.ILCache16.Images.SetKeyName(6, "sort_ascend");
+            this.ILCache16.Images.SetKeyName(7, "sort_descend");
+            this.ILCache16.Images.SetKeyName(8, "yes");
+            this.ILCache16.Images.SetKeyName(9, "sort_by_date");
+            this.ILCache16.Images.SetKeyName(10, "sort_by_name");
+            this.ILCache16.Images.SetKeyName(11, "sort_by_size");
+            this.ILCache16.Images.SetKeyName(12, "sort_by_type");
+            this.ILCache16.Images.SetKeyName(13, "refresh");
+            this.ILCache16.Images.SetKeyName(14, "properties");
+            this.ILCache16.Images.SetKeyName(15, "rename");
+            this.ILCache16.Images.SetKeyName(16, "copy");
+            this.ILCache16.Images.SetKeyName(17, "cut");
+            this.ILCache16.Images.SetKeyName(18, "paste");
+            this.ILCache16.Images.SetKeyName(19, "file_new");
+            this.ILCache16.Images.SetKeyName(20, "folder_new");
+            this.ILCache16.Images.SetKeyName(21, "add");
+            this.ILCache16.Images.SetKeyName(22, "folder_open");
+            this.ILCache16.Images.SetKeyName(23, "applications_other");
+            this.ILCache16.Images.SetKeyName(24, "cancel");
+            this.ILCache16.Images.SetKeyName(25, "edit");
+            this.ILCache16.Images.SetKeyName(26, "closed");
+            // 
             // ResourcesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -97,5 +130,6 @@
         private System.Windows.Forms.ImageList aTP;
         private System.Windows.Forms.ImageList IL16;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ImageList ILCache16;
     }
 }

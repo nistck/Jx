@@ -81,6 +81,7 @@
     <Compile Include="Forms\PropertiesForm.Designer.cs">
       <DependentUpon>PropertiesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImageUtil.cs" />
     <Compile Include="Model\IViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\PGEx\JxPropertyGrid.cs">

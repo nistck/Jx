@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 using Jx;
+using Jx.UI;
 using Jx.Editors;
 using Jx.FileSystem;
 using Jx.EntitySystem;
@@ -21,6 +23,7 @@ namespace JxRes.UI
 {
     public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        public static readonly string DATAOBJECT_KEY = "Preferred DropEffect";
         public enum SortByItems
         {
             Name,
@@ -226,18 +229,21 @@ namespace JxRes.UI
         public delegate void IsResourceEditModeActiveDelegate(ActiveEventArgs e);
         public delegate void ResourceBeginEditModeDelegate(EventArgs e);
 
-        [Config("ResourcesForm", "hideDirectoriesAndFiles")]
+        [Config("JxRes", "hideDirectoriesAndFiles")]
         public static List<string> hideDirectoriesAndFiles = null;
-        [Config("ResourcesForm", "sortBy")]
+        [Config("JxRes", "sortBy")]
         public static SortByItems sortBy = SortByItems.Name;
-        [Config("ResourcesForm", "sortByAscending")]
+        [Config("JxRes", "sortByAscending")]
         public static bool sortByAscending = true;
+
+        private ImageCache imageCache16;
         private MyTreeNode ResourcesRoot;
         private List<MyTreeNode> multiSelectedList = new List<MyTreeNode>();
         private MyTreeNode aTg;
         private FileSystemWatcher fileSystemWatcher;
         private List<FileSystemEventArgs> fileSystemEvents = new List<FileSystemEventArgs>();
         private static object fileSystemSyncLock = new object();
+         
 
         /// <summary>
         /// 大小
@@ -250,8 +256,6 @@ namespace JxRes.UI
  
         private bool firstRun = true;
         private bool aTL;
-         
-        private static EventHandler aTQ;
 
         public event ResourcesForm.ResourceChangeDelegate ResourceChange;
         public event ResourcesForm.ResourceRenameDelegate ResourceRename;
@@ -329,9 +333,9 @@ namespace JxRes.UI
             }
 
             this.ResourcesRoot = new MyTreeNode("Data", false, false);
-            this.a(ResourcesRoot);
+            this.UpdateMultiSelectionList(ResourcesRoot);
             this.ResourcesView.Nodes.Add(this.ResourcesRoot);
-            this.A(ResourcesRoot, "");
+            this.CreateTreeNodeForPath(ResourcesRoot, "");
             nodesSizeDic.Clear();
             nodesLastWtDic.Clear();
             this.ResourcesView.TreeViewNodeSorter = new TreeNodeComparer();
@@ -378,20 +382,20 @@ namespace JxRes.UI
             return text;
         }
 
-        private void A(MyTreeNode parent, string path)
+        private void CreateTreeNodeForPath(MyTreeNode parent, string path)
         {
             string[] directories = VirtualDirectory.GetDirectories(path); 
             for (int i = 0; i < directories.Length; i++)
             {
                 string d = directories[i];
-                this.a(parent, d);
+                CreateTreeNodeForDirectory(parent, d);
             }
 
             string[] files = VirtualDirectory.GetFiles(path); 
             for (int j = 0; j < files.Length; j++)
             {
                 string f = files[j];
-                this.B(parent, f);
+                CreateTreeNodeForFile(parent, f);
             }
         }
 
@@ -401,14 +405,14 @@ namespace JxRes.UI
             return hideDirectoriesAndFiles.Exists((string hideItem) => nameLower.Contains(hideItem.ToLower()));
         }
 
-        private void a(MyTreeNode parent, string p)
+        private void CreateTreeNodeForDirectory(MyTreeNode parent, string p)
         {
             string fileName = Path.GetFileName(p);
             MyTreeNode node = new MyTreeNode(fileName, VirtualDirectory.IsInArchive(p), this.IsHideResource(fileName) || parent.HideNode);
             node.Name = node.Text;
             parent.Nodes.Add(node);
-            this.a(node);
-            this.A(node, p);
+            this.UpdateMultiSelectionList(node);
+            this.CreateTreeNodeForPath(node, p);
         }
 
         private void UpdateResource(string p)
@@ -423,17 +427,17 @@ namespace JxRes.UI
                 Log.Warning("ResourcesForm: UpdateAddDirectory: parentNode == null.");
                 return;
             }
-            this.a(parentNode, p);
+            CreateTreeNodeForDirectory(parentNode, p);
         }
 
-        private void B(MyTreeNode parent, string path)
+        private void CreateTreeNodeForFile(MyTreeNode parent, string path)
         {
             string fileName = Path.GetFileName(path);
             TreeNode treeNode = new MyTreeNode(fileName, VirtualFile.IsInArchive(path), this.IsHideResource(fileName) || parent.HideNode);
             treeNode.Name = treeNode.Text;
             treeNode.Tag = fileName;
             parent.Nodes.Add(treeNode);
-            this.UpdateTreeNodeIcon(treeNode);
+            UpdateTreeNodeIcon(treeNode);
         }
 
         public void UpdateAddResource(string fileName)
@@ -449,7 +453,7 @@ namespace JxRes.UI
                 Log.Warning("ResourcesForm: UpdateAddResource: parentNode == null.");
                 return;
             }
-            this.B(myTreeNode, fileName);
+            this.CreateTreeNodeForFile(myTreeNode, fileName);
         }
 
         private void UpdateTreeNodeIcon(TreeNode treeNode)
@@ -505,7 +509,7 @@ namespace JxRes.UI
                 }
                 if (this.multiSelectedList.Count != 0 && !flag)
                 {
-                    this.B();
+                    this.DeleteSelectedResources();
                     keyEventArgs.Handled = true;
                     keyEventArgs.SuppressKeyPress = true;
                     return;
@@ -525,7 +529,7 @@ namespace JxRes.UI
                 keyEventArgs.SuppressKeyPress = true;
                 return;
             }
-            if (((keyEventArgs.Control && keyEventArgs.KeyCode == Keys.V) || (keyEventArgs.Shift && keyEventArgs.KeyCode == Keys.Insert)) && this.a())
+            if (((keyEventArgs.Control && keyEventArgs.KeyCode == Keys.V) || (keyEventArgs.Shift && keyEventArgs.KeyCode == Keys.Insert)) && this.IsClipboardHasData())
             {
                 string text = this.A();
                 if (text != null)
@@ -541,15 +545,12 @@ namespace JxRes.UI
         {
             if (keyEventArgs.KeyCode == Keys.Apps && this.ResourcesView.SelectedNode != null)
             {
-                this.a(new Point(0, 0));
+                this.ShowTreeNodeContextMenu(new Point(0, 0));
             }
         }
 
         private void OnTreeNodeMouseClick(object obj, TreeNodeMouseClickEventArgs treeNodeMouseClickEventArgs)
         {
-#if DEBUG_RES
-            Log.Info(">> TreeNode MouseClick");
-#endif
             if (treeNodeMouseClickEventArgs.Node != this.ResourcesView.SelectedNode)
             {
                 return;
@@ -582,7 +583,7 @@ namespace JxRes.UI
                 string virtualPathByReal = VirtualFileSystem.GetVirtualPathByReal(current3);
                 if (VirtualFile.IsInArchive(virtualPathByReal))
                 {
-                    string format = this.d("File \"{0}\" cannot be moved or copied because it's inside archive.");
+                    string format = this.LocalizationTranslate("File \"{0}\" cannot be moved or copied because it's inside archive.");
                     Log.Warning(format, virtualPathByReal);
                     return;
                 }
@@ -594,60 +595,60 @@ namespace JxRes.UI
             array[0] = (flag ? (byte)2 : (byte)5);
             arg_127_0.Write(array, 0, 4);
             memoryStream.SetLength(4L);
-            dataObject.SetData("Preferred DropEffect", memoryStream);
+            dataObject.SetData(DATAOBJECT_KEY, memoryStream);
             Clipboard.SetDataObject(dataObject);
         }
 
         private string A()
         {
-            ResourcesForm.MyTreeNode myTreeNode = null;
-            foreach (ResourcesForm.MyTreeNode current in this.multiSelectedList)
+            MyTreeNode treeNode = null;
+            foreach (MyTreeNode current in multiSelectedList)
             {
-                ResourcesForm.MyTreeNode myTreeNode2 = (current.Tag == null) ? current : ((ResourcesForm.MyTreeNode)current.Parent);
-                if (myTreeNode == null)
+                MyTreeNode px = (current.Tag == null) ? current : ((MyTreeNode)current.Parent);
+                if (treeNode == null)
                 {
-                    myTreeNode = myTreeNode2;
+                    treeNode = px;
                 }
-                else if (myTreeNode != myTreeNode2)
+                else if (treeNode != px)
                 {
-                    myTreeNode = null;
+                    treeNode = null;
                     break;
                 }
             }
-            if (myTreeNode != null)
-            {
-                return ResourcesForm.GetNodePath((TreeNode)myTreeNode);
-            }
+            if (treeNode != null)
+                return GetNodePath(treeNode);
+
             return null;
         }
 
-        private bool a()
+        private bool IsClipboardHasData()
         {
             IDataObject dataObject = Clipboard.GetDataObject();
-            MemoryStream memoryStream = dataObject.GetData("Preferred DropEffect") as MemoryStream;
+            MemoryStream memoryStream = dataObject.GetData(DATAOBJECT_KEY) as MemoryStream;
             return memoryStream != null;
         }
-        private void A(string path, string text)
+
+        private void Copy(string sourcePath, string destPath)
         {
-            string[] directories = Directory.GetDirectories(path);
-            Directory.CreateDirectory(text);
-            string[] array = directories;
-            for (int i = 0; i < array.Length; i++)
+            string[] directories = Directory.GetDirectories(sourcePath);
+            Directory.CreateDirectory(destPath); 
+            for (int i = 0; i < directories.Length; i++)
             {
-                string text2 = array[i];
-                this.A(text2, Path.Combine(text, Path.GetFileName(text2)));
+                string sourceSubDirectory = directories[i];
+                Copy(sourceSubDirectory, Path.Combine(destPath, Path.GetFileName(sourceSubDirectory)));
             }
-            string[] files = Directory.GetFiles(path);
+            string[] files = Directory.GetFiles(sourcePath);
             for (int j = 0; j < files.Length; j++)
             {
-                string text3 = files[j];
-                File.Copy(text3, Path.Combine(text, Path.GetFileName(text3)));
+                string filePath = files[j];
+                File.Copy(filePath, Path.Combine(destPath, Path.GetFileName(filePath)));
             }
         }
+
         private void b(string virtualPath)
         {
             IDataObject dataObject = Clipboard.GetDataObject();
-            MemoryStream memoryStream = dataObject.GetData("Preferred DropEffect") as MemoryStream;
+            MemoryStream memoryStream = dataObject.GetData(DATAOBJECT_KEY) as MemoryStream;
             if (memoryStream == null)
             {
                 return;
@@ -718,7 +719,7 @@ namespace JxRes.UI
                             num2++;
                         }
                         text2 = text4;
-                        this.A(text, text2);
+                        this.Copy(text, text2);
                         if (flag)
                         {
                             Directory.Delete(text, true);
@@ -732,39 +733,30 @@ namespace JxRes.UI
                 }
             }
         }
-        private void ShowMenu(Point position)
+
+        private void ShowEditModeActiveContextMenu(Point position)
         {
             ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
-            //contextMenuStrip.Font = MainForm.GetFont(MainForm.fontContextMenu, contextMenuStrip.Font);
-            string text = this.d("Close Editing");
-            Image icon = this.aTP.Images["EditStop_16.png"];
-            if (ResourcesForm.aTQ == null)
-                ResourcesForm.aTQ = new EventHandler(ResourcesForm.OnMenu_CloseEditing);
-
-            ToolStripMenuItem value = new ToolStripMenuItem(text, icon, ResourcesForm.aTQ);
+            ToolStripMenuItem value = new ToolStripMenuItem(LocalizationTranslate("结束编辑"), imageCache16["closed"], MenuCloseEditing_Click);
             contextMenuStrip.Items.Add(value);
-            contextMenuStrip.Show(this.ResourcesView, position);
+            contextMenuStrip.Show(ResourcesView, position);
         }
 
-        private void A(object obj, EventArgs eventArgs)
+        private void MenuNewResource_Click(object obj, EventArgs eventArgs)
         {
             Tuple<string, ResourceType> pair = (Tuple<string, ResourceType>)((ToolStripMenuItem)obj).Tag;
-            this.A(pair.Item1, pair.Item2);
+            this.CreateResourceType(pair.Item1, pair.Item2);
         }
 
-        private void a(Point point)
-        {
-            EventHandler eventHandler = null;
-            EventHandler eventHandler2 = null;
-            EventHandler eventHandler3 = null;
-            EventHandler eventHandler4 = null;
-            if (this.IsResourceEditModeActive != null)
+        private void ShowTreeNodeContextMenu(Point point)
+        { 
+            if (IsResourceEditModeActive != null)
             {
-                ResourcesForm.ActiveEventArgs activeEventArgs = new ResourcesForm.ActiveEventArgs();
-                this.IsResourceEditModeActive(activeEventArgs);
+                ActiveEventArgs activeEventArgs = new ActiveEventArgs();
+                IsResourceEditModeActive(activeEventArgs);
                 if (activeEventArgs.Active)
                 {
-                    this.ShowMenu(point);
+                    this.ShowEditModeActiveContextMenu(point);
                     return;
                 }
             }
@@ -772,159 +764,141 @@ namespace JxRes.UI
             //contextMenuStrip.Font = MainForm.GetFont(MainForm.fontContextMenu, contextMenuStrip.Font);
             TreeNode node = this.ResourcesView.SelectedNode;
             if (node == null)
-            {
                 return;
-            }
-            string nodePath = ResourcesForm.GetNodePath(node);
-            ToolStripMenuItem toolStripMenuItem2;
+            
+            string nodePath = GetNodePath(node);
             if (node.Tag == null)
             {
-                ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(this.d("New"), this.aTP.Images["New_16.png"]);
-                toolStripMenuItem2 = new ToolStripMenuItem(this.d("Folder"), this.aTP.Images["Folder_16.png"], delegate (object s, EventArgs e2)
-                {
-                    this.D(nodePath);
-                });
-                toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-                toolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
-                foreach (ResourceType current in ResourceTypeManager.Instance.Types)
-                {
-                    if (current.AllowNewResource)
+                ToolStripMenuItem menuNew = new ToolStripMenuItem(LocalizationTranslate("创建.."), imageCache16["add"]);
+                ToolStripMenuItem menuNewFolder = new ToolStripMenuItem(LocalizationTranslate("文件夹"), imageCache16["folder"], 
+                    delegate (object s, EventArgs e2)
                     {
-                        string text = this.d(current.DisplayName);
-                        toolStripMenuItem2 = new ToolStripMenuItem(text, current.Icon, new EventHandler(this.A));
-                        toolStripMenuItem2.Tag = new Tuple<string, ResourceType>(nodePath, current);
-                        toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
+                        this.CreateFolder(nodePath);
+                    });
+                menuNew.DropDownItems.Add(menuNewFolder);
+                menuNew.DropDownItems.Add(new ToolStripSeparator());
+
+                foreach (ResourceType resourceType in ResourceTypeManager.Instance.Types)
+                {
+                    if (resourceType.AllowNewResource)
+                    {
+                        string text = LocalizationTranslate(resourceType.DisplayName);
+                        ToolStripMenuItem menuNewResourceType = new ToolStripMenuItem(text, resourceType.Icon, MenuNewResource_Click);
+                        menuNewResourceType.Tag = new Tuple<string, ResourceType>(nodePath, resourceType);
+                        menuNew.DropDownItems.Add(menuNewResourceType);
                     }
                 }
-                contextMenuStrip.Items.Add(toolStripMenuItem);
+                contextMenuStrip.Items.Add(menuNew);
                 contextMenuStrip.Items.Add(new ToolStripSeparator());
-                toolStripMenuItem2 = new ToolStripMenuItem(this.d("Open Folder in Explorer"), null, delegate (object s, EventArgs e2)
-                {
-                    string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
-                    Shell32Api.ShellExecuteEx(null, realPathByVirtual);
-                });
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                ToolStripMenuItem menuOpenFolder = new ToolStripMenuItem(this.LocalizationTranslate("打开所在目录"), imageCache16["folder_open"], 
+                    delegate (object s, EventArgs e2)
+                    {
+                        string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
+                        Shell32Api.ShellExecuteEx(null, realPathByVirtual);
+                    });
+                contextMenuStrip.Items.Add(menuOpenFolder);
             }
             if (node.Tag != null)
-            {
-                string text2 = Path.GetExtension(nodePath);
-                if (!string.IsNullOrEmpty(text2))
+            {   // is File
+                string fileExt = Path.GetExtension(nodePath);
+                if (!string.IsNullOrEmpty(fileExt))
                 {
-                    text2 = text2.Substring(1);
-                    ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(text2);
+                    fileExt = fileExt.Substring(1);
+                    ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(fileExt);
                     if (byExtension != null)
                     {
-                        string arg_288_0 = this.d("编 辑");
-                        Image arg_288_1 = this.aTP.Images["Edit_16.png"];
-                        if (eventHandler == null)
-                        {
-                            eventHandler = new EventHandler(this.C);
-                        }
-                        toolStripMenuItem2 = new ToolStripMenuItem(arg_288_0, arg_288_1, eventHandler);
-                        contextMenuStrip.Items.Add(toolStripMenuItem2);
+                        ToolStripMenuItem menuEditResource = new ToolStripMenuItem("编 辑(&E)", imageCache16["edit"], MenuEditResource_Click);
+                        contextMenuStrip.Items.Add(menuEditResource);
                     }
                 }
-                toolStripMenuItem2 = new ToolStripMenuItem(this.d("Open in External Program"), null, delegate (object s, EventArgs e2)
-                {
-                    string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
-                    Shell32Api.ShellExecuteEx(null, realPathByVirtual);
-                });
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                ToolStripMenuItem menuOtherApp = new ToolStripMenuItem(
+                    LocalizationTranslate("使用外部程序打开"), imageCache16["applications_other"], 
+                    delegate (object s, EventArgs e2)
+                    {
+                        string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
+                        Shell32Api.ShellExecuteEx(null, realPathByVirtual);
+                    });
+                contextMenuStrip.Items.Add(menuOtherApp);
             }
             if (node.Tag is string)
-            {
-                string path = ResourcesForm.GetNodePath(node);
-                string text3 = Path.GetExtension(path);
-                if (!string.IsNullOrEmpty(text3))
+            {   // is File 
+                string fileExt = Path.GetExtension(nodePath);
+                if (!string.IsNullOrEmpty(fileExt))
                 {
-                    text3 = text3.Substring(1);
-                    ResourceType byExtension2 = ResourceTypeManager.Instance.GetByExtension(text3);
-                    if (byExtension2 != null)
+                    fileExt = fileExt.Substring(1);
+                    ResourceType byExt = ResourceTypeManager.Instance.GetByExtension(fileExt);
+                    if (byExt != null)
                     {
-                        byExtension2.DoResourcesTreeContextMenu(path, contextMenuStrip);
+                        byExt.DoResourcesTreeContextMenu(nodePath, contextMenuStrip);
                     }
                 }
             }
             if (this.multiSelectedList.Count != 0)
             {
                 bool flag = false;
-                foreach (ResourcesForm.MyTreeNode current2 in this.multiSelectedList)
+                foreach (MyTreeNode nd in multiSelectedList)
                 {
-                    if (current2.Parent == null)
-                    {
+                    if (nd.Parent == null)
                         flag = true;
-                    }
                 }
+
                 contextMenuStrip.Items.Add(new ToolStripSeparator());
-                string arg_3BD_0 = this.d("Cut");
-                Image arg_3BD_1 = this.aTP.Images["Cut_16.png"];
-                if (eventHandler2 == null)
-                {
-                    eventHandler2 = new EventHandler(this.c);
-                }
-                toolStripMenuItem2 = new ToolStripMenuItem(arg_3BD_0, arg_3BD_1, eventHandler2);
-                toolStripMenuItem2.Enabled = !flag;
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
-                string arg_40F_0 = this.d("Copy");
-                Image arg_40F_1 = this.aTP.Images["Copy_16.png"];
-                if (eventHandler3 == null)
-                {
-                    eventHandler3 = new EventHandler(this.D);
-                }
-                toolStripMenuItem2 = new ToolStripMenuItem(arg_40F_0, arg_40F_1, eventHandler3);
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
+
+                ToolStripMenuItem menuCut = new ToolStripMenuItem(LocalizationTranslate("剪 切(&T)"), imageCache16["cut"], MenuCut_Click);
+                menuCut.Enabled = !flag;
+                contextMenuStrip.Items.Add(menuCut);
+
+                ToolStripMenuItem menuCopy = new ToolStripMenuItem(LocalizationTranslate("复 制(&C)"), imageCache16["copy"], MenuCopy_Click);
+                contextMenuStrip.Items.Add(menuCopy);
                 if (node.Tag == null)
-                {
+                {   // is Folder
                     string directoryToPaste = null;
-                    if (this.a())
+                    if (this.IsClipboardHasData())
                     {
                         directoryToPaste = this.A();
                     }
-                    toolStripMenuItem2 = new ToolStripMenuItem(this.d("Paste"), this.aTP.Images["Paste_16.png"], delegate (object s, EventArgs e2)
-                    {
-                        this.b(directoryToPaste);
-                    });
-                    toolStripMenuItem2.Enabled = (directoryToPaste != null);
-                    contextMenuStrip.Items.Add(toolStripMenuItem2);
+                    ToolStripMenuItem menuPaste = new ToolStripMenuItem(LocalizationTranslate("粘 贴(&P)"), imageCache16["paste"], 
+                        delegate (object s, EventArgs e2)
+                        {
+                            this.b(directoryToPaste);
+                        });
+                    menuPaste.Enabled = (directoryToPaste != null);
+                    contextMenuStrip.Items.Add(menuPaste);
                 }
                 contextMenuStrip.Items.Add(new ToolStripSeparator());
-                string arg_503_0 = this.d("Delete");
-                Image arg_503_1 = this.aTP.Images["Delete_16.png"];
-                if (eventHandler4 == null)
-                {
-                    eventHandler4 = new EventHandler(this.d);
-                }
-                toolStripMenuItem2 = new ToolStripMenuItem(arg_503_0, arg_503_1, eventHandler4);
-                toolStripMenuItem2.Enabled = !flag;
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
-                toolStripMenuItem2 = new ToolStripMenuItem(this.d("Rename"), null, delegate (object s, EventArgs e2)
+
+
+                ToolStripMenuItem menuDelete = new ToolStripMenuItem(LocalizationTranslate("删 除(&D)"), imageCache16["delete"], MenuDelete_Click);
+                menuDelete.Enabled = !flag;
+                contextMenuStrip.Items.Add(menuDelete);
+
+                ToolStripMenuItem menuRename = new ToolStripMenuItem(LocalizationTranslate("重命名(&N)"), imageCache16["rename"], delegate (object s, EventArgs e2)
                 {
                     if (node != this.ResourcesView.SelectedNode)
-                    {
                         return;
-                    }
+                    
                     if (!node.IsEditing)
-                    {
                         node.BeginEdit();
-                    }
                 });
-                toolStripMenuItem2.Enabled = (this.multiSelectedList.Count == 1 && !flag);
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                menuRename.Enabled = (this.multiSelectedList.Count == 1 && !flag);
+                contextMenuStrip.Items.Add(menuRename);
             }
             contextMenuStrip.Items.Add(new ToolStripSeparator());
-            this.A(contextMenuStrip);
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Refresh"), this.aTP.Images["Refresh_16.png"], delegate (object s, EventArgs e2)
+
+            CreateSortingMenu(contextMenuStrip);
+            ToolStripMenuItem menuRefresh = new ToolStripMenuItem(LocalizationTranslate("刷 新(&R)"), imageCache16["refresh"], delegate (object s, EventArgs e2)
             {
-                this.b((ResourcesForm.MyTreeNode)node);
+                RefreshTreeNode((MyTreeNode)node);
             });
-            contextMenuStrip.Items.Add(toolStripMenuItem2);
+            contextMenuStrip.Items.Add(menuRefresh);
             contextMenuStrip.Items.Add(new ToolStripSeparator());
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Properties"), null, delegate (object s, EventArgs e2)
+
+            ToolStripMenuItem menuProperties = new ToolStripMenuItem(LocalizationTranslate("属 性(&P)"), imageCache16["properties"], delegate (object s, EventArgs e2)
             {
                 string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
                 Shell32Api.ShellExecuteEx("properties", realPathByVirtual);
             });
-            contextMenuStrip.Items.Add(toolStripMenuItem2);
+            contextMenuStrip.Items.Add(menuProperties);
             /*
             foreach (ResourceEditorAddon current3 in AddonManager.Instance.Addons)
             {
@@ -933,70 +907,78 @@ namespace JxRes.UI
             //*/
             contextMenuStrip.Show(this.ResourcesView, point);
         }
-        private void B(Point point)
+
+        private void ShowTreeContextMenu(Point point)
         {
-            if (this.IsResourceEditModeActive != null)
+            if (IsResourceEditModeActive != null)
             {
-                ResourcesForm.ActiveEventArgs activeEventArgs = new ResourcesForm.ActiveEventArgs();
+                ActiveEventArgs activeEventArgs = new ActiveEventArgs();
                 this.IsResourceEditModeActive(activeEventArgs);
                 if (activeEventArgs.Active)
                 {
-                    this.ShowMenu(point);
+                    this.ShowEditModeActiveContextMenu(point);
                     return;
                 }
             }
             ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
             //contextMenuStrip.Font = MainForm.GetFont(MainForm.fontContextMenu, contextMenuStrip.Font);
-            this.A(contextMenuStrip);
-            contextMenuStrip.Show(this.ResourcesView, point);
+            CreateSortingMenu(contextMenuStrip);
+            contextMenuStrip.Show(ResourcesView, point);
         }
-        private void A(ContextMenuStrip contextMenuStrip)
+
+        private void CreateSortingMenu(ContextMenuStrip contextMenuStrip)
         {
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(this.d("Sort by"), null);
-            ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem(this.d("Name"), null, new EventHandler(this.E));
-            toolStripMenuItem2.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Name);
-            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Date modified"), null, new EventHandler(this.e));
-            toolStripMenuItem2.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Date);
-            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Type"), null, new EventHandler(this.F));
-            toolStripMenuItem2.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Type);
-            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Size"), null, new EventHandler(this.f));
-            toolStripMenuItem2.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Size);
-            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-            toolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
-            toolStripMenuItem2 = new ToolStripMenuItem(this.d("Ascending"), null, new EventHandler(this.G));
-            toolStripMenuItem2.Checked = ResourcesForm.sortByAscending;
-            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
-            contextMenuStrip.Items.Add(toolStripMenuItem);
+            ToolStripMenuItem menuSortBy = new ToolStripMenuItem(LocalizationTranslate("排序方式"), SortByIcon);
+
+            ToolStripMenuItem menuSortByName = new ToolStripMenuItem(LocalizationTranslate("名称"), imageCache16["sort_by_name"], new EventHandler(SortTreeNodeByName));
+            menuSortByName.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Name);
+            menuSortBy.DropDownItems.Add(menuSortByName);
+
+            ToolStripMenuItem menuSortByDate = new ToolStripMenuItem(this.LocalizationTranslate("修改日期"), imageCache16["sort_by_date"], new EventHandler(SortTreeNodeByDate));
+            menuSortByDate.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Date);
+            menuSortBy.DropDownItems.Add(menuSortByDate);
+
+            ToolStripMenuItem menuSortByType = new ToolStripMenuItem(this.LocalizationTranslate("类型"), imageCache16["sort_by_type"], new EventHandler(SortTreeNodeByType));
+            menuSortByType.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Type);
+            menuSortBy.DropDownItems.Add(menuSortByType);
+
+            ToolStripMenuItem menuSortBySize = new ToolStripMenuItem(this.LocalizationTranslate("大小"), imageCache16["sort_by_size"], new EventHandler(SortTreeNodeBySize));
+            menuSortBySize.Checked = (ResourcesForm.sortBy == ResourcesForm.SortByItems.Size);
+            menuSortBy.DropDownItems.Add(menuSortBySize);
+
+            menuSortBy.DropDownItems.Add(new ToolStripSeparator());
+
+            ToolStripMenuItem menuSortingMethod = new ToolStripMenuItem(this.LocalizationTranslate("升序"), SortByIcon, new EventHandler(ChangeTreeNodeSortingMethod));
+            menuSortingMethod.Checked = ResourcesForm.sortByAscending;
+            menuSortBy.DropDownItems.Add(menuSortingMethod);
+            contextMenuStrip.Items.Add(menuSortBy);
         }
+
+        private Image SortByIcon
+        {
+            get { return ResourcesForm.sortByAscending ? imageCache16["sort_ascend"] : imageCache16["sort_descend"]; }
+        }
+
         private void OnTreeMouseClick(object obj, MouseEventArgs mouseEventArgs)
         {
-#if DEBUG_RES
-            Log.Info(">> Tree MouseClick");
-#endif
             if (mouseEventArgs.Button == MouseButtons.Right)
             {
                 TreeNode nodeAt = this.ResourcesView.GetNodeAt(mouseEventArgs.Location);
                 if (nodeAt != null)
-                {
-                    this.ResourcesView.SelectedNode = nodeAt;
-                }
-                this.a(mouseEventArgs.Location);
+                    ResourcesView.SelectedNode = nodeAt;
+                
+                ShowTreeNodeContextMenu(mouseEventArgs.Location);
             }
         }
         private void OnTreeMouseUp(object obj, MouseEventArgs mouseEventArgs)
         {
-#if DEBUG_RES
-            Log.Info(">> Tree MouseUp");
-#endif
             if (mouseEventArgs.Button == MouseButtons.Right && this.ResourcesView.GetNodeAt(mouseEventArgs.Location) == null)
             {
-                this.B(mouseEventArgs.Location);
+                ShowTreeContextMenu(mouseEventArgs.Location);
             }
         }
-        private void A(string directory, ResourceType resourceType)
+
+        private void CreateResourceType(string directory, ResourceType resourceType)
         {
             bool flag = false;
             try
@@ -1016,13 +998,14 @@ namespace JxRes.UI
                 }
             }
         }
-        private List<ResourcesForm.MyTreeNode> A(List<ResourcesForm.MyTreeNode> list)
+
+        private List<MyTreeNode> A(List<MyTreeNode> list)
         {
-            List<ResourcesForm.MyTreeNode> list2 = new List<ResourcesForm.MyTreeNode>(list.Count);
-            foreach (ResourcesForm.MyTreeNode current in list)
+            List<MyTreeNode> list2 = new List<MyTreeNode>(list.Count);
+            foreach (MyTreeNode current in list)
             {
                 bool flag = false;
-                for (ResourcesForm.MyTreeNode myTreeNode = (ResourcesForm.MyTreeNode)current.Parent; myTreeNode != null; myTreeNode = (ResourcesForm.MyTreeNode)myTreeNode.Parent)
+                for (MyTreeNode myTreeNode = (MyTreeNode)current.Parent; myTreeNode != null; myTreeNode = (MyTreeNode)myTreeNode.Parent)
                 {
                     if (list.Contains(myTreeNode))
                     {
@@ -1037,7 +1020,8 @@ namespace JxRes.UI
             }
             return list2;
         }
-        private void B()
+ 
+        private void DeleteSelectedResources()
         {
             if (this.multiSelectedList.Count == 0)
             {
@@ -1045,11 +1029,11 @@ namespace JxRes.UI
             }
             if (this.IsResourceEditModeActive != null)
             {
-                ResourcesForm.ActiveEventArgs activeEventArgs = new ResourcesForm.ActiveEventArgs();
+                ActiveEventArgs activeEventArgs = new ActiveEventArgs();
                 this.IsResourceEditModeActive(activeEventArgs);
                 if (activeEventArgs.Active)
                 {
-                    Log.Warning(ToolsLocalization.Translate("ResourcesForm", "Need to leave the editing mode first."));
+                    Log.Warning(LocalizationTranslate("Need to leave the editing mode first."));
                     return;
                 }
             }
@@ -1063,16 +1047,16 @@ namespace JxRes.UI
             string text;
             if (this.multiSelectedList.Count == 1)
             {
-                string format = ToolsLocalization.Translate("ResourcesForm", "Are you sure you want to delete \"{0}\"?");
+                string format = LocalizationTranslate("确定删除 \"{0}\"?");
                 string arg = ResourcesForm.GetNodePath((TreeNode)this.multiSelectedList[0]);
                 text = string.Format(format, arg);
             }
             else
             {
-                string format2 = ToolsLocalization.Translate("ResourcesForm", "Are you sure you want to delete these {0} items?");
+                string format2 = LocalizationTranslate("确定删除 {0} 个项目?");
                 text = string.Format(format2, this.multiSelectedList.Count);
             }
-            string caption = ToolsLocalization.Translate("Various", "Resource Editor");
+            string caption = ToolsLocalization.Translate("Various", "JxRes");
             DialogResult dialogResult = MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult != DialogResult.Yes)
             {
@@ -1085,19 +1069,20 @@ namespace JxRes.UI
                 }
                 return;
             }
-            ResourcesForm.MyTreeNode myTreeNode = (ResourcesForm.MyTreeNode)TreeViewUtils.GetNeedSelectNodeAfterRemoveNode(this.ResourcesView.SelectedNode);
-            List<ResourcesForm.MyTreeNode> list = this.A(this.multiSelectedList);
-            foreach (ResourcesForm.MyTreeNode current in list)
+
+            MyTreeNode myTreeNode = (MyTreeNode)TreeViewUtils.GetNeedSelectNodeAfterRemoveNode(this.ResourcesView.SelectedNode);
+            List<MyTreeNode> list = this.A(this.multiSelectedList);
+            foreach (MyTreeNode current in list)
             {
-                string text2 = ResourcesForm.GetNodePath((TreeNode)current);
+                string nodePath = GetNodePath(current);
                 if (current.Tag != null)
                 {
-                    if (!this.c(text2))
+                    if (!this.c(nodePath))
                     {
                         return;
                     }
                 }
-                else if (!this.C(text2))
+                else if (!this.C(nodePath))
                 {
                     return;
                 }
@@ -1140,6 +1125,7 @@ namespace JxRes.UI
             this.B((ResourcesForm.MyTreeNode)treeNode);
             return true;
         }
+
         private bool c(string text)
         {
             string text2 = Path.GetExtension(text);
@@ -1188,35 +1174,28 @@ namespace JxRes.UI
             this.B((ResourcesForm.MyTreeNode)treeNode);
             return true;
         }
-        private void D(string text)
+
+        private void CreateFolder(string parentDirectory)
         {
-            ResourcesForm.MyTreeNode myTreeNode = this.FindNodeByPath(text);
-            Trace.Assert(myTreeNode != null);
-            int num = 1;
-            string text2;
+            MyTreeNode parentNode = FindNodeByPath(parentDirectory);
+            Trace.Assert(parentNode != null);
+
+            List<string> currentFolders = parentNode.Nodes.OfType<MyTreeNode>().Select(_node => _node.Name).ToList();
+
+            int folderIndex = 1;
+            string folderName;
             while (true)
             {
-                text2 = "New Folder";
-                if (num != 1)
+                folderName = string.Format("新文件夹 ({0})", folderIndex);
+                if (currentFolders.Contains(folderName))
                 {
-                    text2 = text2 + " (" + num.ToString() + ")";
+                    folderIndex++;
+                    continue;
                 }
-                bool flag = false;
-                foreach (TreeNode treeNode in myTreeNode.Nodes)
-                {
-                    if (string.Compare(treeNode.Name, text2, true) == 0)
-                    {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag)
-                {
-                    break;
-                }
-                num++;
+                break;
             }
-            string path = Path.Combine(VirtualFileSystem.GetRealPathByVirtual(text), text2);
+
+            string path = Path.Combine(VirtualFileSystem.GetRealPathByVirtual(parentDirectory), folderName);
             try
             {
                 Directory.CreateDirectory(path);
@@ -1226,12 +1205,12 @@ namespace JxRes.UI
                 Log.Warning(ex.Message);
                 return;
             }
-            TreeNode treeNode2 = new ResourcesForm.MyTreeNode(text2, VirtualDirectory.IsInArchive(text), this.IsHideResource(text2) || myTreeNode.HideNode);
-            treeNode2.Name = treeNode2.Text;
-            this.UpdateTreeNodeIcon(treeNode2);
-            myTreeNode.Nodes.Add(treeNode2);
-            this.ResourcesView.SelectedNode = treeNode2;
-            treeNode2.BeginEdit();
+            TreeNode newNode = new ResourcesForm.MyTreeNode(folderName, VirtualDirectory.IsInArchive(parentDirectory), this.IsHideResource(folderName) || parentNode.HideNode);
+            newNode.Name = newNode.Text;
+            this.UpdateTreeNodeIcon(newNode);
+            parentNode.Nodes.Add(newNode);
+            ResourcesView.SelectedNode = newNode;
+            newNode.BeginEdit();
         }
         public void BeginNewDirectoryCreation()
         {
@@ -1245,22 +1224,22 @@ namespace JxRes.UI
             {
                 text = Path.GetDirectoryName(text);
             }
-            this.D(text);
+            this.CreateFolder(text);
         }
+
         public void BeginNewResourceCreation(ResourceType type)
         {
             TreeNode selectedNode = this.ResourcesView.SelectedNode;
             if (selectedNode == null)
-            {
                 return;
-            }
-            string text = ResourcesForm.GetNodePath(selectedNode);
+   
+            string p = GetNodePath(selectedNode);
             if (selectedNode.Tag != null)
-            {
-                text = Path.GetDirectoryName(text);
-            }
-            this.A(text, type);
+                p = Path.GetDirectoryName(p);
+            
+            this.CreateResourceType(p, type);
         }
+
         public void SelectNodeByPath(string path)
         {
             TreeNode treeNode = this.FindNodeByPath(path);
@@ -1365,7 +1344,8 @@ namespace JxRes.UI
                 Trace.Assert(!cancelEventArgs2.Cancel);
             }
         }
-        private bool A(ResourcesForm.MyTreeNode myTreeNode)
+
+        private bool A(MyTreeNode myTreeNode)
         {
             if (((Control.MouseButtons & MouseButtons.Left) != MouseButtons.None || (Control.MouseButtons & MouseButtons.Right) != MouseButtons.None) && myTreeNode.Bounds.Height != 0)
             {
@@ -1430,7 +1410,7 @@ namespace JxRes.UI
             MyTreeNode selected = (MyTreeNode)ResourcesView.SelectedNode;
             if ((Control.ModifierKeys & Keys.Control) == Keys.None)
             {
-                this.a(evtNode);
+                UpdateMultiSelectionList(evtNode);
             }
 
             if ((Control.ModifierKeys & Keys.Shift) != Keys.None)
@@ -1500,9 +1480,9 @@ namespace JxRes.UI
             }
         }
 
-        private void a(MyTreeNode node)
+        private void UpdateMultiSelectionList(MyTreeNode node)
         {
-            List<MyTreeNode> list = new List<MyTreeNode>(this.multiSelectedList);
+            List<MyTreeNode> list = new List<MyTreeNode>(multiSelectedList);
             foreach (MyTreeNode item in list)
             {
                 if (item != node)
@@ -1525,7 +1505,7 @@ namespace JxRes.UI
 
             if (ResourcesView.SelectedNode == null)
             {
-                this.a((MyTreeNode)null);
+                this.UpdateMultiSelectionList((MyTreeNode)null);
             }
 
             ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
@@ -1533,7 +1513,7 @@ namespace JxRes.UI
             {
                 if (resourceObjectEditor.EditModeActive)
                 {
-                    this.a((MyTreeNode)null);
+                    this.UpdateMultiSelectionList((MyTreeNode)null);
                 }
                 else
                 {
@@ -1636,51 +1616,47 @@ namespace JxRes.UI
         }
         public void DoRenamedEvent(string realPath, string oldRealPath)
         {
-            string virtualPathByReal = VirtualFileSystem.GetVirtualPathByReal(realPath);
-            string virtualPathByReal2 = VirtualFileSystem.GetVirtualPathByReal(oldRealPath);
-            string text = Path.GetExtension(virtualPathByReal2);
-            string text2 = Path.GetExtension(virtualPathByReal);
-            if (!string.IsNullOrEmpty(text) && !string.IsNullOrEmpty(text2) && string.Compare(text, text2, true) == 0)
+            string virtualPathByRealNew = VirtualFileSystem.GetVirtualPathByReal(realPath);
+            string virtualPathByRealOld = VirtualFileSystem.GetVirtualPathByReal(oldRealPath);
+
+            string extNew = Path.GetExtension(virtualPathByRealNew);
+            string extOld = Path.GetExtension(virtualPathByRealOld);
+                        
+            if (!string.IsNullOrEmpty(extOld) && !string.IsNullOrEmpty(extNew) && string.Compare(extOld, extNew, true) == 0)
             {
-                text2 = text2.Substring(1);
-                ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(text2);
+                extNew = extNew.Substring(1);
+                ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(extNew);
                 if (byExtension != null)
-                {
-                    byExtension.OnResourceRenamed(virtualPathByReal, virtualPathByReal2);
-                }
+                    byExtension.OnResourceRenamed(virtualPathByRealNew, virtualPathByRealOld);
             }
             else
             {
-                if (!string.IsNullOrEmpty(text))
+                if (!string.IsNullOrEmpty(extOld))
                 {
-                    text = text.Substring(1);
-                    ResourceType byExtension2 = ResourceTypeManager.Instance.GetByExtension(text);
-                    if (byExtension2 != null)
-                    {
-                        byExtension2.DoUnloadResource(virtualPathByReal2);
-                    }
+                    extOld = extOld.Substring(1);
+                    ResourceType byExtensionOld = ResourceTypeManager.Instance.GetByExtension(extOld);
+                    if (byExtensionOld != null)
+                        byExtensionOld.DoUnloadResource(virtualPathByRealOld);
                 }
-                if (!string.IsNullOrEmpty(text2))
+                if (!string.IsNullOrEmpty(extNew))
                 {
-                    text2 = text2.Substring(1);
-                    ResourceType byExtension3 = ResourceTypeManager.Instance.GetByExtension(text2);
-                    if (byExtension3 != null)
-                    {
-                        byExtension3.DoLoadResource(virtualPathByReal);
-                    }
+                    extNew = extNew.Substring(1);
+                    ResourceType byExtensionNew = ResourceTypeManager.Instance.GetByExtension(extNew);
+                    if (byExtensionNew != null)
+                        byExtensionNew.DoLoadResource(virtualPathByRealNew);
                 }
             }
-            TreeNode treeNode = this.FindNodeByPath(virtualPathByReal2);
-            if (treeNode != null)
+            TreeNode treeNodeOld = this.FindNodeByPath(virtualPathByRealOld);
+            if (treeNodeOld != null)
             {
                 string fileName = Path.GetFileName(realPath);
-                treeNode.Text = fileName;
-                treeNode.Name = fileName;
-                this.UpdateTreeNodeIcon(treeNode);
+                treeNodeOld.Text = fileName;
+                treeNodeOld.Name = fileName;
+                UpdateTreeNodeIcon(treeNodeOld);
             }
-            if (!VirtualFile.Exists(virtualPathByReal) && VirtualDirectory.Exists(virtualPathByReal))
+            if (!VirtualFile.Exists(virtualPathByRealNew) && VirtualDirectory.Exists(virtualPathByRealNew))
             {
-                this.a(virtualPathByReal, virtualPathByReal2);
+                OnDirectoryRenamed(virtualPathByRealNew, virtualPathByRealOld);
             }
         }
         public void DoChangedEvent(string realPath)
@@ -1747,35 +1723,35 @@ namespace JxRes.UI
             }
         }
 
-        private void a(string text, string text2)
+        private void OnDirectoryRenamed(string virtualPathByRealNew, string virtualPathByRealOld)
         {
-            string[] files = Directory.GetFiles(VirtualFileSystem.GetRealPathByVirtual(text), "*.type", SearchOption.AllDirectories);
-            string[] array = files;
-            for (int i = 0; i < array.Length; i++)
+            string[] files = Directory.GetFiles(VirtualFileSystem.GetRealPathByVirtual(virtualPathByRealNew), "*.type", SearchOption.AllDirectories);
+            for (int i = 0; i < files.Length; i++)
             {
-                string text3 = array[i];
-                string text4 = text3.Substring(5);
-                TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(text4);
+                string file = files[i];
+                string fileNameNoExt = file.Substring(5);
+                TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(fileNameNoExt);
                 if (textBlock != null && textBlock.Children.Count == 1)
                 {
-                    string data = textBlock.Children[0].Data;
-                    EntityType byName = EntityTypes.Instance.GetByName(data);
+                    string typeName = textBlock.Children[0].Data;
+                    EntityType byName = EntityTypes.Instance.GetByName(typeName);
                     if (byName != null)
                     {
                         EntityTypes.Instance.DestroyType(byName);
-                        EntityType entityType = EntityTypes.Instance.LoadTypeFromFile(text4);
+                        EntityType entityType = EntityTypes.Instance.LoadTypeFromFile(fileNameNoExt);
                         if (entityType == null)
                         {
                             Log.Fatal("ResourceForm: OnDirectoryRenamed: EntityTypes.LoadType failed.");
+                            return;
                         }
                         EntityTypes.Instance.Editor_ChangeAllReferencesToType(byName, entityType);
                         if (JxResApp.Instance.ResourceObjectEditor != null)
                         {
                             ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
-                            if (!resourceObjectEditor.EditModeActive && string.Compare(resourceObjectEditor.FileName, text4, true) == 0)
+                            if (!resourceObjectEditor.EditModeActive && string.Compare(resourceObjectEditor.FileName, fileNameNoExt, true) == 0)
                             {
-                                this.SelectNodeByPath(text);
-                                this.SelectNodeByPath(text4);
+                                SelectNodeByPath(virtualPathByRealNew);
+                                SelectNodeByPath(fileNameNoExt);
                             }
                         }
                     }
@@ -1798,32 +1774,31 @@ namespace JxRes.UI
         {
             ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
             if (resourceObjectEditor != null && resourceObjectEditor.EditModeActive)
-            {
                 return false;
-            }
+
             TreeNode selectedNode = this.ResourcesView.SelectedNode;
             if (selectedNode != null && selectedNode.Tag != null)
             {
                 if (this.ResourceBeginEditMode != null)
                 {
-                    this.ResourceBeginEditMode(new EventArgs());
+                    ResourceBeginEditMode(new EventArgs());
                 }
                 return true;
             }
             return false;
         }
 
-        private void C()
+        private void SortTreeNodes()
         {
-            ResourcesForm.nodesSizeDic.Clear();
-            ResourcesForm.nodesLastWtDic.Clear();
+            nodesSizeDic.Clear();
+            nodesLastWtDic.Clear();
             this.ResourcesView.BeginUpdate();
             TreeNode selectedNode = this.ResourcesView.SelectedNode;
             this.ResourcesView.Sort();
             this.ResourcesView.SelectedNode = selectedNode;
             this.ResourcesView.EndUpdate();
-            ResourcesForm.nodesSizeDic.Clear();
-            ResourcesForm.nodesLastWtDic.Clear();
+            nodesSizeDic.Clear();
+            nodesLastWtDic.Clear();
         }
 
         private void A(ResourcesForm.MyTreeNode myTreeNode, bool flag)
@@ -1850,27 +1825,31 @@ namespace JxRes.UI
             }
             this.multiSelectedList.Remove(myTreeNode);
         }
-        private string d(string text)
+
+        private string LocalizationTranslate(string text)
         {
-            return ToolsLocalization.Translate("ResourcesForm", text);
+            return ToolsLocalization.Translate("JxRes", text);
         }
+
         private void Form_Load(object obj, EventArgs eventArgs)
         {
-            base.TabText = this.d(base.TabText);
+            base.TabText = LocalizationTranslate(base.TabText);
         }
-        private void b(ResourcesForm.MyTreeNode myTreeNode)
+
+        private void RefreshTreeNode(MyTreeNode treeNode)
         {
-            ResourcesForm.nodesSizeDic.Clear();
-            ResourcesForm.nodesLastWtDic.Clear();
+            nodesSizeDic.Clear();
+            nodesLastWtDic.Clear();
             this.ResourcesView.BeginUpdate();
-            myTreeNode.Nodes.Clear();
-            this.A(myTreeNode, ResourcesForm.GetNodePath((TreeNode)myTreeNode));
-            myTreeNode.Expand();
-            this.ResourcesView.SelectedNode = myTreeNode;
+            treeNode.Nodes.Clear();
+            this.CreateTreeNodeForPath(treeNode, ResourcesForm.GetNodePath((TreeNode)treeNode));
+            treeNode.Expand();
+            this.ResourcesView.SelectedNode = treeNode;
             this.ResourcesView.EndUpdate();
-            ResourcesForm.nodesSizeDic.Clear();
-            ResourcesForm.nodesLastWtDic.Clear();
+            nodesSizeDic.Clear();
+            nodesLastWtDic.Clear();
         }
+
         public void UpdateFonts()
         {
             /*
@@ -1885,6 +1864,7 @@ namespace JxRes.UI
             }
             //*/
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if ((long)msg.Msg == 256L && !this.aTL)
@@ -1905,73 +1885,81 @@ namespace JxRes.UI
             this.ResourcesView.Select();
         }
 
-        private static void OnMenu_CloseEditing(object obj, EventArgs eventArgs)
+        private static void MenuCloseEditing_Click(object obj, EventArgs eventArgs)
         {
-            /*
-            ResourceObjectEditor resourceObjectEditor = ResourceEditorEngineApp.Instance.ResourceObjectEditor;
+            //*
+            ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
             if (resourceObjectEditor != null && resourceObjectEditor.EditModeActive)
             {
                 resourceObjectEditor.EndEditMode();
             }
             //*/
         }
-        private void C(object obj, EventArgs eventArgs)
+        private void MenuEditResource_Click(object obj, EventArgs eventArgs)
         {
             this.TryBeginEditMode();
         }
-        private void c(object obj, EventArgs eventArgs)
+        private void MenuCut_Click(object obj, EventArgs eventArgs)
         {
             this.A(true);
         }
-        private void D(object obj, EventArgs eventArgs)
+
+        private void MenuCopy_Click(object obj, EventArgs eventArgs)
         {
             this.A(false);
         }
-        private void d(object obj, EventArgs eventArgs)
+        private void MenuDelete_Click(object obj, EventArgs eventArgs)
         {
-            this.B();
+            this.DeleteSelectedResources();
         }
-        private void E(object obj, EventArgs eventArgs)
+        private void SortTreeNodeByName(object obj, EventArgs eventArgs)
         {
-            if (ResourcesForm.sortBy != ResourcesForm.SortByItems.Name)
+            if (sortBy != SortByItems.Name)
             {
-                ResourcesForm.sortBy = ResourcesForm.SortByItems.Name;
-                this.C();
+                sortBy = SortByItems.Name;
+                SortTreeNodes();
             }
         }
-        private void e(object obj, EventArgs eventArgs)
+        private void SortTreeNodeByDate(object obj, EventArgs eventArgs)
         {
-            if (ResourcesForm.sortBy != ResourcesForm.SortByItems.Date)
+            if (sortBy != SortByItems.Date)
             {
-                ResourcesForm.sortBy = ResourcesForm.SortByItems.Date;
-                this.C();
+                sortBy = SortByItems.Date;
+                SortTreeNodes();
             }
         }
-        private void F(object obj, EventArgs eventArgs)
+        private void SortTreeNodeByType(object obj, EventArgs eventArgs)
         {
-            if (ResourcesForm.sortBy != ResourcesForm.SortByItems.Type)
+            if (sortBy != SortByItems.Type)
             {
-                ResourcesForm.sortBy = ResourcesForm.SortByItems.Type;
-                this.C();
+                sortBy = SortByItems.Type;
+                SortTreeNodes();
             }
         }
-        private void f(object obj, EventArgs eventArgs)
+
+        private void SortTreeNodeBySize(object obj, EventArgs eventArgs)
         {
-            if (ResourcesForm.sortBy != ResourcesForm.SortByItems.Size)
+            if (sortBy != SortByItems.Size)
             {
-                ResourcesForm.sortBy = ResourcesForm.SortByItems.Size;
-                this.C();
+                sortBy = SortByItems.Size;
+                SortTreeNodes();
             }
         }
-        private void G(object obj, EventArgs eventArgs)
+
+        private void ChangeTreeNodeSortingMethod(object obj, EventArgs eventArgs)
         {
-            ResourcesForm.sortByAscending = !ResourcesForm.sortByAscending;
-            this.C();
+            sortByAscending = !sortByAscending;
+
+            ToolStripMenuItem mi = obj as ToolStripMenuItem;
+            mi.Image = SortByIcon;
+            mi.Text = sortByAscending ? "升序" : "降序";
+            
+            SortTreeNodes();
         }
 
         private void ResourcesForm_Load(object sender, EventArgs e)
         {
-
+            imageCache16 = new ImageCache(ILCache16);
         }
     }
 }

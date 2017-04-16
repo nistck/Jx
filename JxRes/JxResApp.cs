@@ -32,7 +32,10 @@ namespace JxRes
         private bool ato;
         private bool atP;
 
-        public ResourceObjectEditor ResourceObjectEditor { get; internal set; }
+        public ResourceObjectEditor ResourceObjectEditor
+        {
+            get { return atm; }
+        }
 
         protected override bool OnCreate()
         {

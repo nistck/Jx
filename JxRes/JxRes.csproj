@@ -168,12 +168,34 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\add_16.png" />
+    <Content Include="Resources\applications_other_16.png" />
+    <Content Include="Resources\cancel_16.png" />
+    <Content Include="Resources\closed_16.png" />
+    <Content Include="Resources\Copy_16.png" />
+    <Content Include="Resources\Cut_16.png" />
+    <Content Include="Resources\file_new_16.png" />
+    <Content Include="Resources\folder_new_16.png" />
+    <Content Include="Resources\folder_open_16.png" />
+    <Content Include="Resources\Paste_16.png" />
+    <Content Include="Resources\properties_16.png" />
+    <Content Include="Resources\clear_16.png" />
     <Content Include="Resources\config_16.png" />
+    <Content Include="Resources\department.png" />
     <Content Include="Resources\edit_16.png" />
     <Content Include="Resources\delete_16.png" />
     <Content Include="Resources\file_16.png" />
     <Content Include="Resources\folder_16.png" />
     <Content Include="Resources\no_16.png" />
+    <Content Include="Resources\refresh_16.png" />
+    <Content Include="Resources\rename_16.png" />
+    <Content Include="Resources\sort_ascend_16.png" />
+    <Content Include="Resources\sort_by_date_16.png" />
+    <Content Include="Resources\sort_by_name_16.png" />
+    <Content Include="Resources\sort_by_size_16.png" />
+    <Content Include="Resources\sort_by_type_16.png" />
+    <Content Include="Resources\sort_descend_16.png" />
+    <Content Include="Resources\default_16.png" />
     <Content Include="Resources\yes_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
