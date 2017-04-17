@@ -43,7 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChooseResourceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseResourceForm.Designer.cs">
+      <DependentUpon>ChooseResourceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DefaultResourceTypeImages.cs" />
+    <Compile Include="EntityUIEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -78,6 +85,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ChooseResourceForm.resx">
+      <DependentUpon>ChooseResourceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -85,7 +95,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Config_16.png" />
+    <Content Include="Resources\file_16.png" />
+    <Content Include="Resources\folder_16.png" />
+    <Content Include="Resources\no_16.png" />
     <Content Include="Resources\ResourceType_Default_16.png" />
+    <Content Include="Resources\yes_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

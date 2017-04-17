@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Jx;
 using Jx.EntitySystem;
 
 namespace JxRes.UI
@@ -68,6 +69,17 @@ namespace JxRes.UI
             {
                 if (Class == null)
                     return "<未知类型>";
+
+                object[] attrs = Class.EntityClassType.GetCustomAttributes(typeof(JxNameAttribute), false);
+                if( attrs != null )
+                {
+                    JxNameAttribute nameAttr = attrs.OfType<JxNameAttribute>().FirstOrDefault();
+                    if( nameAttr != null )
+                    {
+                        string text = string.Format("{0} ({1})", nameAttr.Name, Class.EntityClassType.Name);
+                        return text;
+                    }
+                }
 
                 return Class.ToString();
             }

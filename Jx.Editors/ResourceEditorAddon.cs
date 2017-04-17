@@ -82,7 +82,7 @@ namespace Jx.Editors
         {
         } 
 
-        public virtual void OnTick(float delta)
+        public virtual void OnTick()
         {
 
         }

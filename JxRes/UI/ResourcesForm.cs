@@ -1205,7 +1205,7 @@ namespace JxRes.UI
                 Log.Warning(ex.Message);
                 return;
             }
-            TreeNode newNode = new ResourcesForm.MyTreeNode(folderName, VirtualDirectory.IsInArchive(parentDirectory), this.IsHideResource(folderName) || parentNode.HideNode);
+            TreeNode newNode = new MyTreeNode(folderName, VirtualDirectory.IsInArchive(parentDirectory), this.IsHideResource(folderName) || parentNode.HideNode);
             newNode.Name = newNode.Text;
             this.UpdateTreeNodeIcon(newNode);
             parentNode.Nodes.Add(newNode);

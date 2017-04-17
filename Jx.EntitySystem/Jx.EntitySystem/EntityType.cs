@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing.Design;
 
 using Jx.FileSystem;
 
 namespace Jx.EntitySystem
 {
+    [LogicSystemBrowsable(true), Editor(typeof(EditorEntityTypeUITypeEditor), typeof(UITypeEditor))]
     public class EntityType : JxObject, IDisposable
     {
 
@@ -119,6 +121,7 @@ namespace Jx.EntitySystem
         /// Gets or sets a value indicating whether the entity can created in the Map Editor.
         /// </summary>
         [DefaultValue(true), Description("Whether the entity can created in the Map Editor.")]
+        [Browsable(false)]
         public bool CreatableInMapEditor
         {
             get

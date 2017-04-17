@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Threading;
 
 
 namespace Jx
@@ -17,7 +17,13 @@ namespace Jx
             get { return instance; }
         }
 
-        private float time = 0.0f;  
+        class Timer0State
+        {
+
+        }
+ 
+        private float time = 0.0f;
+        private float lastTime = 0.0f;
 
         public EngineApp()
         {
@@ -35,30 +41,32 @@ namespace Jx
             if (overridedObject == null)
             {
                 Log.Fatal("EngineApp: Init: overridedObject == null.");
+                return false;
             }
             if (instance != null)
             {
                 Log.Fatal("EngineApp: Init: instance != null.");
+                return false;
             }
             instance = overridedObject;
-            bool flag = instance.A(mainModuleData);
+            bool flag = instance.DoInit(mainModuleData);
             if (!flag)
             {
-                EngineApp.Shutdown();
+                Shutdown();
             }
             return flag;
         }
 
         public static bool Init(EngineApp overridedObject)
         {
-            return EngineApp.Init(overridedObject, IntPtr.Zero);
+            return Init(overridedObject, IntPtr.Zero);
         }
 
         public static void Shutdown()
         {
             if (instance != null)
             {
-                instance.d();
+                instance.shutdown();
                 instance = null;
             }
         }
@@ -79,7 +87,7 @@ namespace Jx
             return true;
         }
 
-        private void d()
+        private void shutdown()
         {
             /*
             bb.A a = bb.A.Normal;
@@ -152,10 +160,10 @@ namespace Jx
             NativeMemoryManager.a();
             //*/
         }
-
-
-        private bool A(IntPtr mainModuleData)
+         
+        private bool DoInit(IntPtr mainModuleData)
         {
+ 
             /*
             this.Ug = bb.Get();
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -210,6 +218,22 @@ namespace Jx
             }
             //*/
             return true;
+        }
+
+        public void Tick()
+        {
+            float time = this.Time;
+            float delta = time - this.lastTime;
+            if( delta != 0.0f)
+            {
+                this.lastTime = this.Time;
+                OnTick(delta);
+            }
+        }
+
+        protected virtual void OnTick(float delta)
+        {
+
         }
     }
 }

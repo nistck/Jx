@@ -99,21 +99,21 @@ namespace Jx.EntitySystem
             /// <summary>
             /// Gets the base class information.
             /// </summary>
-            public EntityTypes.ClassInfo BaseClassInfo
+            public ClassInfo BaseClassInfo
             {
                 get
                 {
                     return this.baseClassInfo;
                 }
             }
-            public IList<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem> EntityTypeSerializableFields
+            public IList<EntityTypeSerializableFieldItem> EntityTypeSerializableFields
             {
                 get
                 {
                     return this.entityTypeSerializableFields;
                 }
             }
-            public IList<EntityTypes.ClassInfo.EntitySerializableFieldItem> EntitySerializableFields
+            public IList<EntitySerializableFieldItem> EntitySerializableFields
             {
                 get
                 {
@@ -131,6 +131,7 @@ namespace Jx.EntitySystem
             {
                 return this.entityClassType.Name;
             }
+
             internal EntityTypes.ClassInfo.NetworkSynchronizedMeta GetNetworkSynchronizedMeta(ushort num)
             {
                 bool flag = (int)num >= this.networkSynchronizedMetaBuffer.Count;

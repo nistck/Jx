@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using Jx;
 using Jx.Editors;
 using Jx.EntitySystem;
+using Jx.Ext;
 using Jx.FileSystem;
 using JxRes.Types;
 using JxRes.UI;
@@ -68,12 +70,30 @@ namespace JxRes
                     MainForm.Instance.PropertiesForm.ReadOnly = true;
                 }
             }
+            ResourceUtils.OnUITypeEditorEditValue += ResourceUtils_OnUITypeEditorEditValue;
 
             AddonManager.PreInit();
             InitResourceTypeManager();
 
             instance = this;
             return true;
+        }
+
+        private void ResourceUtils_OnUITypeEditorEditValue(ResourceUtils.ResourceUITypeEditorEditValueEventHandler e)
+        {
+            ResourceType byName = ResourceTypeManager.Instance.GetByName(e.ResourceTypeName);
+            if (byName == null)
+            {
+                Log.Fatal("Resource type is not defined \"{0}\"", e.ResourceTypeName);
+                return;
+            }
+   
+            ChooseResourceForm chooseResourceForm = new ChooseResourceForm(byName, true, e.ShouldAddDelegate, e.ResourceName, e.SupportRelativePath);
+            if (chooseResourceForm.ShowDialog() == DialogResult.OK)
+            {
+                e.ResourceName = chooseResourceForm.FilePath;
+                e.Modified = true;
+            } 
         }
 
         private void OnResourceRename(string path, ref bool ptr, ref string ptr2)

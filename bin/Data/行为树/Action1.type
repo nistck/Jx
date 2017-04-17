@@ -1,0 +1,5 @@
+type Action1
+{
+	class = ActionNode
+	desc = "\x52a8\x4f5c1"
+}

@@ -37,6 +37,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxDesign", "JxDesign\JxDesi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxRes.Addon", "JxRes.Addon\JxRes.Addon.csproj", "{BC75D6F5-293F-471D-8E01-3BCED930987E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{6180CE1E-751A-49D8-B471-3CB08D28F35F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BehaviorTree", "BehaviorTree", "{A6DBDB24-8785-4AF5-A2FD-6DE98C76831A}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\BehaviorTree\行为树.txt = Documents\BehaviorTree\行为树.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,5 +118,6 @@ Global
 		{6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6} = {14D507CD-C8EB-41BF-96B4-8AFC47C858C1}
 		{C75532C4-765B-418E-B09B-46D36B2ABDB1} = {6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6}
 		{007D4AC8-948F-4816-86AD-B9D1343672C1} = {6C85C9FF-3BEC-459C-8BD8-A88035FF2DC6}
+		{A6DBDB24-8785-4AF5-A2FD-6DE98C76831A} = {6180CE1E-751A-49D8-B471-3CB08D28F35F}
 	EndGlobalSection
 EndGlobal

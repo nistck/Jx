@@ -211,11 +211,10 @@ namespace Jx.FileSystem.Archives
 		private bool b()
 		{
 			ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.Archive, true);
-			List<Assembly> list = new List<Assembly>();
-			ComponentManager.ComponentInfo[] array = componentsByType;
-			for (int i = 0; i < array.Length; i++)
+			List<Assembly> list = new List<Assembly>(); 
+			for (int i = 0; i < componentsByType.Length; i++)
 			{
-				ComponentManager.ComponentInfo componentInfo = array[i];
+				ComponentManager.ComponentInfo componentInfo = componentsByType[i];
 				ComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
 				for (int j = 0; j < allEntryPointsForThisPlatform.Length; j++)
 				{

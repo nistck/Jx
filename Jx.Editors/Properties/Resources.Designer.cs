@@ -73,9 +73,29 @@ namespace Jx.Editors.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap no_16 {
+            get {
+                object obj = ResourceManager.GetObject("no_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap ResourceType_Default_16 {
             get {
                 object obj = ResourceManager.GetObject("ResourceType_Default_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap yes_16 {
+            get {
+                object obj = ResourceManager.GetObject("yes_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

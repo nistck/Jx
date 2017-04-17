@@ -58,7 +58,7 @@ namespace Jx.EntitySystem.LogicSystem
 			return this.aAx;
 		}
 
-		internal void a()
+		internal void TickWaitItems()
 		{
 			int num = this.aAZ.Count;
 			for (int i = 0; i < num; i++)

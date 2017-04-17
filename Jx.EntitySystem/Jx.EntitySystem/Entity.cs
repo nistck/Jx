@@ -14,6 +14,7 @@ using Jx.EntitySystem.LogicSystem;
 
 namespace Jx.EntitySystem
 {
+    [LogicSystemBrowsable(true), Editor(typeof(EditorEntityUITypeEditor), typeof(UITypeEditor))]
     public class Entity : JxObject
     {
  
@@ -799,7 +800,7 @@ namespace Jx.EntitySystem
         {
             if (this.LogicObject != null)
             {
-                this.LogicObject.a();
+                this.LogicObject.TickWaitItems();
             }
         }
 

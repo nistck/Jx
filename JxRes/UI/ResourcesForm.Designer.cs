@@ -43,6 +43,7 @@
             this.ResourcesView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.ResourcesView.ImageIndex = 0;
             this.ResourcesView.ImageList = this.IL16;
+            this.ResourcesView.LabelEdit = true;
             this.ResourcesView.Location = new System.Drawing.Point(0, 0);
             this.ResourcesView.Name = "ResourcesView";
             this.ResourcesView.SelectedImageIndex = 0;

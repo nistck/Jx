@@ -40,6 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\ActionNode.cs" />
+    <Compile Include="Behaviors\BehaviorNode.cs" />
+    <Compile Include="Behaviors\BehaviorTree.cs" />
+    <Compile Include="Behaviors\BehaviorTreeNode.cs" />
+    <Compile Include="Behaviors\DeciderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleBean.cs" />
     <Compile Include="SimpleWorld.cs" />

@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
+using System.Drawing.Design;
 
 using Jx.FileSystem;
 using Jx.FileSystem.Internals;
@@ -201,6 +203,8 @@ namespace Jx.EntitySystem
 			return true;
 		}
 
+ 
+
 		private void _Shutdown()
 		{
 			WorldDestroy();
@@ -210,7 +214,7 @@ namespace Jx.EntitySystem
 
 		protected internal virtual bool OnLoadNotDefinedEntityType(string entityTypeName, string entityClassName, ref EntityType changedType, ref bool changeAllSameTypes)
 		{
-			string text = string.Format("Entity Type not defined \"{0}\", Class: {1}", entityTypeName, entityClassName);
+			string text = string.Format("实体 \"{0}\" 未定义, Class: {1}", entityTypeName, entityClassName);
 			Log.Error(text);
 			return false;
 		}
@@ -219,9 +223,11 @@ namespace Jx.EntitySystem
 		{
 			WorldDestroy();
             if (worldType == null)
-                return false; 
+                return false;
 
-			Entities.Init();
+            this.worldSimulationType = worldSimulationType;
+
+            Entities.Init();
 			uint networkUIN = 0u;
 			Entities.Instance._CreateInternal(worldType, null, 0u, networkUIN);
 			return true;
