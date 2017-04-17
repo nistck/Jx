@@ -210,16 +210,16 @@ namespace Jx.FileSystem.Archives
 		}
 		private bool b()
 		{
-			EngineComponentManager.ComponentInfo[] componentsByType = EngineComponentManager.Instance.GetComponentsByType(EngineComponentManager.ComponentTypeFlags.Archive, true);
+			ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.Archive, true);
 			List<Assembly> list = new List<Assembly>();
-			EngineComponentManager.ComponentInfo[] array = componentsByType;
+			ComponentManager.ComponentInfo[] array = componentsByType;
 			for (int i = 0; i < array.Length; i++)
 			{
-				EngineComponentManager.ComponentInfo componentInfo = array[i];
-				EngineComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
+				ComponentManager.ComponentInfo componentInfo = array[i];
+				ComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
 				for (int j = 0; j < allEntryPointsForThisPlatform.Length; j++)
 				{
-					EngineComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
+					ComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
 					string fileName = Path.Combine(VirtualFileSystem.ExecutableDirectoryPath, pathInfo.Path);
 					Assembly item = AssemblyUtils.LoadAssemblyByFileName(fileName);
 					if (!list.Contains(item))

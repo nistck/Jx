@@ -208,7 +208,7 @@ namespace Jx.FileSystem
 				_CorrectCurrentDirectory();
 			}
 
-			EngineComponentManager.Init();
+			ComponentManager.Init();
 			if (!ArchiveManager.A())
 			{
 				Shutdown();
@@ -229,7 +229,7 @@ namespace Jx.FileSystem
         public static void Shutdown()
 		{
 			ArchiveManager.a();
-			EngineComponentManager.Unload();
+			ComponentManager.Unload();
 			Initialized = false;
 		}
 

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Jx.FileSystem
 {
-	public sealed class EngineComponentManager
+	public sealed class ComponentManager
 	{
 		[Flags]
 		public enum ComponentTypeFlags
@@ -77,101 +77,108 @@ namespace Jx.FileSystem
 				}
 			}
 
-			internal string aD = "";
-			internal string ad = "";
-			internal EngineComponentManager.ComponentTypeFlags aE;
-			internal EngineComponentManager.PlatformFlags ae = EngineComponentManager.PlatformFlags.Windows | EngineComponentManager.PlatformFlags.MacOSX;
-			internal EngineComponentManager.PlatformFlags aF;
-			internal List<EngineComponentManager.ComponentInfo.PathInfo> af = new List<EngineComponentManager.ComponentInfo.PathInfo>();
-			internal ReadOnlyCollection<EngineComponentManager.ComponentInfo.PathInfo> aG;
-			internal string ag = "";
+			internal string name = "";
+			internal string fullName = "";
+			internal ComponentTypeFlags componentTypeFlag;
+			internal PlatformFlags platformFlag = PlatformFlags.Windows | PlatformFlags.MacOSX;
+			internal PlatformFlags aF;
+			internal List<PathInfo> af = new List<PathInfo>();
+			internal ReadOnlyCollection<PathInfo> paths;
+			internal string applicationName_MacOSX = "";
+
 			public string Name
 			{
 				get
 				{
-					return this.aD;
+					return this.name;
 				}
 			}
+
 			public string FullName
 			{
 				get
 				{
-					return this.ad;
+					return this.fullName;
 				}
 			}
-			public EngineComponentManager.ComponentTypeFlags ComponentTypes
+			public ComponentTypeFlags ComponentTypes
 			{
 				get
 				{
-					return this.aE;
+					return this.componentTypeFlag;
 				}
 			}
-			public EngineComponentManager.PlatformFlags Platforms
+			public PlatformFlags Platforms
 			{
 				get
 				{
-					return this.ae;
+					return this.platformFlag;
 				}
 			}
-			public EngineComponentManager.PlatformFlags EnableByDefaultPlatforms
+			public PlatformFlags EnableByDefaultPlatforms
 			{
 				get
 				{
 					return this.aF;
 				}
 			}
-			public ReadOnlyCollection<EngineComponentManager.ComponentInfo.PathInfo> Paths
+			public ReadOnlyCollection<PathInfo> Paths
 			{
 				get
 				{
-					return this.aG;
+					return this.paths;
 				}
 			}
+
 			public string MacOSXApplicationName
 			{
 				get
 				{
-					return this.ag;
+					return this.applicationName_MacOSX;
 				}
 				set
 				{
-					this.ag = value;
+					this.applicationName_MacOSX = value;
 				}
 			}
+
 			internal ComponentInfo()
 			{
-				this.aG = new ReadOnlyCollection<EngineComponentManager.ComponentInfo.PathInfo>(this.af);
+				this.paths = new ReadOnlyCollection<ComponentManager.ComponentInfo.PathInfo>(this.af);
 			}
+
 			public bool IsEnabledByDefaultForThisPlatform()
 			{
 				switch (PlatformInfo.Platform)
 				{
 				case PlatformInfo.PlanformType.Windows:
-					return (this.aF & EngineComponentManager.PlatformFlags.Windows) != (EngineComponentManager.PlatformFlags)0;
+					return (this.aF & ComponentManager.PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0;
 				case PlatformInfo.PlanformType.MacOSX:
-					return (this.aF & EngineComponentManager.PlatformFlags.MacOSX) != (EngineComponentManager.PlatformFlags)0;
+					return (this.aF & ComponentManager.PlatformFlags.MacOSX) != (ComponentManager.PlatformFlags)0;
 				default:
 					return false;
 				}
 			}
+
 			public override string ToString()
 			{
-				if (!string.IsNullOrEmpty(this.ad))
+				if (!string.IsNullOrEmpty(this.fullName))
 				{
-					return this.ad;
+					return this.fullName;
 				}
-				return this.aD;
+				return this.name;
 			}
-			public EngineComponentManager.ComponentInfo.PathInfo[] GetAllEntryPointsForThisPlatform()
+
+			public PathInfo[] GetAllEntryPointsForThisPlatform()
 			{
 				switch (PlatformInfo.Platform)
 				{
 				case PlatformInfo.PlanformType.Windows:
 				{
-					List<EngineComponentManager.ComponentInfo.PathInfo> list = new List<EngineComponentManager.ComponentInfo.PathInfo>();
-					foreach (EngineComponentManager.ComponentInfo.PathInfo current in this.af)
+					List<PathInfo> list = new List<PathInfo>();
+					foreach (PathInfo current in this.af)
 					{
-						if (current.entryPoint && (current.ax & EngineComponentManager.PlatformFlags.Windows) != (EngineComponentManager.PlatformFlags)0)
+						if (current.entryPoint && (current.ax & PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0)
 						{
 							bool flag = false;
 							if (IntPtr.Size == 8)
@@ -195,10 +202,10 @@ namespace Jx.FileSystem
 				}
 				case PlatformInfo.PlanformType.MacOSX:
 				{
-					List<EngineComponentManager.ComponentInfo.PathInfo> list2 = new List<EngineComponentManager.ComponentInfo.PathInfo>();
-					foreach (EngineComponentManager.ComponentInfo.PathInfo current2 in this.af)
+					List<PathInfo> list2 = new List<PathInfo>();
+					foreach (PathInfo current2 in this.af)
 					{
-						if (current2.entryPoint && (current2.ax & EngineComponentManager.PlatformFlags.MacOSX) != (EngineComponentManager.PlatformFlags)0)
+						if (current2.entryPoint && (current2.ax & PlatformFlags.MacOSX) != (PlatformFlags)0)
 						{
 							list2.Add(current2);
 						}
@@ -209,9 +216,9 @@ namespace Jx.FileSystem
 					return null;
 				}
 			}
-			public EngineComponentManager.ComponentInfo.PathInfo GetFirstEntryPointForThisPlatform()
+			public PathInfo GetFirstEntryPointForThisPlatform()
 			{
-				EngineComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = this.GetAllEntryPointsForThisPlatform();
+				PathInfo[] allEntryPointsForThisPlatform = this.GetAllEntryPointsForThisPlatform();
 				if (allEntryPointsForThisPlatform.Length != 0)
 				{
 					return allEntryPointsForThisPlatform[0];
@@ -223,17 +230,17 @@ namespace Jx.FileSystem
 				switch (PlatformInfo.Platform)
 				{
 				case PlatformInfo.PlanformType.Windows:
-					return (this.ae & EngineComponentManager.PlatformFlags.Windows) != (EngineComponentManager.PlatformFlags)0;
+					return (this.platformFlag & PlatformFlags.Windows) != (PlatformFlags)0;
 				case PlatformInfo.PlanformType.MacOSX:
-					return (this.ae & EngineComponentManager.PlatformFlags.MacOSX) != (EngineComponentManager.PlatformFlags)0;
+					return (this.platformFlag & PlatformFlags.MacOSX) != (PlatformFlags)0;
 				default:
 					return false;
 				}
 			}
 		}
-		private static EngineComponentManager instance;
+		private static ComponentManager instance;
 		private Dictionary<string, ComponentInfo> componentsDic = new Dictionary<string, ComponentInfo>();
-		public static EngineComponentManager Instance
+		public static ComponentManager Instance
 		{
 			get
 			{
@@ -254,7 +261,7 @@ namespace Jx.FileSystem
 			{
 				Log.Fatal("EngineComponentManager: Init: The instance of the manager is already initialized.");
 			}
-			instance = new EngineComponentManager();
+			instance = new ComponentManager();
 			instance._Startup();
 		}
 
@@ -267,7 +274,7 @@ namespace Jx.FileSystem
 			}
 		}
 
-		private void CreateComponent(string p)
+		private void LoadComponent(string p)
 		{
             string arg;
 			TextBlock textBlock = TextBlockUtils.LoadFromRealFile(p, out arg);
@@ -276,44 +283,44 @@ namespace Jx.FileSystem
 				try
 				{
 					ComponentInfo componentInfo = new ComponentInfo();
-					componentInfo.aD = Path.GetFileNameWithoutExtension(p);
-					if (this.componentsDic.ContainsKey(componentInfo.aD))
+					componentInfo.name = Path.GetFileNameWithoutExtension(p);
+					if (this.componentsDic.ContainsKey(componentInfo.name))
 					{
-						Log.Fatal("EngineComponentManager: ParseComponentFile: The component with a name \"{0}\" is already registered.", componentInfo.aD);
+						Log.Fatal("EngineComponentManager: ParseComponentFile: The component with a name \"{0}\" is already registered.", componentInfo.name);
                         return;
 					}
 
-					this.componentsDic.Add(componentInfo.aD, componentInfo);
-					componentInfo.ad = textBlock.GetAttribute("fullName", "[FULL NAME IS NOT SPECIFIED]");
+					this.componentsDic.Add(componentInfo.name, componentInfo);
+					componentInfo.fullName = textBlock.GetAttribute("fullName", "[FULL NAME IS NOT SPECIFIED]");
 					if (textBlock.IsAttributeExist("componentTypes"))
 					{
-						componentInfo.aE = (EngineComponentManager.ComponentTypeFlags)Enum.Parse(typeof(EngineComponentManager.ComponentTypeFlags), textBlock.GetAttribute("componentTypes"));
+						componentInfo.componentTypeFlag = (ComponentTypeFlags)Enum.Parse(typeof(ComponentTypeFlags), textBlock.GetAttribute("componentTypes"));
 					}
 					if (textBlock.IsAttributeExist("platforms"))
 					{
-						componentInfo.ae = (EngineComponentManager.PlatformFlags)Enum.Parse(typeof(EngineComponentManager.PlatformFlags), textBlock.GetAttribute("platforms"));
+						componentInfo.platformFlag = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), textBlock.GetAttribute("platforms"));
 					}
 					if (textBlock.IsAttributeExist("enableByDefaultPlatforms"))
 					{
 						string attribute = textBlock.GetAttribute("enableByDefaultPlatforms");
 						if (!string.IsNullOrEmpty(attribute))
 						{
-							componentInfo.aF = (EngineComponentManager.PlatformFlags)Enum.Parse(typeof(EngineComponentManager.PlatformFlags), attribute);
+							componentInfo.aF = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), attribute);
 						}
 						else
 						{
-							componentInfo.aF = (EngineComponentManager.PlatformFlags)0;
+							componentInfo.aF = (ComponentManager.PlatformFlags)0;
 						}
 					}
 					foreach (TextBlock current in textBlock.Children)
 					{
 						if (current.Name == "path")
 						{
-							EngineComponentManager.ComponentInfo.PathInfo pathInfo = new EngineComponentManager.ComponentInfo.PathInfo();
+							ComponentInfo.PathInfo pathInfo = new ComponentInfo.PathInfo();
 							pathInfo.path = current.GetAttribute("path");
 							if (current.IsAttributeExist("platforms"))
 							{
-								pathInfo.ax = (EngineComponentManager.PlatformFlags)Enum.Parse(typeof(EngineComponentManager.PlatformFlags), current.GetAttribute("platforms"));
+								pathInfo.ax = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), current.GetAttribute("platforms"));
 							}
 							if (current.IsAttributeExist("entryPoint"))
 							{
@@ -324,7 +331,7 @@ namespace Jx.FileSystem
 					}
 					if (textBlock.IsAttributeExist("macOSXApplicationName"))
 					{
-						componentInfo.ag = textBlock.GetAttribute("macOSXApplicationName");
+						componentInfo.applicationName_MacOSX = textBlock.GetAttribute("macOSXApplicationName");
 					}
 					return;
 				}
@@ -347,7 +354,7 @@ namespace Jx.FileSystem
 				{
 					string file = files[i];
                     Log.Info(">> ÕÒµ½×é¼þ: {0}", file);
-					CreateComponent(file);
+					LoadComponent(file);
 				}
 			}
 		}
@@ -362,7 +369,7 @@ namespace Jx.FileSystem
 
 		public ComponentInfo GetComponentByName(string name)
 		{
-			EngineComponentManager.ComponentInfo result;
+			ComponentManager.ComponentInfo result;
 			if (this.componentsDic.TryGetValue(name, out result))
 			{
 				return result;
@@ -375,7 +382,7 @@ namespace Jx.FileSystem
 			List<ComponentInfo> list = new List<ComponentInfo>();
 			foreach (ComponentInfo current in this.Components)
 			{
-				if ((current.aE & typeFlags) != (ComponentTypeFlags)0 && (!onlySupportedOnThisPlatform || current.IsSupportedOnThisPlatform()))
+				if ((current.componentTypeFlag & typeFlags) != (ComponentTypeFlags)0 && (!onlySupportedOnThisPlatform || current.IsSupportedOnThisPlatform()))
 				{
 					list.Add(current);
 				}

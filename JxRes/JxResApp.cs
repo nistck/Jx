@@ -69,6 +69,7 @@ namespace JxRes
                 }
             }
 
+            AddonManager.PreInit();
             InitResourceTypeManager();
 
             instance = this;

@@ -146,14 +146,14 @@ namespace Jx.EntitySystem
 			entityClassAssemblies.Add(item);
             //*/
 
-			EngineComponentManager.ComponentInfo[] componentsByType = EngineComponentManager.Instance.GetComponentsByType(EngineComponentManager.ComponentTypeFlags.EntityClasses, true);
+			ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.EntityClasses, true);
 			for (int i = 0; i < componentsByType.Length; i++)
 			{
-				EngineComponentManager.ComponentInfo componentInfo = componentsByType[i];
-				EngineComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
+				ComponentManager.ComponentInfo componentInfo = componentsByType[i];
+				ComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
 				for (int j = 0; j < allEntryPointsForThisPlatform.Length; j++)
 				{
-					EngineComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
+					ComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
 					Assembly assembly = AssemblyUtils.LoadAssemblyByRealFileName(pathInfo.Path, false);
 					if (assembly != null && !entityClassAssemblies.Contains(assembly))
 					{

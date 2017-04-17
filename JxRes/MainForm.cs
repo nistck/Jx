@@ -48,13 +48,12 @@ namespace JxRes
         {
             get { return resourcesForm; }
         }
-
-        private string LayoutConfig;
+         
         private bool SaveLayoutFlag = true;
 
         private void Bootstrap()
         { 
-            EngineApp.Init(new JxResApp());
+            EngineApp.Init(new JxResApp());  
 
             bool created = EngineApp.Instance.Create();
             if (created)
@@ -64,13 +63,42 @@ namespace JxRes
             EngineApp.Shutdown();
         }
 
+        private string LayoutConfig
+        {
+            get {
+                string _LayoutConfig = string.Format("Base/Constants/{0}Layout.xml", Program.ExecutableName);
+                string layoutConfig = VirtualFileSystem.GetRealPathByVirtual(_LayoutConfig);
+                return layoutConfig;
+            }
+        }
+
+        public DockPanel DockPanel
+        {
+            get { return dockPanel; }
+        }
+
+        public MenuStrip MainMenu
+        {
+            get { return menuStrip; }
+        }
+
+        public ToolStrip ToolStripGeneral
+        {
+            get { return this.toolStrip1; }
+        }
+
+        public ToolStripMenuItem AddonsToolStripMenuItem
+        {
+            get { return addonsToolStripMenuItem; }
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Bootstrap();
             SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
 
-            string _LayoutConfig = string.Format("Base/Constants/{0}Layout.xml", Program.ExecutableName);
-            LayoutConfig = VirtualFileSystem.GetRealPathByVirtual(_LayoutConfig);
+            AddonManager.Instance.PostInit();
+             
             serializeContext = new DeserializeDockContent(GetContentFromPersistString);
             if( !LoadLayoutConfig() )
             {
@@ -155,7 +183,7 @@ namespace JxRes
         private void SetTheme(VisualStudioToolStripExtender.VsVersion version, ThemeBase theme)
         {
             this.dockPanel.Theme = theme;
-            vsToolStripExtender1.SetStyle(this.menuStrip1, version, theme);
+            vsToolStripExtender1.SetStyle(this.menuStrip, version, theme);
             vsToolStripExtender1.SetStyle(this.toolStrip1, version, theme);
             vsToolStripExtender1.SetStyle(this.statusStrip1, version, theme);
         }

@@ -899,12 +899,12 @@ namespace JxRes.UI
                 Shell32Api.ShellExecuteEx("properties", realPathByVirtual);
             });
             contextMenuStrip.Items.Add(menuProperties);
-            /*
+            
             foreach (ResourceEditorAddon current3 in AddonManager.Instance.Addons)
             {
                 current3.OnShowContextMenuOfResourcesTree(contextMenuStrip);
             }
-            //*/
+
             contextMenuStrip.Show(this.ResourcesView, point);
         }
 

@@ -1,0 +1,11 @@
+fullName = "JxResAddon classes"
+componentTypes = "ResourceEditorAddon"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "JxRes.Addon.dll"
+	platforms = "Windows"
+	entryPoint = True
+}

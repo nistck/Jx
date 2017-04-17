@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Editors", "Jx.Editors\Jx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxDesign", "JxDesign\JxDesign.csproj", "{B30DDF74-390D-479D-96C0-3E768C31AB4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxRes.Addon", "JxRes.Addon\JxRes.Addon.csproj", "{BC75D6F5-293F-471D-8E01-3BCED930987E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B30DDF74-390D-479D-96C0-3E768C31AB4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC75D6F5-293F-471D-8E01-3BCED930987E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC75D6F5-293F-471D-8E01-3BCED930987E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC75D6F5-293F-471D-8E01-3BCED930987E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC75D6F5-293F-471D-8E01-3BCED930987E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
