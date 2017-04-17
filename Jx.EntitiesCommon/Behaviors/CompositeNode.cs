@@ -9,6 +9,7 @@ using System.Drawing.Design;
 
 using Jx;
 using Jx.EntitySystem;
+using Jx.FileSystem;
 
 namespace Jx.EntitiesCommon.Behaviors
 {
@@ -23,30 +24,7 @@ namespace Jx.EntitiesCommon.Behaviors
             public BehaviorTreeNodeType NodeType
             {
                 get { return nodeType; }
-                set { 
-                    /*
-                    if( value is CompositeNodeType )
-                    {
-                        CompositeNodeType cnt = value as CompositeNodeType;
-
-                        List<CompositeNodeType> L = new List<CompositeNodeType>(); 
-                        var q = cnt.Children.Select(_nx => _nx.NodeType).OfType<CompositeNodeType>().ToList();
-                        L.AddRange(q);
-                        while( L.Count > 0 )
-                        {
-                            CompositeNodeType nt = L[0];
-                            L.RemoveAt(0);
-                            
-                            // 当前值 的 孩子
-                            List<CompositeNodeType> Lc = nt.Children.Select(_nx => _nx.NodeType).OfType<CompositeNodeType>().ToList();
-                            if (Lc.Contains(cnt))
-                                throw new Exception("循环引用");
-                            L.AddRange(Lc);
-                        }
-                    }
-                    //*/
-                    this.nodeType = value;
-                }
+                set { this.nodeType = value; }
             }
 
             public override bool Equals(object obj)
@@ -85,7 +63,42 @@ namespace Jx.EntitiesCommon.Behaviors
                 return children;
             }
         }
-         
+
+        protected bool CheckCycle(ChildNodeItem cni)
+        {
+            Log.Info(">> {0}", cni);
+
+            CompositeNodeType cnt = cni.NodeType as CompositeNodeType;
+            if (cnt == null)
+                return false;
+
+            if (cnt == this)
+                return true;
+
+            foreach(ChildNodeItem c in cnt.Children)
+            {
+                bool bx = CheckCycle(c);
+                if (bx)
+                    return true;
+            }
+            return false;
+        }
+
+        protected override bool OnSave(TextBlock block)
+        {
+            for(int i = children.Count - 1; i >= 0; i --)
+            {
+                ChildNodeItem cni = children[i];
+
+                if(cni == null || cni.NodeType == null || CheckCycle(cni) )
+                {
+                    children.RemoveAt(i);
+                    continue;
+                }
+            }
+
+            return base.OnSave(block);
+        }
     }
 
     public abstract class CompositeNode : DeciderNode

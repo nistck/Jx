@@ -49,7 +49,7 @@
     <Compile Include="Behaviors\ConditionNode.cs" />
     <Compile Include="Behaviors\DeciderNode.cs" />
     <Compile Include="Behaviors\DecoratorNode.cs" />
-    <Compile Include="Behaviors\LinearNode.cs" />
+    <Compile Include="Behaviors\SerialNode.cs" />
     <Compile Include="Behaviors\ParallelNode.cs" />
     <Compile Include="Behaviors\SequenceNode.cs" />
     <Compile Include="Behaviors\SelectorNode.cs" />

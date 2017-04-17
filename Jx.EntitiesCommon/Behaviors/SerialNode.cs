@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Jx.EntitiesCommon.Behaviors
 {
-    public abstract class LinearNodeType : CompositeNodeType
+    public abstract class SerialNodeType : CompositeNodeType
     {
         [FieldSerialize]
         protected bool firstAnswer; 
@@ -21,10 +21,10 @@ namespace Jx.EntitiesCommon.Behaviors
  
     }
 
-    public abstract class LinearNode : CompositeNode
+    public abstract class SerialNode : CompositeNode
     {
-        private LinearNodeType _type = null;
-        public new LinearNodeType Type { get { return _type; } }
+        private SerialNodeType _type = null;
+        public new SerialNodeType Type { get { return _type; } }
     }
 }
  

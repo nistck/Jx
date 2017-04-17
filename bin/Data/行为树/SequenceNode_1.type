@@ -5,6 +5,7 @@ type SequenceNode_1
 	{
 		item
 		{
+			nodeType = SequenceNode_1
 		}
 		item
 		{

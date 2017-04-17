@@ -12,12 +12,14 @@ type ParallelNode_1
 		}
 		item
 		{
+			nodeType = ParallelNode_1
 		}
 		item
 		{
 		}
 		item
 		{
+			nodeType = ParallelNode_1
 		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Jx.EntitiesCommon.Behaviors
 {
-    public class SequenceNodeType : LinearNodeType
+    public class SequenceNodeType : SerialNodeType
     {
         public SequenceNodeType()
         {
@@ -14,7 +14,7 @@ namespace Jx.EntitiesCommon.Behaviors
         }
     }
 
-    public class SequenceNode : LinearNode
+    public class SequenceNode : SerialNode
     {
         private SequenceNodeType _type = null;
         public new SequenceNodeType Type { get { return _type; } }

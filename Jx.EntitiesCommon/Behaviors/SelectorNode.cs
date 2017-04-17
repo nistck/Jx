@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Jx.EntitiesCommon.Behaviors
 {
-    public class SelectorNodeType : LinearNodeType
+    public class SelectorNodeType : SerialNodeType
     {
         public SelectorNodeType()
         {
@@ -14,7 +14,7 @@ namespace Jx.EntitiesCommon.Behaviors
         }
     }
 
-    public class SelectorNode : LinearNode
+    public class SelectorNode : SerialNode
     {
         private SelectorNodeType _type = null;
         public new SelectorNodeType Type { get { return _type; } }
