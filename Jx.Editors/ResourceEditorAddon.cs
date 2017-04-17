@@ -81,5 +81,10 @@ namespace Jx.Editors
         public virtual void OnShowOptionsDialog(/*OptionsDialog*/object dialog)
         {
         } 
+
+        public virtual void OnTick(float delta)
+        {
+
+        }
     }
 }

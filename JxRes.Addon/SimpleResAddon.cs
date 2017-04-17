@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using Jx;
 using Jx.Editors;
+using JxRes.Addon.Properties;
 
 namespace JxRes.Addon
 {
@@ -16,7 +17,7 @@ namespace JxRes.Addon
         public override bool OnInit(out string mainMenuItemText, out Image mainMenuItemIcon)
         {
             mainMenuItemText = "SimpleAddon";
-            mainMenuItemIcon = null;
+            mainMenuItemIcon = Resources.folder_16;
             return true;
         }
 

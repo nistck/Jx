@@ -269,7 +269,7 @@ namespace Jx.FileSystem
 		{
 			if (instance != null)
 			{
-				instance.C();
+				instance.unload();
 				instance = null;
 			}
 		}
@@ -363,13 +363,14 @@ namespace Jx.FileSystem
 		{
 			this.InitComponents();
 		}
-		private void C()
+
+		private void unload()
 		{
 		}
 
 		public ComponentInfo GetComponentByName(string name)
 		{
-			ComponentManager.ComponentInfo result;
+			ComponentInfo result;
 			if (this.componentsDic.TryGetValue(name, out result))
 			{
 				return result;
