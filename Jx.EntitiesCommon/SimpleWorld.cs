@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Jx.EntitySystem;
 
-namespace Jx.Entities
+namespace Jx.EntitiesCommon
 {
     public class SimpleWorldType : WorldType
     {

@@ -51,6 +51,7 @@ namespace Jx.Editors
         public static string CurrentHelperDirectoryName
         {
             get { return currentHelperDirectoryName; }
+            set { currentHelperDirectoryName = value; }
         }
 
         public ChooseResourceForm(

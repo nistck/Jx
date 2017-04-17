@@ -92,6 +92,11 @@ namespace JxRes
             get { return addonsToolStripMenuItem; }
         }
 
+        public void NewMessage(string text)
+        {
+            Log.Info(text);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Bootstrap();

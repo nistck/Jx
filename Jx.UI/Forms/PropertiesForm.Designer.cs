@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.SplitView = new System.Windows.Forms.SplitContainer();
             this.jxPropertyGrid = new Jx.UI.Controls.PGEx.JxPropertyGrid();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.SplitView)).BeginInit();
             this.SplitView.Panel1.SuspendLayout();
             this.SplitView.SuspendLayout();
@@ -74,7 +75,7 @@
             this.jxPropertyGrid.DocCommentTitle.TabIndex = 0;
             this.jxPropertyGrid.DocCommentTitle.UseMnemonic = false;
             this.jxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jxPropertyGrid.LabelRatio = 2.8484848484848486D;
+            this.jxPropertyGrid.LabelRatio = 3.032258064516129D;
             this.jxPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.jxPropertyGrid.Name = "jxPropertyGrid";
             this.jxPropertyGrid.ReadOnly = true;
@@ -99,6 +100,12 @@
             this.jxPropertyGrid.ToolStrip.Text = "PropertyGridToolBar";
             this.jxPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.jxPropertyGrid_PropertyValueChanged);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 20;
+            this.timer1.Tick += new System.EventHandler(this.timer_Tick);
+            // 
             // PropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -121,5 +128,6 @@
 
         private System.Windows.Forms.SplitContainer SplitView;
         private Controls.PGEx.JxPropertyGrid jxPropertyGrid;
+        private System.Windows.Forms.Timer timer1;
     }
 }

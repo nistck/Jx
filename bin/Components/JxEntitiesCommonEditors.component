@@ -1,11 +1,11 @@
-fullName = "JxEntities classes"
+fullName = "JxEntitiesCommonEditors classes"
 componentTypes = "EntityClasses"
 platforms = "Windows"
 enableByDefaultPlatforms = "Windows"
 
 path
 {
-	path = "Jx.Entities.dll"
+	path = "Jx.EntitiesCommon.Editors.dll"
 	platforms = "Windows"
 	entryPoint = True
 }

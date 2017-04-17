@@ -13,53 +13,44 @@ using Jx.EntitySystem.LogicSystem;
 
 namespace Jx.EntitySystem
 {
-    internal static class Ci
+    internal static class EntityHelper
     {
-        private static string A(bool flag, FieldInfo fieldInfo)
+        private static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
         {
             string result = fieldInfo.Name;
-            if (flag)
+            if (entityOrEntityType)
             {
-                Entity.FieldSerializeAttribute[] array = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                bool flag2 = array.Length != 0 && array[0].PropertyName != null;
-                if (flag2)
-                {
-                    result = array[0].PropertyName;
-                }
+                Entity.FieldSerializeAttribute[] r = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
+                if (r.Length != 0 && r[0].PropertyName != null)
+                    result = r[0].PropertyName;
             }
             else
             {
-                EntityType.FieldSerializeAttribute[] array2 = (EntityType.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true);
-                bool flag3 = array2.Length != 0 && array2[0].PropertyName != null;
-                if (flag3)
-                {
-                    result = array2[0].PropertyName;
-                }
+                EntityType.FieldSerializeAttribute[] r = (EntityType.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true);
+                if (r.Length != 0 && r[0].PropertyName != null)
+                    result = r[0].PropertyName;
             }
             return result;
         }
+
         public static bool GetLoadStringValue(Type type, string strValue, string errorString, out object outValue)
         {
             outValue = null;
             bool result;
             try
-            {
-                bool flag = SimpleTypesUtils.IsSimpleType(type);
-                if (flag)
-                {
-                    bool flag2 = strValue == "";
-                    if (flag2)
-                    {
-                        bool flag3 = type == typeof(string);
-                        if (flag3)
+            { 
+                if (SimpleTypesUtils.IsSimpleType(type))
+                { 
+                    if (strValue == "")
+                    { 
+                        if (type == typeof(string))
                         {
                             outValue = "";
                             result = true;
                         }
                         else
-                        {
-                            bool flag4 = errorString != null;
-                            if (flag4)
+                        { 
+                            if (errorString != null)
                             {
                                 Log.Error("Entity System: Serialization error. The invalid value \"{0}\" for type \"{1}\" ({2}).", strValue, type, errorString);
                             }
@@ -68,18 +59,15 @@ namespace Jx.EntitySystem
                     }
                     else
                     {
-                        outValue = SimpleTypesUtils.GetSimpleTypeValue(type, strValue);
-                        bool flag5 = outValue == null;
-                        result = !flag5;
+                        outValue = SimpleTypesUtils.GetSimpleTypeValue(type, strValue); 
+                        result = outValue != null;
                     }
                 }
                 else
                 {
-                    bool flag6 = typeof(Entity).IsAssignableFrom(type);
-                    if (flag6)
+                    if (typeof(Entity).IsAssignableFrom(type))
                     {
-                        bool flag7 = strValue == "null" || strValue == "";
-                        if (flag7)
+                        if (strValue == "null" || strValue == "")
                         {
                             result = true;
                         }
@@ -88,9 +76,8 @@ namespace Jx.EntitySystem
                             Entity loadingEntityBySerializedUIN = Entities.Instance.GetLoadingEntityBySerializedUIN(uint.Parse(strValue));
                             bool flag8 = (EntitySystemWorld.Instance.IsSingle() || EntitySystemWorld.Instance.IsEditor()) && loadingEntityBySerializedUIN == null;
                             if (flag8)
-                            {
-                                bool flag9 = errorString != null;
-                                if (flag9)
+                            { 
+                                if (errorString != null)
                                 {
                                     Log.Error("Entity System: Serialization error. The entity with UIN \"{0}\" is not exists ({1}).", strValue, errorString);
                                 }
@@ -104,25 +91,21 @@ namespace Jx.EntitySystem
                         }
                     }
                     else
-                    {
-                        bool flag10 = typeof(EntityType).IsAssignableFrom(type);
-                        if (flag10)
-                        {
-                            bool flag11 = strValue == "null" || strValue == "";
-                            if (flag11)
+                    { 
+                        if (typeof(EntityType).IsAssignableFrom(type))
+                        { 
+                            if (strValue == "null" || strValue == "")
                             {
                                 result = true;
                             }
                             else
                             {
-                                EntityType byName = EntityTypes.Instance.GetByName(strValue);
-                                bool flag12 = byName == null;
-                                if (flag12)
-                                {
-                                    bool flag13 = errorString != null;
-                                    if (flag13)
+                                EntityType byName = EntityTypes.Instance.GetByName(strValue); 
+                                if (byName == null)
+                                { 
+                                    if (errorString != null)
                                     {
-                                        Log.Error("Entity System: Serialization error. The entity type is not defined \"{0}\" ({1}).", strValue, errorString);
+                                        Log.Error("Entity System: Serialization error. The entity type is not defined \"{0}\" ({1}).", strValue, errorString);                                        
                                     }
                                     result = false;
                                 }
@@ -228,6 +211,7 @@ namespace Jx.EntitySystem
             }
             return result;
         }
+
         private static void A(object obj, FieldInfo fieldInfo, List<object> list)
         {
             bool isArray = fieldInfo.FieldType.IsArray;
@@ -334,7 +318,7 @@ namespace Jx.EntitySystem
             {
                 type = fieldInfo.FieldType.GetGenericArguments()[0];
             }
-            string name = Ci.A(flag, fieldInfo);
+            string name = EntityHelper.GetFieldSerializeName(flag, fieldInfo);
             bool flag2 = type == typeof(string);
             bool result;
             if (flag2)
@@ -354,7 +338,7 @@ namespace Jx.EntitySystem
                         }
                         list.Add(text2);
                     }
-                    Ci.A(obj, fieldInfo, list);
+                    EntityHelper.A(obj, fieldInfo, list);
                 }
                 result = true;
             }
@@ -400,7 +384,7 @@ namespace Jx.EntitySystem
                         {
                             string strValue = array2[i];
                             object item;
-                            bool flag12 = !Ci.GetLoadStringValue(type, strValue, text, out item);
+                            bool flag12 = !EntityHelper.GetLoadStringValue(type, strValue, text, out item);
                             if (flag12)
                             {
                                 bool flag13 = false;
@@ -409,7 +393,7 @@ namespace Jx.EntitySystem
                             }
                             list2.Add(item);
                         }
-                        Ci.A(obj, fieldInfo, list2);
+                        EntityHelper.A(obj, fieldInfo, list2);
                     }
                     result = true;
                 }
@@ -419,7 +403,7 @@ namespace Jx.EntitySystem
                     bool flag14 = textBlock3 != null;
                     if (flag14)
                     {
-                        List<FieldInfo> list3 = Ci.A(flag, type);
+                        List<FieldInfo> list3 = EntityHelper.A(flag, type);
                         List<object> list4 = new List<object>(textBlock3.Children.Count);
                         foreach (TextBlock current2 in textBlock3.Children)
                         {
@@ -439,7 +423,7 @@ namespace Jx.EntitySystem
                                     while (enumerator3.MoveNext())
                                     {
                                         FieldInfo current3 = enumerator3.Current;
-                                        bool flag17 = !Ci.LoadFieldValue(flag, obj2, current3, current2, text);
+                                        bool flag17 = !EntityHelper.LoadFieldValue(flag, obj2, current3, current2, text);
                                         if (flag17)
                                         {
                                             bool flag18 = false;
@@ -459,16 +443,17 @@ namespace Jx.EntitySystem
                             obj2 = null;
                             goto IL_347;
                         }
-                        Ci.A(obj, fieldInfo, list4);
+                        EntityHelper.A(obj, fieldInfo, list4);
                     }
                     result = true;
                 }
             }
             return result;
         }
+
         public static bool LoadFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, string errorString)
         {
-            string text = Ci.A(entitySerialize, field);
+            string text = EntityHelper.GetFieldSerializeName(entitySerialize, field);
             errorString += string.Format(", property: \"{0}\"", text);
             bool flag = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
             bool isArray = field.FieldType.IsArray;
@@ -482,7 +467,7 @@ namespace Jx.EntitySystem
                     Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
                     return false;
                 }
-                result = Ci.A(entitySerialize, owner, field, block, errorString);
+                result = EntityHelper.A(entitySerialize, owner, field, block, errorString);
             }
             else
             {
@@ -502,7 +487,7 @@ namespace Jx.EntitySystem
                     {
                         string attribute = block.GetAttribute(text);
                         object value;
-                        bool flag9 = !Ci.GetLoadStringValue(field.FieldType, attribute, errorString, out value);
+                        bool flag9 = !EntityHelper.GetLoadStringValue(field.FieldType, attribute, errorString, out value);
                         if (flag9)
                         {
                             result = false;
@@ -564,7 +549,7 @@ namespace Jx.EntitySystem
                                 i++;
                                 continue;
                                 IL_288:
-                                bool flag16 = !Ci.LoadFieldValue(entitySerialize, obj, fieldInfo, textBlock, errorString);
+                                bool flag16 = !EntityHelper.LoadFieldValue(entitySerialize, obj, fieldInfo, textBlock, errorString);
                                 if (flag16)
                                 {
                                     result = false;
@@ -632,11 +617,17 @@ namespace Jx.EntitySystem
             }
             return result;
         }
-        private static bool A(bool flag, object obj, FieldInfo fieldInfo, TextBlock textBlock, object obj2, string text)
+
+        public static List<object> GetFieldValue(object obj, FieldInfo fieldInfo)
         {
+            List<object> items = new List<object>();
+            if (obj == null || fieldInfo == null)
+                return items;
+
             object value = fieldInfo.GetValue(obj);
             bool isArray = fieldInfo.FieldType.IsArray;
-            object[] array;
+            bool isList = fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.Name == typeof(List<>).Name;
+
             if (isArray)
             {
                 PropertyInfo property = fieldInfo.FieldType.GetProperty("Length");
@@ -645,12 +636,54 @@ namespace Jx.EntitySystem
                     typeof(int)
                 });
                 int num = (int)property.GetValue(value, null);
-                array = new object[num];
                 object[] array2 = new object[1];
                 for (int i = 0; i < num; i++)
                 {
                     array2[0] = i;
-                    array[i] = method.Invoke(value, array2);
+                    object o = method.Invoke(value, array2);
+                    items.Add(o);
+                }
+            }
+            else if( isList )
+            {
+                PropertyInfo property2 = fieldInfo.FieldType.GetProperty("Count");
+                PropertyInfo property3 = fieldInfo.FieldType.GetProperty("Item");
+                int num2 = (int)property2.GetValue(value, null);
+                object[] array3 = new object[1];
+                for (int j = 0; j < num2; j++)
+                {
+                    array3[0] = j;
+                    object o1 = property3.GetValue(value, array3);
+                    items.Add(o1);
+                }
+            }
+            else
+            {
+                items.Add(value);
+            }
+            return items;
+        }
+
+        private static bool SaveCollectionFieldValue(bool flag, object obj, FieldInfo fieldInfo, TextBlock textBlock, object obj2, string text)
+        {
+            object value = fieldInfo.GetValue(obj);
+            bool isArray = fieldInfo.FieldType.IsArray;
+
+            List<object> items = new List<object>();
+            if (isArray)
+            {
+                PropertyInfo property = fieldInfo.FieldType.GetProperty("Length");
+                MethodInfo method = fieldInfo.FieldType.GetMethod("GetValue", new Type[]
+                {
+                    typeof(int)
+                });
+                int num = (int)property.GetValue(value, null); 
+                object[] array2 = new object[1];
+                for (int i = 0; i < num; i++)
+                {
+                    array2[0] = i;
+                    object o = method.Invoke(value, array2);
+                    items.Add(o);
                 }
             }
             else
@@ -658,12 +691,12 @@ namespace Jx.EntitySystem
                 PropertyInfo property2 = fieldInfo.FieldType.GetProperty("Count");
                 PropertyInfo property3 = fieldInfo.FieldType.GetProperty("Item");
                 int num2 = (int)property2.GetValue(value, null);
-                array = new object[num2];
                 object[] array3 = new object[1];
                 for (int j = 0; j < num2; j++)
                 {
                     array3[0] = j;
-                    array[j] = property3.GetValue(value, array3);
+                    object o1 = property3.GetValue(value, array3);
+                    items.Add(o1);
                 }
             }
             bool flag2 = !flag && obj is EntityType && obj2 != null;
@@ -684,7 +717,7 @@ namespace Jx.EntitySystem
                     int num4 = (int)property5.GetValue(obj2, null);
                     flag3 = (num4 == 0);
                 }
-                bool flag4 = array.Length == 0 & flag3;
+                bool flag4 = items.Count == 0 & flag3;
                 if (flag4)
                 {
                     result = true;
@@ -701,15 +734,14 @@ namespace Jx.EntitySystem
             {
                 type = fieldInfo.FieldType.GetGenericArguments()[0];
             }
-            string text2 = Ci.A(flag, fieldInfo);
+            string text2 = EntityHelper.GetFieldSerializeName(flag, fieldInfo);
             bool flag5 = type == typeof(string);
             if (flag5)
             {
-                TextBlock textBlock2 = textBlock.AddChild(text2);
-                object[] array4 = array;
-                for (int k = 0; k < array4.Length; k++)
+                TextBlock textBlock2 = textBlock.AddChild(text2); 
+                for (int k = 0; k < items.Count; k++)
                 {
-                    object obj3 = array4[k];
+                    object obj3 = items[k];
                     TextBlock textBlock3 = textBlock2.AddChild("item");
                     bool flag6 = obj3 != null;
                     if (flag6)
@@ -743,9 +775,9 @@ namespace Jx.EntitySystem
                         value2 = ' ';
                     }
                     StringBuilder stringBuilder = new StringBuilder();
-                    for (int l = 0; l < array.Length; l++)
+                    for (int l = 0; l < items.Count; l++)
                     {
-                        object obj4 = array[l];
+                        object obj4 = items[l];
                         bool flag12 = flag8 && obj4 != null;
                         if (flag12)
                         {
@@ -765,7 +797,7 @@ namespace Jx.EntitySystem
                         bool flag15 = obj4 != null;
                         if (flag15)
                         {
-                            stringBuilder.Append(Ci.GetSaveValueString(type, obj4, text + ": " + text2));
+                            stringBuilder.Append(EntityHelper.GetSaveValueString(type, obj4, text + ": " + text2));
                         }
                         else
                         {
@@ -778,12 +810,11 @@ namespace Jx.EntitySystem
                 else
                 {
                     TextBlock textBlock4 = textBlock.AddChild(text2);
-                    List<FieldInfo> list = Ci.A(flag, type);
-                    object[] array5 = array;
+                    List<FieldInfo> list = EntityHelper.A(flag, type); 
                     int m = 0;
-                    while (m < array5.Length)
+                    while (m < items.Count)
                     {
-                        object obj5 = array5[m];
+                        object obj5 = items[m];
                         TextBlock textBlock5 = textBlock4.AddChild("item");
                         bool flag16 = obj5 != null;
                         if (flag16)
@@ -800,7 +831,7 @@ namespace Jx.EntitySystem
                                     {
                                         defaultValue = array6[0].Value;
                                     }
-                                    bool flag18 = !Ci.SaveFieldValue(flag, obj5, current, textBlock5, defaultValue, text);
+                                    bool flag18 = !EntityHelper.SaveFieldValue(flag, obj5, current, textBlock5, defaultValue, text);
                                     if (flag18)
                                     {
                                         result = false;
@@ -835,12 +866,12 @@ namespace Jx.EntitySystem
             }
             else
             {
-                string text = Ci.A(entitySerialize, field);
+                string text = EntityHelper.GetFieldSerializeName(entitySerialize, field);
                 errorString += string.Format(", property: \"{0}\"", text);
-                bool flag2 = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
+                bool IsList = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
                 bool isArray = field.FieldType.IsArray;
-                bool flag3 = flag2 | isArray;
-                if (flag3)
+                bool FieldIsCollection = IsList | isArray;
+                if (FieldIsCollection)
                 {
                     bool flag4 = isArray && field.FieldType.GetArrayRank() != 1;
                     if (flag4)
@@ -848,7 +879,7 @@ namespace Jx.EntitySystem
                         Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
                         return false;
                     }
-                    result = Ci.A(entitySerialize, owner, field, block, defaultValue, errorString);
+                    result = SaveCollectionFieldValue(entitySerialize, owner, field, block, defaultValue, errorString);
                 }
                 else
                 {
@@ -874,7 +905,7 @@ namespace Jx.EntitySystem
                                 return false;
                             }
                         }
-                        string saveValueString = Ci.GetSaveValueString(field.FieldType, value, errorString);
+                        string saveValueString = EntityHelper.GetSaveValueString(field.FieldType, value, errorString);
                         string text2 = null;
                         bool flag11 = defaultValue != null;
                         if (flag11)
@@ -945,7 +976,7 @@ namespace Jx.EntitySystem
                                 {
                                     defaultValue2 = array3[0].Value;
                                 }
-                                bool flag18 = !Ci.SaveFieldValue(entitySerialize, value, fieldInfo, block2, defaultValue2, errorString);
+                                bool flag18 = !EntityHelper.SaveFieldValue(entitySerialize, value, fieldInfo, block2, defaultValue2, errorString);
                                 if (flag18)
                                 {
                                     result = false;

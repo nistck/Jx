@@ -67,7 +67,7 @@ namespace JxRes.Editors
         public override void Create(ResourceType resourceType, string fileName)
         {
             base.Create(resourceType, fileName);
-            EntityTypeResourceEditor.currentEditor = this;
+            currentEditor = this;
             base.AllowEditMode = true;
             this.currentEntityType = EntityTypes.Instance.FindByFilePath(fileName);
             if (this.currentEntityType != null)
@@ -80,11 +80,12 @@ namespace JxRes.Editors
                     {
                         throw new Exception(string.Format(this.Translate("Unable to load type \"{0}\"."), fileName));
                     }
-                    EntityTypes.Instance.Editor_ChangeAllReferencesToType(this.currentEntityType, entityType);
+                    EntityTypes.Instance.ChangeAllReferencesToType(this.currentEntityType, entityType);
                     this.currentEntityType = entityType;
                 }
                 catch (Exception ex)
                 {
+                    MainForm.Instance.NewMessage(ex.Message);
                     Log.Warning(ex.Message);
                     this.currentEntityType = null;
                 }
@@ -200,7 +201,7 @@ namespace JxRes.Editors
                 EntityType entityType = EntityTypes.Instance.LoadTypeFromFile(filePath);
                 if (entityType != null)
                 {
-                    EntityTypes.Instance.Editor_ChangeAllReferencesToType(this.currentEntityType, entityType);
+                    EntityTypes.Instance.ChangeAllReferencesToType(currentEntityType, entityType);
                     this.currentEntityType = entityType;
                     this.SetSelectObject(this.currentEntityType, true, true);
  

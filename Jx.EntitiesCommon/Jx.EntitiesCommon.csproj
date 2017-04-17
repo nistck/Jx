@@ -4,25 +4,22 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CFA4B908-1B01-49D5-AD2D-A535CBCDA042}</ProjectGuid>
+    <ProjectGuid>{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jx</RootNamespace>
-    <AssemblyName>Jx</AssemblyName>
+    <RootNamespace>Jx.EntitiesCommon</RootNamespace>
+    <AssemblyName>Jx.EntitiesCommon</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG_ENTITY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,11 +28,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,30 +41,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollectionItemPropertyDescriptor.cs" />
-    <Compile Include="CollectionTypeConverter.cs" />
-    <Compile Include="ConfigAttribute.cs" />
-    <Compile Include="EngineApp.cs" />
-    <Compile Include="EngineRandom.cs" />
-    <Compile Include="ExtendedFunctionalityDescriptorAttribute.cs" />
-    <Compile Include="FunctionalityArea.cs" />
-    <Compile Include="JxObject.cs" />
-    <Compile Include="JxNameAttribute.cs" />
-    <Compile Include="LocalizedDescriptionAttribute.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="LogicSystemBrowsableAttribute.cs" />
-    <Compile Include="LogicSystemCallStaticOverInstanceAttribute.cs" />
-    <Compile Include="LogicSystemClassDisplayAttribute.cs" />
-    <Compile Include="LogicSystemMethodDisplayAttribute.cs" />
-    <Compile Include="LongOperationCallbackManager.cs" />
-    <Compile Include="ManualTypeCreateAttribute.cs" />
-    <Compile Include="PathUtils.cs" />
+    <Compile Include="Behaviors\ActionNode.cs" />
+    <Compile Include="Behaviors\BehaviorNode.cs" />
+    <Compile Include="Behaviors\BehaviorTree.cs" />
+    <Compile Include="Behaviors\BehaviorTreeNode.cs" />
+    <Compile Include="Behaviors\CompositeNode.cs" />
+    <Compile Include="Behaviors\ConditionNode.cs" />
+    <Compile Include="Behaviors\DeciderNode.cs" />
+    <Compile Include="Behaviors\DecoratorNode.cs" />
+    <Compile Include="Behaviors\LinearNode.cs" />
+    <Compile Include="Behaviors\ParallelNode.cs" />
+    <Compile Include="Behaviors\SequenceNode.cs" />
+    <Compile Include="Behaviors\SelectorNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell32Api.cs" />
-    <Compile Include="ToolsLocalization.cs" />
-    <Compile Include="_IWrappedCustomTypeDescriptor.cs" />
-    <Compile Include="_IWrappedPropertyDescriptor.cs" />
-    <Compile Include="_PropertyGridUtils.cs" />
+    <Compile Include="SimpleBean.cs" />
+    <Compile Include="SimpleWorld.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
+      <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
+      <Name>Jx.EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
+      <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
+      <Name>Jx.Ext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
+      <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
+      <Name>Jx.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx\Jx.csproj">
+      <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
+      <Name>Jx</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

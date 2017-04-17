@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jx.Entities.Behaviors
+namespace Jx.EntitiesCommon.Behaviors
 {
     [JxName("行为树动作节点")]
     public class ActionNodeType : BehaviorNodeType

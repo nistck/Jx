@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Jx;
 using Jx.EntitySystem;
 
-namespace Jx.Entities.Behaviors
+namespace Jx.EntitiesCommon.Behaviors
 {
     public abstract class BehaviorTreeNodeType : EntityType
     {
@@ -26,5 +26,14 @@ namespace Jx.Entities.Behaviors
     {
         private BehaviorTreeNodeType _type = null; 
         public new BehaviorTreeNodeType Type { get { return _type; } }
+
+        /// <summary>
+        /// 计算
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool Evaluate()
+        {
+            return true;
+        }
     }
 }

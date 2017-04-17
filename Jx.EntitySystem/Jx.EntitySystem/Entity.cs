@@ -119,6 +119,7 @@ namespace Jx.EntitySystem
                 this.messageIdentifier = messageIdentifier;
             }
         }
+
         public class TagInfo
         {
             [Entity.FieldSerializeAttribute("name")]
@@ -189,7 +190,7 @@ namespace Jx.EntitySystem
         internal bool isSetForDeletion;
         internal bool isDestroyed;
 
-        [FieldSerializeAttribute("name")]
+        [FieldSerialize("name")]
         private string name = "";
 
         internal List<Entity> zJ;
@@ -197,7 +198,7 @@ namespace Jx.EntitySystem
         private int subscribeToTickEventCount;
         internal int zk;
         private object userData;
-        [FieldSerializeAttribute("tags")]
+        [FieldSerialize("tags")]
         private List<TagInfo> tagInfos = new List<TagInfo>();
         private bool editorSelectable = true;
         private bool editor_excludeEntityFromWorld;
@@ -779,7 +780,7 @@ namespace Jx.EntitySystem
             }
         }
 
-        protected internal virtual void OnSetSimulation(bool simulation)
+        protected virtual void OnSetSimulation(bool simulation)
         {
         }
 
@@ -893,7 +894,7 @@ namespace Jx.EntitySystem
             {
                 foreach (EntityTypes.ClassInfo.EntitySerializableFieldItem current in classInfo.EntitySerializableFields)
                 {
-                    if (/*EntitySystemWorld.Instance.isEntitySerializable(current.SupportedSerializationTypes) &&*/ !Ci.LoadFieldValue(true, this, current.Field, block, text))
+                    if (/*EntitySystemWorld.Instance.isEntitySerializable(current.SupportedSerializationTypes) &&*/ !EntityHelper.LoadFieldValue(true, this, current.Field, block, text))
                     {
                         return false;
                     }
@@ -1098,7 +1099,7 @@ namespace Jx.EntitySystem
                         {
                             defaultValue = array[0].Value;
                         }
-                        if (!Ci.SaveFieldValue(true, this, current2.Field, block, defaultValue, text))
+                        if (!EntityHelper.SaveFieldValue(true, this, current2.Field, block, defaultValue, text))
                         {
                             return;
                         }

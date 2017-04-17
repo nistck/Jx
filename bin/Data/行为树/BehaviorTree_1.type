@@ -1,0 +1,5 @@
+type BehaviorTree_1
+{
+	class = BehaviorTree
+	rootNodeType = ParallelNode_1
+}

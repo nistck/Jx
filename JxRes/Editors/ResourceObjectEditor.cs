@@ -9,6 +9,7 @@ using System.Drawing;
 using Jx;
 using Jx.FileSystem;
 using Jx.Editors;
+using Jx.UI.Forms;
 
 namespace JxRes.Editors 
 {
@@ -102,10 +103,9 @@ namespace JxRes.Editors
         }
         public virtual void Dispose()
         {
-            /*
             if (MainForm.Instance != null && MainForm.Instance.PropertiesForm != null)
             {
-                MainForm.Instance.PropertiesForm.ModalDialogCollectionEditorOK -= new PropertiesForm.ModalDialogCollectionEditorOKDelegate(this.A);
+                MainForm.Instance.PropertiesForm.ModalDialogCollectionEditorOK -= new PropertiesForm.ModalDialogCollectionEditorOKDelegate(this.PropertiesForm_ModalDialogCollectionEditorOk);
                 MainForm.Instance.PropertiesForm.PropertyValueChanged -= new PropertiesForm.PropertyValueChangeDelegate(this.A);
             }
             ChooseResourceForm.CurrentHelperDirectoryName = null;
@@ -116,19 +116,13 @@ namespace JxRes.Editors
         {
             if( !this.editModeActive )
             {
+                MainForm.Instance.PropertiesForm.ModalDialogCollectionEditorOK += new PropertiesForm.ModalDialogCollectionEditorOKDelegate(this.PropertiesForm_ModalDialogCollectionEditorOk);
                 MainForm.Instance.PropertiesForm.PropertyValueChanged += PropertiesForm_PropertyValueChanged;
             }
             this.editModeActive = true;
             MainForm.Instance.PropertiesForm.ReadOnly = false;
 
             /*
-            if (!this.editModeActive)
-            {
-                MainForm.Instance.PropertiesForm.ModalDialogCollectionEditorOK += new PropertiesForm.ModalDialogCollectionEditorOKDelegate(this.A);
-                MainForm.Instance.PropertiesForm.PropertyValueChanged += new PropertiesForm.PropertyValueChangeDelegate(this.A);
-            }
-            this.editModeActive = true;
-            MainForm.Instance.PropertiesForm.ReadOnly = false;
             if (UndoSystem.Instance != null)
             {
                 UndoSystem.Instance.Clear();
@@ -160,6 +154,7 @@ namespace JxRes.Editors
             }
             this.editModeActive = false;
             MainForm.Instance.PropertiesForm.ReadOnly = true;
+            MainForm.Instance.PropertiesForm.ModalDialogCollectionEditorOK -= new PropertiesForm.ModalDialogCollectionEditorOKDelegate(PropertiesForm_ModalDialogCollectionEditorOk);
             MainForm.Instance.PropertiesForm.PropertyValueChanged -= PropertiesForm_PropertyValueChanged;
 
             return true;
@@ -194,7 +189,7 @@ namespace JxRes.Editors
             //*/
         }
 
-        private void A()
+        private void PropertiesForm_ModalDialogCollectionEditorOk()
         {
             this.Modified = true;
         }

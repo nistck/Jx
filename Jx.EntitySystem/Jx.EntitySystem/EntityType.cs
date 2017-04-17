@@ -196,6 +196,7 @@ namespace Jx.EntitySystem
                 return this.manualCreated;
             }
         }
+
         internal bool loadEntityTypeFromTextBlock(TextBlock block)
         {
             string errorString = string.Format("File path: \"{0}\"", this.FilePath);
@@ -204,7 +205,7 @@ namespace Jx.EntitySystem
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
-                    bool flag = !Ci.LoadFieldValue(false, this, current.Field, block, errorString);
+                    bool flag = !EntityHelper.LoadFieldValue(false, this, current.Field, block, errorString);
                     if (flag)
                     {
                         result = false;
@@ -225,7 +226,7 @@ namespace Jx.EntitySystem
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
                     object defaultValue = entityTypeSerializableFields[current];
-                    bool flag = !Ci.SaveFieldValue(false, this, current.Field, block, defaultValue, errorString);
+                    bool flag = !EntityHelper.SaveFieldValue(false, this, current.Field, block, defaultValue, errorString);
                     if (flag)
                     {
                         result = false;
@@ -308,21 +309,16 @@ namespace Jx.EntitySystem
         /// <returns><b>true</b> if a link to object is exists; otherwise, <b>false</b>.</returns>
         protected internal virtual bool OnIsExistsReferenceToObject(object obj)
         {
-            bool result;
             for (EntityTypes.ClassInfo baseClassInfo = this.ClassInfo; baseClassInfo != null; baseClassInfo = baseClassInfo.BaseClassInfo)
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
                     bool flag = current.Field.GetValue(this) == obj;
                     if (flag)
-                    {
-                        result = true;
-                        return result;
-                    }
+                        return true;
                 }
             }
-            result = false;
-            return result;
+            return false;
         }
         /// <summary>
         /// Replaces the link of all objects to another.
@@ -335,8 +331,10 @@ namespace Jx.EntitySystem
         /// </remarks>
         /// <param name="obj">The source link to object.</param>
         /// <param name="newValue">The new link to object.</param>
-        protected internal virtual void OnChangeReferencesToObject(object obj, object newValue)
+        protected internal virtual List<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem> OnChangeReferencesToObject(object obj, object newValue)
         {
+            List<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem> result = new List<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem>(); 
+
             for (EntityTypes.ClassInfo baseClassInfo = this.ClassInfo; baseClassInfo != null; baseClassInfo = baseClassInfo.BaseClassInfo)
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
@@ -345,9 +343,11 @@ namespace Jx.EntitySystem
                     if (flag)
                     {
                         current.Field.SetValue(this, newValue);
+                        result.Add(current);
                     }
                 }
             }
+            return result;
         }
         protected virtual void OnPreloadResources()
         {

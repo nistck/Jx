@@ -99,7 +99,8 @@
     <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileAction.cs" />
     <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileActionType.cs" />
     <Compile Include="Jx.EntitySystem\AllowToCreateTypeBasedOnThisClassAttribute.cs" />
-    <Compile Include="Jx.EntitySystem\Ci.cs" />
+    <Compile Include="Jx.EntitySystem\EntityException.cs" />
+    <Compile Include="Jx.EntitySystem\EntityHelper.cs" />
     <Compile Include="Jx.EntitySystem\EditorEntityExtendedPropertiesUITypeEditor.cs" />
     <Compile Include="Jx.EntitySystem\EditorEntityTypeUITypeEditor.cs" />
     <Compile Include="Jx.EntitySystem\EditorEntityUITypeEditor.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Jx.EntitySystem\EntitySystemWorld.cs" />
     <Compile Include="Jx.EntitySystem\EntityType.cs" />
     <Compile Include="Jx.EntitySystem\EntityTypeCustomTypeDescriptor.cs" />
+    <Compile Include="Jx.EntitySystem\EntityTypeException.cs" />
     <Compile Include="Jx.EntitySystem\EntityTypePropertyDescriptor.cs" />
     <Compile Include="Jx.EntitySystem\EntityTypes.cs" />
     <Compile Include="Jx.EntitySystem\LogicClass.cs" />

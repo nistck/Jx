@@ -195,7 +195,7 @@ namespace Jx.EntitySystem
                     {
                         Log.Warning("Entity System: Serialization error. The class type is not found \"{0}\" ({1}).", attribute, text);
                     }
-                    else if (Ci.GetLoadStringValue(type, attribute2, text, out value))
+                    else if (EntityHelper.GetLoadStringValue(type, attribute2, text, out value))
                     {
                         SetCustomSerializationValue(name, value);
                     }
@@ -219,7 +219,7 @@ namespace Jx.EntitySystem
                 {
                     Type type = value.GetType();
                     string errorString = string.Format("World: Custom serialization value \"{0}\"", key);
-                    string saveValueString = Ci.GetSaveValueString(type, value, errorString);
+                    string saveValueString = EntityHelper.GetSaveValueString(type, value, errorString);
                     TextBlock textBlock3 = textBlock2.AddChild(key);
                     textBlock3.SetAttribute("type", type.FullName);
                     textBlock3.SetAttribute("value", saveValueString);

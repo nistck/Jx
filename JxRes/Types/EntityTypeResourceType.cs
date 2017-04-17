@@ -89,7 +89,7 @@ namespace JxRes.Types
             if (entityType != null)
             {
                 EntityTypes.Instance.DestroyType(entityType);
-                EntityTypes.Instance.Editor_ChangeAllReferencesToType(entityType, null);
+                EntityTypes.Instance.ChangeAllReferencesToType(entityType, null);
             }
             return base.OnUnloadResource(path);
         }
@@ -121,7 +121,7 @@ namespace JxRes.Types
                 {
                     Log.Fatal("EntityTypeResourceType: OnRenameResource: EntityTypes.LoadType failed.");
                 }
-                EntityTypes.Instance.Editor_ChangeAllReferencesToType(entityType, entityType2);
+                EntityTypes.Instance.ChangeAllReferencesToType(entityType, entityType2);
             }
             catch (Exception ex)
             {
@@ -230,7 +230,7 @@ namespace JxRes.Types
                     string text2 = text + ".type";
                     string text3 = Path.Combine(directory, text2);
                     this.A(path, text3, text);
-                    List<EntityType> list = EntityTypes.Instance.Editor_FindTypesWhoHasReferenceToType(entityType);
+                    List<EntityType> list = EntityTypes.Instance.FindTypesWhoHasReferenceToType(entityType);
                     list.Remove(entityType);
                     if (!this.OnResourceRenamed(text3, path))
                     {

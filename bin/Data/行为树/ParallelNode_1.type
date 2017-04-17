@@ -1,0 +1,23 @@
+type ParallelNode_1
+{
+	class = ParallelNode
+	children
+	{
+		item
+		{
+			nodeType = ParallelNode_1
+		}
+		item
+		{
+		}
+		item
+		{
+		}
+		item
+		{
+		}
+		item
+		{
+		}
+	}
+}

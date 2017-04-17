@@ -48,8 +48,8 @@ namespace Jx.EntitySystem
 		private List<Entities.aT> aAf;
 		//private static RemoteEntityWorld[] remoteEntityWorlds = new RemoteEntityWorld[1]; 
 
-        public event Entities.CreateDeleteEntityDelegate CreateEntity; 
-        public event Entities.CreateDeleteEntityDelegate DeleteEntity;
+        public event CreateDeleteEntityDelegate CreateEntity; 
+        public event CreateDeleteEntityDelegate DeleteEntity;
 
 		public static Entities Instance
 		{
@@ -148,10 +148,8 @@ namespace Jx.EntitySystem
 		public Entity Create(EntityType type, Entity parent)
 		{
 			if (type == null)
-			{
-				Log.Fatal("Entities: Create: type == null.");
                 return null;
-			}
+            
             /*
 			if (EntitySystemWorld.Instance.IsDedicatedServer() && type.NetworkType == EntityNetworkTypes.ClientOnly)
 			{
@@ -249,7 +247,7 @@ namespace Jx.EntitySystem
 		{
 			foreach (KeyValuePair<uint, Entity> current in this.entitiesUINDictionary)
 			{
-				current.Value.OnSetSimulation(simulation);
+				//current.Value.OnSetSimulation(simulation);
 			}
 		}
 
@@ -509,7 +507,7 @@ namespace Jx.EntitySystem
 		private void PostCreateInitLoadedEntities()
 		{
 			LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities");
-			foreach (Entities.AT current in this.aAF)
+			foreach (AT current in this.aAF)
 			{
 				if (current.entity.LogicObject != null)
 				{
@@ -517,14 +515,14 @@ namespace Jx.EntitySystem
 				}
 				current.entity.A(true);
 			}
-			foreach (Entities.AT current2 in this.aAF)
+			foreach (AT current2 in this.aAF)
 			{
 				LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities: OnPostCreate: " + current2.entity.ToString());
 				if (current2.entity.isPostCreated)
 				{
 					Log.Fatal("Entities: PostCreateInitLoadedEntities : entity.postCreated.");
 				}
-				current2.entity.OnPostCreate(true);
+				current2.entity.OnPostCreate(true); 
 			}
 			foreach (Entities.AT current3 in this.aAF)
 			{

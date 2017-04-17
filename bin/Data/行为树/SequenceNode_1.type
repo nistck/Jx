@@ -1,0 +1,20 @@
+type SequenceNode_1
+{
+	class = SequenceNode
+	children
+	{
+		item
+		{
+		}
+		item
+		{
+		}
+		item
+		{
+			nodeType = SequenceNode_1
+		}
+		item
+		{
+		}
+	}
+}

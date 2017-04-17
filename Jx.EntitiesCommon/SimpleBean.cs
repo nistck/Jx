@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Jx.EntitySystem;
 using Jx.FileSystem;
 
-namespace Jx.Entities
+namespace Jx.EntitiesCommon
 {
     [JxName("简单Bean")]
     public class SimpleBeanType : EntityType

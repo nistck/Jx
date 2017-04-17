@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Jx;
 using Jx.EntitySystem;
 
-namespace Jx.Entities.Behaviors
+namespace Jx.EntitiesCommon.Behaviors
 {
     [JxName("行为树")]
     public class BehaviorTreeType : EntityType
@@ -27,7 +27,23 @@ namespace Jx.Entities.Behaviors
     public class BehaviorTree : Entity
     {
         private BehaviorTreeType _type = null; 
-        public new BehaviorTreeType Type { get { return _type; } } 
+        public new BehaviorTreeType Type { get { return _type; } }
 
+        private BehaviorNode rootNode;
+
+        protected override void OnPostCreate(bool loaded)
+        {
+            base.OnPostCreate(loaded);
+            rootNode = Entities.Instance.Create(Type.RootNodeType, World.Instance) as BehaviorNode;
+        }
+
+        public virtual bool Evaluate()
+        {
+            if (rootNode == null)
+                return false;
+
+            bool result = rootNode.Evaluate();
+            return result;
+        }
     }
 }

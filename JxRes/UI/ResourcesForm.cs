@@ -19,6 +19,8 @@ using Jx.FileSystem;
 using Jx.EntitySystem;
 using JxRes.Editors;
 
+using JxRes.Types;
+
 namespace JxRes.UI
 {
     public partial class ResourcesForm : WeifenLuo.WinFormsUI.Docking.DockContent
@@ -411,8 +413,8 @@ namespace JxRes.UI
             MyTreeNode node = new MyTreeNode(fileName, VirtualDirectory.IsInArchive(p), this.IsHideResource(fileName) || parent.HideNode);
             node.Name = node.Text;
             parent.Nodes.Add(node);
-            this.UpdateMultiSelectionList(node);
-            this.CreateTreeNodeForPath(node, p);
+            UpdateMultiSelectionList(node);
+            CreateTreeNodeForPath(node, p);
         }
 
         private void UpdateResource(string p)
@@ -555,7 +557,7 @@ namespace JxRes.UI
             {
                 return;
             }
-            this.TryBeginEditMode();
+            TryBeginEditMode();
         }
 
         private void A(bool flag)
@@ -1048,7 +1050,7 @@ namespace JxRes.UI
             if (this.multiSelectedList.Count == 1)
             {
                 string format = LocalizationTranslate("确定删除 \"{0}\"?");
-                string arg = ResourcesForm.GetNodePath((TreeNode)this.multiSelectedList[0]);
+                string arg = GetNodePath((TreeNode)this.multiSelectedList[0]);
                 text = string.Format(format, arg);
             }
             else
@@ -1062,7 +1064,7 @@ namespace JxRes.UI
             {
                 if (this.ResourceChange != null)
                 {
-                    string fileName = ResourcesForm.GetNodePath(selectedNode);
+                    string fileName = GetNodePath(selectedNode);
                     CancelEventArgs cancelEventArgs2 = new CancelEventArgs();
                     this.ResourceChange(fileName, cancelEventArgs2);
                     Trace.Assert(!cancelEventArgs2.Cancel);
@@ -1076,13 +1078,11 @@ namespace JxRes.UI
             {
                 string nodePath = GetNodePath(current);
                 if (current.Tag != null)
-                {
-                    if (!this.c(nodePath))
-                    {
+                {   // is File
+                    if (!DeleteResourceFile(nodePath))
                         return;
-                    }
                 }
-                else if (!this.C(nodePath))
+                else if (!DeleteResourceDirectory(nodePath))
                 {
                     return;
                 }
@@ -1092,26 +1092,25 @@ namespace JxRes.UI
                 this.ResourcesView.SelectedNode = myTreeNode;
             }
         }
-        private bool C(string text)
+
+        private bool DeleteResourceDirectory(string nodePath)
         {
-            TreeNode treeNode = this.FindNodeByPath(text);
+            TreeNode treeNode = this.FindNodeByPath(nodePath);
             while (treeNode.Nodes.Count != 0)
             {
                 TreeNode treeNode2 = treeNode.Nodes[0];
-                string text2 = ResourcesForm.GetNodePath(treeNode2);
+                string p = GetNodePath(treeNode2);
                 if (treeNode2.Tag != null)
                 {
-                    if (!this.c(text2))
-                    {
+                    if (!DeleteResourceFile(p))
                         return false;
-                    }
                 }
-                else if (!this.C(text2))
+                else if (!DeleteResourceDirectory(p))
                 {
                     return false;
                 }
             }
-            string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(text);
+            string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(nodePath);
             try
             {
                 Directory.Delete(realPathByVirtual);
@@ -1122,35 +1121,48 @@ namespace JxRes.UI
                 return false;
             }
             treeNode.Parent.Nodes.Remove(treeNode);
-            this.B((ResourcesForm.MyTreeNode)treeNode);
+            UpdateResourceDeleted((MyTreeNode)treeNode);
             return true;
         }
 
-        private bool c(string text)
+        private EntityType GetEntityTypeByNodePath(string nodePath)
         {
-            string text2 = Path.GetExtension(text);
-            if (!string.IsNullOrEmpty(text2))
-            {
-                text2 = text2.Substring(1);
-            }
-            ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(text2);
-            if (this.ResourceChange != null)
+            EntityType result = EntityTypes.Instance.GetEntityTypeByPath(nodePath);
+            return result;
+        }
+
+        private ResourceType GetResourceTypeFromNodePath(string nodePath)
+        {
+            string fileExtension = Path.GetExtension(nodePath);
+            if (!string.IsNullOrEmpty(fileExtension))
+                fileExtension = fileExtension.Substring(1);
+
+            ResourceType byExtension = ResourceTypeManager.Instance.GetByExtension(fileExtension);
+            return byExtension;
+        }
+
+        private bool DeleteResourceFile(string nodePath)
+        {
+            ResourceType byExtension = GetResourceTypeFromNodePath(nodePath);
+            if (ResourceChange != null)
             {
                 CancelEventArgs cancelEventArgs = new CancelEventArgs();
-                this.ResourceChange(null, cancelEventArgs);
-                Trace.Assert(!cancelEventArgs.Cancel);
+                ResourceChange(null, cancelEventArgs); 
+                if (cancelEventArgs.Cancel)
+                    return false;
             }
+
             bool flag = false;
+            
             if (byExtension != null)
             {
-                if (!byExtension.DoUnloadResource(text))
-                {
+                if (!byExtension.DoUnloadResource(nodePath))
                     goto IL_79;
-                }
-            }
+            } 
+
             try
             {
-                File.Delete(VirtualFileSystem.GetRealPathByVirtual(text));
+                File.Delete(VirtualFileSystem.GetRealPathByVirtual(nodePath));
                 flag = true;
             }
             catch (Exception ex)
@@ -1163,15 +1175,14 @@ namespace JxRes.UI
                 if (this.ResourceChange != null)
                 {
                     CancelEventArgs cancelEventArgs2 = new CancelEventArgs();
-                    this.ResourceChange(text, cancelEventArgs2);
+                    this.ResourceChange(nodePath, cancelEventArgs2);
                     Trace.Assert(!cancelEventArgs2.Cancel);
                 }
                 return false;
             }
-            TreeNode treeNode = this.FindNodeByPath(text);
-            Trace.Assert(treeNode != null);
+            TreeNode treeNode = FindNodeByPath(nodePath);
             treeNode.Parent.Nodes.Remove(treeNode);
-            this.B((ResourcesForm.MyTreeNode)treeNode);
+            UpdateResourceDeleted((MyTreeNode)treeNode);
             return true;
         }
 
@@ -1591,6 +1602,7 @@ namespace JxRes.UI
                 }
             }
         }
+
         public void DoDeletedEvent(string realPath)
         {
             string virtualPathByReal = VirtualFileSystem.GetVirtualPathByReal(realPath);
@@ -1611,9 +1623,10 @@ namespace JxRes.UI
                     }
                 }
                 treeNode.Remove();
-                this.B((ResourcesForm.MyTreeNode)treeNode);
+                UpdateResourceDeleted((MyTreeNode)treeNode);
             }
         }
+
         public void DoRenamedEvent(string realPath, string oldRealPath)
         {
             string virtualPathByRealNew = VirtualFileSystem.GetVirtualPathByReal(realPath);
@@ -1744,7 +1757,7 @@ namespace JxRes.UI
                             Log.Fatal("ResourceForm: OnDirectoryRenamed: EntityTypes.LoadType failed.");
                             return;
                         }
-                        EntityTypes.Instance.Editor_ChangeAllReferencesToType(byName, entityType);
+                        EntityTypes.Instance.ChangeAllReferencesToType(byName, entityType);
                         if (JxResApp.Instance.ResourceObjectEditor != null)
                         {
                             ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
@@ -1759,13 +1772,12 @@ namespace JxRes.UI
             }
         }
 
-        public bool DoSelectPath(string path)
+        public bool SelectPath(string path)
         {
             TreeNode treeNode = this.FindNodeByPath(path);
-            if (treeNode == null)
-            {
+            if (treeNode == null) 
                 return false;
-            }
+            
             this.ResourcesView.SelectedNode = treeNode;
             return true;
         }
@@ -1780,9 +1792,7 @@ namespace JxRes.UI
             if (selectedNode != null && selectedNode.Tag != null)
             {
                 if (this.ResourceBeginEditMode != null)
-                {
                     ResourceBeginEditMode(new EventArgs());
-                }
                 return true;
             }
             return false;
@@ -1817,12 +1827,12 @@ namespace JxRes.UI
             }
             this.ResourcesView.Invalidate();
         }
-        private void B(ResourcesForm.MyTreeNode myTreeNode)
+
+        private void UpdateResourceDeleted(MyTreeNode myTreeNode)
         {
             if (this.aTg == myTreeNode)
-            {
                 this.aTg = null;
-            }
+            
             this.multiSelectedList.Remove(myTreeNode);
         }
 
@@ -1910,7 +1920,7 @@ namespace JxRes.UI
         }
         private void MenuDelete_Click(object obj, EventArgs eventArgs)
         {
-            this.DeleteSelectedResources();
+            DeleteSelectedResources();
         }
         private void SortTreeNodeByName(object obj, EventArgs eventArgs)
         {

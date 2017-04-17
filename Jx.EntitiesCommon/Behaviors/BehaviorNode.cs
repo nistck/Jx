@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jx.Entities.Behaviors
+namespace Jx.EntitiesCommon.Behaviors
 {
     public abstract class BehaviorNodeType : BehaviorTreeNodeType
     {
@@ -14,5 +14,6 @@ namespace Jx.Entities.Behaviors
     {
         private BehaviorNodeType _type = null; 
         public new BehaviorNodeType Type { get { return _type; } }
+
     }
 }

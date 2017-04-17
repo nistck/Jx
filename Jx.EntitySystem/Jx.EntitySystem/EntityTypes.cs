@@ -148,6 +148,89 @@ namespace Jx.EntitySystem
             }
         }
 
+        public class ReferenceInfo
+        {
+            private readonly List<ClassInfo.EntityTypeSerializableFieldItem> items = new List<ClassInfo.EntityTypeSerializableFieldItem>();
+            public ReferenceInfo(EntityType sourceType, EntityType entityType)
+            {
+                this.SourceType = sourceType;
+                this.EntityType = entityType; 
+            }
+
+            /// <summary>
+            /// 被引用类型
+            /// </summary>
+            public EntityType SourceType { get; private set; }
+            public EntityType EntityType { get; private set; }
+            /// <summary>
+            /// 引用
+            /// </summary>
+            public object Target { get; set; }
+
+            public void Add(ClassInfo.EntityTypeSerializableFieldItem item)
+            {
+                if (item == null)
+                    return;
+
+                items.Add(item); 
+            }
+
+            public void AddRange(List<ClassInfo.EntityTypeSerializableFieldItem> r)
+            {
+                if (r == null)
+                    return;
+
+                items.AddRange(r);
+            }
+
+            public IReadOnlyList<ClassInfo.EntityTypeSerializableFieldItem> Items
+            {
+                get { return items.AsReadOnly(); }
+            }
+
+            public bool Update(EntityType newType = null)
+            {
+                if (newType == null || SourceType == null)
+                    return false;
+
+                List<ClassInfo.EntityTypeSerializableFieldItem> L = new List<ClassInfo.EntityTypeSerializableFieldItem>();
+                List<ClassInfo.EntityTypeSerializableFieldItem> fields = new List<ClassInfo.EntityTypeSerializableFieldItem>();
+                fields.AddRange(items);
+
+                while(fields.Count > 0)
+                {
+                    ClassInfo.EntityTypeSerializableFieldItem item = fields[0];
+                    fields.RemoveAt(0);
+                    try
+                    {
+                        item.Field.SetValue(Target, newType);
+                        L.Add(item);
+                    }
+                    catch (Exception) { }
+
+                }
+                 
+                if( fields.Count > 0 )
+                {   // 有失败的
+
+                    while (L.Count > 0)
+                    {
+                        ClassInfo.EntityTypeSerializableFieldItem item = L[0];
+                        L.RemoveAt(0);
+                        try
+                        {
+                            item.Field.SetValue(Target, SourceType); 
+                        }
+                        catch (Exception) { } 
+                    }
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         private static EntityTypes instance;
         private List<ClassInfo> classes = new List<ClassInfo>();
         private ReadOnlyCollection<ClassInfo> readonlyClasses;
@@ -352,7 +435,13 @@ namespace Jx.EntitySystem
             if (p == null)
                 return null;
 
-            EntityType entityType = types.Where(_t => p.Equals(_t.FilePath, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            string p1 = VirtualFileSystem.GetRealPathByVirtual(p);
+
+            EntityType entityType = types.Where(_t => {
+                bool b1 = p.Equals(_t.FilePath, StringComparison.CurrentCultureIgnoreCase);
+                bool b2 = p1.Equals(_t.FilePath, StringComparison.CurrentCultureIgnoreCase);
+                return b1 || b2;
+            }).FirstOrDefault();
             return entityType;
         }
 
@@ -465,16 +554,16 @@ namespace Jx.EntitySystem
 
             return entityType;
         }
-
-        public List<EntityType> Editor_FindTypesWhoHasReferenceToType(EntityType type)
-        { 
+         
+        public List<EntityType> FindTypesWhoHasReferenceToType(EntityType type)
+        {
             List<EntityType> list = new List<EntityType>();
             foreach (EntityType current in this.Types)
             {
-                bool r = current.OnIsExistsReferenceToObject(type);
-                if (r)
+                if (current.OnIsExistsReferenceToObject(type))
                 {
                     list.Add(current);
+                    continue;
                 }
             }
             return list;
@@ -773,7 +862,7 @@ namespace Jx.EntitySystem
             return null;
         }
 
-        public void Editor_ChangeAllReferencesToType(string oldVirtualPathByReal, string newVirtualPathByReal)
+        public void ChangeAllReferencesToType(string oldVirtualPathByReal, string newVirtualPathByReal)
         {
             EntityType entityType = this.GetEntityTypeByPath(newVirtualPathByReal);
             bool flag = entityType == null;
@@ -782,10 +871,9 @@ namespace Jx.EntitySystem
                 entityType = this.LoadType(newVirtualPathByReal);
             }
             EntityType entityTypeByPath = this.GetEntityTypeByPath(oldVirtualPathByReal);
-            bool flag2 = entityType == null || entityTypeByPath == null;
-            if (!flag2)
+            if (!(entityType == null || entityTypeByPath == null))
             {
-                this.Editor_ChangeAllReferencesToType(entityTypeByPath, entityType);
+                ChangeAllReferencesToType(entityTypeByPath, entityType);
             }
         }
 
@@ -793,13 +881,18 @@ namespace Jx.EntitySystem
         /// </summary>
         /// <param name="type"></param>
         /// <param name="newValue"></param>
-        public void Editor_ChangeAllReferencesToType(EntityType type, EntityType newValue)
+        public List<ReferenceInfo> ChangeAllReferencesToType(EntityType type, EntityType newValue)
         {
+            List<ReferenceInfo> result = new List<ReferenceInfo>();
             foreach (EntityType current in this.Types)
             {
-                current.OnChangeReferencesToObject(type, newValue);
+                List<ClassInfo.EntityTypeSerializableFieldItem> r = current.OnChangeReferencesToObject(type, newValue);
+                ReferenceInfo ri = new ReferenceInfo(type, current);
+                ri.AddRange(r);
+                result.Add(ri);
             }
-        }
+            return result;
+        } 
 
         /// <summary>
         /// Returns the list of types which are based on set class information.

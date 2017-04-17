@@ -104,7 +104,7 @@ namespace Jx.EntitySystem
 			text = string.Format("Entity: \"{0}\"; ExtendedProperties", text);
 			foreach (EntityExtendedProperties.AT current in EntityExtendedProperties.A(base.GetType()))
 			{
-				if (/*EntitySystemWorld.Instance.isEntityExtendedPropertiesSerializable(current.supportedSerializationTypes) &&*/ !Ci.LoadFieldValue(true, this, current.field, block, text))
+				if (/*EntitySystemWorld.Instance.isEntityExtendedPropertiesSerializable(current.supportedSerializationTypes) &&*/ !EntityHelper.LoadFieldValue(true, this, current.field, block, text))
 				{
 					return false;
 				}
@@ -122,7 +122,7 @@ namespace Jx.EntitySystem
 			foreach (EntityExtendedProperties.AT current in EntityExtendedProperties.A(base.GetType()))
 			{
 				if (/*EntitySystemWorld.Instance.isEntityExtendedPropertiesSerializable(current.supportedSerializationTypes) && */
-                    !Ci.SaveFieldValue(true, this, current.field, block, null, text))
+                    !EntityHelper.SaveFieldValue(true, this, current.field, block, null, text))
 				{
 					break;
 				}

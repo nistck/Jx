@@ -1,5 +1,0 @@
-type bt1
-{
-	class = BehaviorTree
-	rootNodeType = Action1
-}
