@@ -31,7 +31,7 @@ namespace Jx.EntitySystem
         public sealed class FieldSerializeAttribute : Attribute
         {
             private string propertyName;
-            private Entity.FieldSerializeSerializationTypes serializationTypes = Entity.FieldSerializeSerializationTypes.Map | Entity.FieldSerializeSerializationTypes.World;
+            private FieldSerializeSerializationTypes serializationTypes = FieldSerializeSerializationTypes.Map | FieldSerializeSerializationTypes.World;
             /// <summary>
             /// Gets the property name.
             /// </summary>
@@ -42,7 +42,7 @@ namespace Jx.EntitySystem
                     return this.propertyName;
                 }
             }
-            public Entity.FieldSerializeSerializationTypes SupportedSerializationTypes
+            public FieldSerializeSerializationTypes SupportedSerializationTypes
             {
                 get
                 {
@@ -63,7 +63,7 @@ namespace Jx.EntitySystem
             /// </summary>
             /// <param name="propertyName">The property name.</param>
             /// <param name="supportedSerializationTypes">The supported serialization types.</param>
-            public FieldSerializeAttribute(string propertyName, Entity.FieldSerializeSerializationTypes supportedSerializationTypes)
+            public FieldSerializeAttribute(string propertyName, FieldSerializeSerializationTypes supportedSerializationTypes)
             {
                 this.propertyName = propertyName;
                 this.serializationTypes = supportedSerializationTypes;
@@ -85,21 +85,24 @@ namespace Jx.EntitySystem
                 this.serializationTypes = supportedSerializationTypes;
             }
         }
+
         [AttributeUsage(AttributeTargets.Field)]
         public sealed class TypeFieldAttribute : Attribute
         {
         }
+
         public enum NetworkDirections
         {
             ToClient,
             ToServer
         }
+
         [AttributeUsage(AttributeTargets.Method)]
         public sealed class NetworkReceiveAttribute : Attribute
         {
-            private Entity.NetworkDirections networkDirection;
+            private NetworkDirections networkDirection;
             private ushort messageIdentifier;
-            public Entity.NetworkDirections Direction
+            public NetworkDirections Direction
             {
                 get
                 {
@@ -122,9 +125,9 @@ namespace Jx.EntitySystem
 
         public class TagInfo
         {
-            [Entity.FieldSerializeAttribute("name")]
+            [FieldSerializeAttribute("name")]
             private string name = "";
-            [Entity.FieldSerializeAttribute("value")]
+            [FieldSerializeAttribute("value")]
             private string value = "";
             public string Name
             {
@@ -172,7 +175,7 @@ namespace Jx.EntitySystem
         public delegate void DeleteSubscribedToDeletionEventDelegate(Entity entity, Entity deletedEntity);
         internal static float tickDelta;
 
-        [Entity.TypeFieldAttribute]
+        [TypeFieldAttribute]
         private EntityType entityType = null;
         internal Entity parent;
         internal LinkedListNode<Entity> zD;
@@ -196,7 +199,7 @@ namespace Jx.EntitySystem
         internal List<Entity> zJ;
         private LinkedListNode<Entity> zj;
         private int subscribeToTickEventCount;
-        internal int zk;
+        internal int tickRound;
         private object userData;
         [FieldSerialize("tags")]
         private List<TagInfo> tagInfos = new List<TagInfo>();
@@ -492,7 +495,7 @@ namespace Jx.EntitySystem
                         return;
                     }
                 }
-                Entities.Instance.B(this);
+                Entities.Instance.SetForDeletion(this);
                 foreach (Entity current in this.Children)
                 {
                     current.SetForDeletion(true);
@@ -819,7 +822,7 @@ namespace Jx.EntitySystem
                     this.zj = new LinkedListNode<Entity>(this);
                 }
                 Entities.Instance.entitiesSubscribedToOnTick.AddLast(this.zj);
-                Entities.Instance.aAd = true;
+                Entities.Instance.entitiesSubscribedToOnTickChanged = true;
             }
             subscribeToTickEventCount++;
         }
@@ -835,8 +838,8 @@ namespace Jx.EntitySystem
             if (subscribeToTickEventCount == 0)
             {
                 Entities.Instance.entitiesSubscribedToOnTick.Remove(this.zj);
-                Entities.Instance.aAd = true;
-                this.zk = 0;
+                Entities.Instance.entitiesSubscribedToOnTickChanged = true;
+                this.tickRound = 0;
             }
         }
 
@@ -1006,24 +1009,24 @@ namespace Jx.EntitySystem
                     if (entityType == null)
                     {
                         EntityType entityType2 = null;
-                        string attribute = current.GetAttribute("type");
-                        string attribute2 = current.GetAttribute("classPrompt");
-                        Entities.aT a = Entities.Instance.A(attribute);
+                        string typeName = current.GetAttribute("type");
+                        string className = current.GetAttribute("classPrompt");
+                        Entities.EntityTypeInfo a = Entities.Instance.FindEntityTypeInfo(typeName);
                         if (a == null)
                         {
                             bool flag = false;
-                            if (!EntitySystemWorld.Instance.OnLoadNotDefinedEntityType(attribute, attribute2, ref entityType2, ref flag))
+                            if (!EntitySystemWorld.Instance.OnLoadNotDefinedEntityType(typeName, className, ref entityType2, ref flag))
                             {
                                 if (!EntitySystemWorld.Instance.IsEditor())
                                 {
-                                    Log.Error("Entity: Load: not defined type \"{0}\".", attribute);
+                                    Log.Error("Entity: Load: not defined type \"{0}\".", typeName);
                                 }
                                 bool result = false;
                                 return result;
                             }
                             if (flag)
                             {
-                                Entities.Instance.A(attribute, entityType2);
+                                Entities.Instance.A(typeName, entityType2);
                             }
                         }
                         else
@@ -1048,7 +1051,7 @@ namespace Jx.EntitySystem
                             return result;
                         }
                         entity.loadingTextBlock = current;
-                        Entities.Instance.aAF.Add(new Entities.AT(entity, current));
+                        Entities.Instance.aAF.Add(new Entities.EntityTextBlock(entity, current));
                         this.OnAddChild(entity);
                     }
                 }

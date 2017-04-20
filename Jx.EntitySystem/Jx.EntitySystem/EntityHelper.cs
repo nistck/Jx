@@ -280,7 +280,7 @@ namespace Jx.EntitySystem
                         bool flag2 = array2.Length != 0;
                         if (flag2)
                         {
-                            bool flag3 = EntitySystemWorld.Instance.isEntitySerializable(array2[0].SupportedSerializationTypes);
+                            bool flag3 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
                             if (flag3)
                             {
                                 goto IL_A1;
@@ -530,7 +530,7 @@ namespace Jx.EntitySystem
                                     bool flag13 = array2.Length != 0;
                                     if (flag13)
                                     {
-                                        bool flag14 = EntitySystemWorld.Instance.isEntitySerializable(array2[0].SupportedSerializationTypes);
+                                        bool flag14 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
                                         if (flag14)
                                         {
                                             goto IL_288;
@@ -950,7 +950,7 @@ namespace Jx.EntitySystem
                                     bool flag14 = array2.Length != 0;
                                     if (flag14)
                                     {
-                                        bool flag15 = EntitySystemWorld.Instance.isEntitySerializable(array2[0].SupportedSerializationTypes);
+                                        bool flag15 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
                                         if (flag15)
                                         {
                                             goto IL_2DA;

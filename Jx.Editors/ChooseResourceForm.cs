@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Jx;
+using Jx.Ext;
 using Jx.FileSystem;
 
 namespace Jx.Editors

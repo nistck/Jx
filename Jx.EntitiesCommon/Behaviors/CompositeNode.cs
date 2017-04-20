@@ -64,41 +64,49 @@ namespace Jx.EntitiesCommon.Behaviors
             }
         }
 
-        protected bool CheckCycle(ChildNodeItem cni)
+        protected bool CheckCycle(ChildNodeItem cni, ref List<CompositeNodeType> L)
         {
-            Log.Info(">> {0}", cni);
-
             CompositeNodeType cnt = cni.NodeType as CompositeNodeType;
             if (cnt == null)
                 return false;
 
-            if (cnt == this)
+            if (L.Contains(cnt) )
                 return true;
 
-            foreach(ChildNodeItem c in cnt.Children)
+            foreach (ChildNodeItem c in cnt.Children)
             {
-                bool bx = CheckCycle(c);
+                bool bx = CheckCycle(c, ref L);
                 if (bx)
+                {
+                    L.Add(c.NodeType as CompositeNodeType);
                     return true;
+                }
             }
             return false;
         }
 
-        protected override bool OnSave(TextBlock block)
+        public void CheckCycle()
         {
-            for(int i = children.Count - 1; i >= 0; i --)
+            List<CompositeNodeType> L = new List<CompositeNodeType>();
+            L.Add(this);
+
+            for (int i = children.Count - 1; i >= 0; i--)
             {
                 ChildNodeItem cni = children[i];
 
-                if(cni == null || cni.NodeType == null || CheckCycle(cni) )
+                if (cni == null || cni.NodeType == null || CheckCycle(cni, ref L))
                 {
+                    L.Add(cni.NodeType as CompositeNodeType);
                     children.RemoveAt(i);
                     continue;
                 }
             }
-
-            return base.OnSave(block);
         }
+
+        protected override void OnBeforeSave(TextBlock block)
+        {
+            CheckCycle();
+        } 
     }
 
     public abstract class CompositeNode : DeciderNode

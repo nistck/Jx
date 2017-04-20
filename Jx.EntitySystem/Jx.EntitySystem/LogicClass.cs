@@ -307,7 +307,8 @@ namespace Jx.EntitySystem
 				data.Strings.Add("");
 			}
 		}
-		internal void A(LogicMethod logicMethod)
+
+		internal void Add(LogicMethod logicMethod)
 		{
 			this.initMethods();
 			this.methods.Add(logicMethod.MethodName, logicMethod);

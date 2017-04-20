@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Jx;
+using Jx.Ext;
 using Jx.FileSystem;
 using Jx.Editors;
 using Jx.UI.Forms;

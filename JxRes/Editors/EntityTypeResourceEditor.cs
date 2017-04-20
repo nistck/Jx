@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Jx;
+using Jx.Ext;
 using Jx.Editors;
 using Jx.EntitySystem; 
 

@@ -12,19 +12,19 @@ namespace Jx.EntitySystem
 	[LogicSystemBrowsable(true), LogicSystemCallStaticOverInstance]
 	public class Entities
 	{ 
-		internal struct AT
+		internal struct EntityTextBlock
 		{
 			public Entity entity;
 			public TextBlock textBlock;
 
-			public AT(Entity entity, TextBlock textBlock)
+			public EntityTextBlock(Entity entity, TextBlock textBlock)
 			{
 				this.entity = entity;
 				this.textBlock = textBlock;
 			}
 		}
 
-		internal class aT
+		internal class EntityTypeInfo
 		{
 			public string entityTypeName;
 			public EntityType newEntityType;
@@ -41,11 +41,11 @@ namespace Jx.EntitySystem
 		private uint aAC;
 		private float tickTime;
 		internal LinkedList<Entity> entitiesSubscribedToOnTick = new LinkedList<Entity>();
-		internal bool aAd;
-		private int aAE;
-		private OrderedDictionary aAe = new OrderedDictionary(32);
-		internal List<Entities.AT> aAF;
-		private List<Entities.aT> aAf;
+		internal bool entitiesSubscribedToOnTickChanged;
+		private int tickRound;
+		private OrderedDictionary entitiesQueuedForDeletion = new OrderedDictionary(32);
+		internal List<EntityTextBlock> aAF;
+		private List<EntityTypeInfo> aAf;
 		//private static RemoteEntityWorld[] remoteEntityWorlds = new RemoteEntityWorld[1]; 
 
         public event CreateDeleteEntityDelegate CreateEntity; 
@@ -205,7 +205,7 @@ namespace Jx.EntitySystem
 				entity.parent.OnRemoveChild(entity);
 				entity.parent = null;
 			}
-			this.a(entity);
+			this.TryDeleteEntity(entity);
 		}
 
 		public void CompressUINs()
@@ -226,9 +226,9 @@ namespace Jx.EntitySystem
 
 		public void DeleteEntitiesQueuedForDeletion()
 		{
-			while (this.aAe.Count != 0)
+			while (this.entitiesQueuedForDeletion.Count != 0)
 			{
-				IEnumerator enumerator = this.aAe.Keys.GetEnumerator();
+				IEnumerator enumerator = this.entitiesQueuedForDeletion.Keys.GetEnumerator();
 				enumerator.MoveNext();
 				Entity entity = (Entity)enumerator.Current;
 				if (!entity.isDestroyed)
@@ -239,7 +239,7 @@ namespace Jx.EntitySystem
 					entity.parent.OnRemoveChild(entity);
 					entity.parent = null;
 				}
-				this.a(entity);
+				this.TryDeleteEntity(entity);
 			}
 		}
 
@@ -251,42 +251,37 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		internal virtual void A(float num, bool flag)
+		internal virtual void TickEntities(float tickTime, bool isClient)
 		{
-			this.tickTime = num;
-			this.aAE++;
-			if (this.aAE >= 2147483647)
+			this.tickTime = tickTime;
+			this.tickRound++;
+			if (this.tickRound >= 2147483647)
 			{
-				this.aAE = 1;
-				foreach (Entity current in this.entitiesSubscribedToOnTick)
-				{
-					current.zk = 0;
-				}
+				this.tickRound = 1;
+				foreach (Entity entity in this.entitiesSubscribedToOnTick)
+					entity.tickRound = 0;
 			}
+
 			while (true)
-			{
-				IL_5F:
-				this.aAd = false;
-				foreach (Entity current2 in this.entitiesSubscribedToOnTick)
+			{ 
+				this.entitiesSubscribedToOnTickChanged = false;
+				foreach (Entity entity in this.entitiesSubscribedToOnTick)
 				{
-					if (!current2.IsSetForDeletion && current2.CreateTime != this.tickTime && this.aAE != current2.zk)
+					if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
 					{
-						current2.zk = this.aAE;
-						if (!flag)
-						{
-							current2.Ticking();
-						}
+						entity.tickRound = this.tickRound;
+						if (!isClient)
+							entity.Ticking();
 						else
-						{
-							current2.ClientOnTick();
-						}
-						if (this.aAd)
-						{
-							goto IL_5F;
-						}
+							entity.ClientOnTick();
+
+                        if (this.entitiesSubscribedToOnTickChanged)
+                            break;
 					}
 				}
-				break;
+
+                if(!this.entitiesSubscribedToOnTickChanged)
+				    break;
 			}
 			this.DeleteEntitiesQueuedForDeletion();
 		}
@@ -294,9 +289,9 @@ namespace Jx.EntitySystem
 		public bool Internal_LoadEntityTreeFromTextBlock(Entity entity, TextBlock block, bool loadRootEntity, List<Entity> loadedEntities)
 		{
 			Trace.Assert(this.aAF == null);
-			this.aAF = new List<Entities.AT>(1024);
+			this.aAF = new List<EntityTextBlock>(1024);
 			Trace.Assert(this.aAf == null);
-			this.aAf = new List<Entities.aT>();
+			this.aAf = new List<EntityTypeInfo>();
 			if (!entity.Load(block))
 			{
 				this.aAF = null;
@@ -306,10 +301,10 @@ namespace Jx.EntitySystem
 			if (loadRootEntity)
 			{
 				entity.loadingTextBlock = block;
-				this.aAF.Add(new Entities.AT(entity, block));
+				this.aAF.Add(new EntityTextBlock(entity, block));
 			}
 			this.aAf = null;
-			foreach (Entities.AT current in this.aAF)
+			foreach (EntityTextBlock current in this.aAF)
 			{
 				if (!current.entity.A(current.textBlock))
 				{
@@ -317,9 +312,7 @@ namespace Jx.EntitySystem
 					return false;
 				}
 				if (loadedEntities != null)
-				{
 					loadedEntities.Add(current.entity);
-				}
 			}
 			this.Internal_ResetUINOffset();
 			this.PostCreateInitLoadedEntities();
@@ -343,18 +336,16 @@ namespace Jx.EntitySystem
 		[LogicSystemBrowsable(true)]
 		public string GetUniqueName(string prefix)
 		{
-			int num = 0;
-			string text;
+			int uniqueIndex = 0;
+			string name;
 			while (true)
 			{
-				text = prefix + num.ToString();
-				if (this.GetByName(text) == null)
-				{
+                name = string.Format("{0}{1}", prefix, uniqueIndex);
+				if (GetByName(name) == null)
 					break;
-				}
-				num++;
+				uniqueIndex++;
 			}
-			return text;
+			return name;
 		}
 
 		public Entity GetByUIN(uint uin)
@@ -464,7 +455,7 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		private void A(Entity entity)
+		private void DeleteEntityUIN(Entity entity)
 		{
 			this.entitiesUINDictionary.Remove(entity.UIN);
 			if (entity.NetworkUIN != 0u)
@@ -473,19 +464,19 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		private void a(Entity entity)
+		private void TryDeleteEntity(Entity entity)
 		{
-			this.aAe.Remove(entity);
-			foreach (Entity current in entity.Children)
+			this.entitiesQueuedForDeletion.Remove(entity);
+			foreach (Entity child in entity.Children)
 			{
-				if (!current.isDestroyed) 
-                    current.executeDestory(); 
+				if (!child.isDestroyed) 
+                    child.executeDestory(); 
 			}
 
 			if (!entity.isDestroyed) 
                 entity.executeDestory(); 
 			
-			this.A(entity);
+			this.DeleteEntityUIN(entity);
             if (DeleteEntity != null)
                 DeleteEntity(entity);
 
@@ -496,18 +487,18 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		internal void B(Entity key)
+		internal void SetForDeletion(Entity key)
 		{
-			if (!this.aAe.Contains(key))
+			if (!this.entitiesQueuedForDeletion.Contains(key))
 			{
-				this.aAe.Add(key, null);
+				this.entitiesQueuedForDeletion.Add(key, null);
 			}
 		}
 
 		private void PostCreateInitLoadedEntities()
 		{
 			LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities");
-			foreach (AT current in this.aAF)
+			foreach (EntityTextBlock current in this.aAF)
 			{
 				if (current.entity.LogicObject != null)
 				{
@@ -515,7 +506,7 @@ namespace Jx.EntitySystem
 				}
 				current.entity.A(true);
 			}
-			foreach (AT current2 in this.aAF)
+			foreach (EntityTextBlock current2 in this.aAF)
 			{
 				LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities: OnPostCreate: " + current2.entity.ToString());
 				if (current2.entity.isPostCreated)
@@ -524,7 +515,7 @@ namespace Jx.EntitySystem
 				}
 				current2.entity.OnPostCreate(true); 
 			}
-			foreach (Entities.AT current3 in this.aAF)
+			foreach (Entities.EntityTextBlock current3 in this.aAF)
 			{
 				LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities: OnPostCreate2: " + current3.entity.ToString());
 				current3.entity.OnPostCreate2(true);
@@ -537,18 +528,18 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		internal void A(string text, EntityType newEntityType)
+		internal void A(string entityTypeName, EntityType newEntityType)
 		{
-			Trace.Assert(this.A(text) == null);
-			Entities.aT a = new Entities.aT();
-			a.entityTypeName = text;
-			a.newEntityType = newEntityType;
-			this.aAf.Add(a);
+			Trace.Assert(this.FindEntityTypeInfo(entityTypeName) == null);
+			EntityTypeInfo typeInfo = new EntityTypeInfo();
+			typeInfo.entityTypeName = entityTypeName;
+			typeInfo.newEntityType = newEntityType;
+			this.aAf.Add(typeInfo);
 		}
 
-		internal Entities.aT A(string b)
+		internal EntityTypeInfo FindEntityTypeInfo(string b)
 		{
-			foreach (Entities.aT current in this.aAf)
+			foreach (EntityTypeInfo current in this.aAf)
 			{
 				if (current.entityTypeName == b)
 				{

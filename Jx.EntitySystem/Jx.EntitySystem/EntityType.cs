@@ -288,6 +288,12 @@ namespace Jx.EntitySystem
             }
             return true;
         }
+
+        protected internal virtual void OnBeforeSave(TextBlock block)
+        {
+
+        }
+
         /// <summary>
         /// Returns a string containing the type class name and name of the entity type.
         /// </summary>

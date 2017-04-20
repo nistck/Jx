@@ -75,6 +75,8 @@ namespace JxRes
             AddonManager.PreInit();
             InitResourceTypeManager();
 
+            UndoSystem.Init(64);
+
             instance = this;
             return true;
         }

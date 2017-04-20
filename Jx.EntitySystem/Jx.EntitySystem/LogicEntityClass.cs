@@ -110,9 +110,9 @@ namespace Jx.EntitySystem
 			}
 			logicMethod = (LogicMethod)Entities.Instance.Create(methodType, this);
 			logicMethod.MethodName = methodName;
-			logicMethod.aBZ = true;
+			logicMethod.isEntityEventMethod = true;
 			logicMethod.PostCreate();
-			base.A(logicMethod);
+			base.Add(logicMethod);
 			MethodInfo method = logicMethod.EntityEventInfo.EventHandlerType.GetMethod("Invoke");
 			ParameterInfo[] parameters = method.GetParameters();
 			for (int i = 1; i < parameters.Length; i++)

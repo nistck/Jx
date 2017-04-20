@@ -6,72 +6,72 @@ namespace Jx.EntitySystem
 {
 	public abstract class LogicMethod : LogicClassMember
 	{
-		[Entity.FieldSerializeAttribute("methodName")]
-		private string aBx;
-		[Entity.FieldSerializeAttribute("returnType")]
-		private Type aBY = typeof(void);
-		[Entity.FieldSerializeAttribute("parameters")]
-		private List<LogicParameter> aBy = new List<LogicParameter>();
-		[Entity.FieldSerializeAttribute("isEntityEventMethod")]
-		internal bool aBZ;
-		private EventInfo aBz;
+		[FieldSerializeAttribute("methodName")]
+		private string methodName;
+		[FieldSerializeAttribute("returnType")]
+		private Type returnType = typeof(void);
+		[FieldSerializeAttribute("parameters")]
+		private List<LogicParameter> parameters = new List<LogicParameter>();
+		[FieldSerializeAttribute("isEntityEventMethod")]
+		internal bool isEntityEventMethod;
+		private EventInfo eventInfo;
 		public string MethodName
 		{
 			get
 			{
-				return this.aBx;
+				return this.methodName;
 			}
 			set
 			{
-				this.aBx = value;
+				this.methodName = value;
 			}
 		}
 		public List<LogicParameter> Parameters
 		{
 			get
 			{
-				return this.aBy;
+				return this.parameters;
 			}
 		}
 		public Type ReturnType
 		{
 			get
 			{
-				return this.aBY;
+				return this.returnType;
 			}
 			set
 			{
-				this.aBY = value;
+				this.returnType = value;
 			}
 		}
 		public bool IsEntityEventMethod
 		{
 			get
 			{
-				return this.aBZ;
+				return this.isEntityEventMethod;
 			}
 		}
 		public EventInfo EntityEventInfo
 		{
 			get
 			{
-				if (!this.aBZ)
+				if (!this.isEntityEventMethod)
 				{
 					return null;
 				}
-				if (this.aBz == null)
+				if (this.eventInfo == null)
 				{
 					Type aax = ((LogicEntityClass)base.ParentClass).EntityClassInfo.entityClassType;
 					try
 					{
-						this.aBz = aax.GetEvent(this.MethodName);
+						this.eventInfo = aax.GetEvent(this.MethodName);
 					}
 					catch (Exception ex)
 					{
 						Log.Error(ex.Message);
 					}
 				}
-				return this.aBz;
+				return this.eventInfo;
 			}
 		}
 		public LogicParameter CreateParameter(Type type, string name)
@@ -86,7 +86,7 @@ namespace Jx.EntitySystem
 			logicParameter.aBS = type;
 			logicParameter.aBs = name;
 			logicParameter.PostCreate();
-			this.aBy.Add(logicParameter);
+			this.parameters.Add(logicParameter);
 			return logicParameter;
 		}
 		public void DestroyAllParameters()
@@ -95,12 +95,12 @@ namespace Jx.EntitySystem
 			{
 				current.SetForDeletion(false);
 			}
-			this.aBy.Clear();
+			this.parameters.Clear();
 			Entities.Instance.DeleteEntitiesQueuedForDeletion();
 		}
 		public LogicParameter GetParameterByName(string name)
 		{
-			foreach (LogicParameter current in this.aBy)
+			foreach (LogicParameter current in this.parameters)
 			{
 				if (current.ParameterName == name)
 				{
@@ -115,7 +115,7 @@ namespace Jx.EntitySystem
 			LogicParameter logicParameter = entity as LogicParameter;
 			if (logicParameter != null)
 			{
-				this.aBy.Remove(logicParameter);
+				this.parameters.Remove(logicParameter);
 			}
 		}
 		public string ToString(bool ignoreReturnType)
@@ -123,22 +123,22 @@ namespace Jx.EntitySystem
 			string text = "";
 			if (!ignoreReturnType)
 			{
-				text = text + this.aBY.Name + " ";
+				text = text + this.returnType.Name + " ";
 			}
 			text += this.MethodName;
-			if (this.aBy.Count != 0)
+			if (this.parameters.Count != 0)
 			{
 				text += "( ";
-				for (int i = 0; i < this.aBy.Count; i++)
+				for (int i = 0; i < this.parameters.Count; i++)
 				{
 					if (i != 0)
 					{
 						text += ", ";
 					}
-					text += this.aBy[i].ParameterType.Name;
-					if (!string.IsNullOrEmpty(this.aBy[i].ParameterName))
+					text += this.parameters[i].ParameterType.Name;
+					if (!string.IsNullOrEmpty(this.parameters[i].ParameterName))
 					{
-						text = text + " " + this.aBy[i].ParameterName;
+						text = text + " " + this.parameters[i].ParameterName;
 					}
 				}
 				text += " )";
@@ -170,20 +170,20 @@ namespace Jx.EntitySystem
 			{
 				text += "void";
 			}
-			text = text + " " + this.aBx;
-			if (this.aBy.Count != 0)
+			text = text + " " + this.methodName;
+			if (this.parameters.Count != 0)
 			{
 				text += "( ";
-				for (int i = 0; i < this.aBy.Count; i++)
+				for (int i = 0; i < this.parameters.Count; i++)
 				{
 					if (i != 0)
 					{
 						text += ", ";
 					}
-					text += Jx.Ext.CJ.TypeToCSharpString(this.aBy[i].ParameterType);
-					if (!string.IsNullOrEmpty(this.aBy[i].ParameterName))
+					text += Jx.Ext.CJ.TypeToCSharpString(this.parameters[i].ParameterType);
+					if (!string.IsNullOrEmpty(this.parameters[i].ParameterName))
 					{
-						text = text + " " + this.aBy[i].ParameterName;
+						text = text + " " + this.parameters[i].ParameterName;
 					}
 					else
 					{
@@ -214,10 +214,10 @@ namespace Jx.EntitySystem
 		public string GetMethodFormatText()
 		{
 			string text = this.MethodName;
-			if (this.aBy.Count != 0)
+			if (this.parameters.Count != 0)
 			{
 				text += "( ";
-				for (int i = 0; i < this.aBy.Count; i++)
+				for (int i = 0; i < this.parameters.Count; i++)
 				{
 					if (i != 0)
 					{

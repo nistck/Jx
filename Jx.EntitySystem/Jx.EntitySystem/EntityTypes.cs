@@ -635,6 +635,7 @@ namespace Jx.EntitySystem
             TextBlock typeBlock = textBlock.AddChild("type", type.Name);
             typeBlock.SetAttribute("class", type.ClassInfo.EntityClassType.Name);
 
+            type.OnBeforeSave(typeBlock);
             if (!type.Save(typeBlock))
                 return false;
 

@@ -131,6 +131,14 @@
       <Project>{762d1435-8784-448d-9486-3ce30787b6bb}</Project>
       <Name>Jx.Editors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon.Editors\Jx.EntitiesCommon.Editors.csproj">
+      <Project>{1f7dc9a8-c522-4568-8811-9c1fc06150cd}</Project>
+      <Name>Jx.EntitiesCommon.Editors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon\Jx.EntitiesCommon.csproj">
+      <Project>{ba2442d4-cb7b-4032-b5f6-0bc2f8151115}</Project>
+      <Name>Jx.EntitiesCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
       <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
       <Name>Jx.EntitySystem</Name>

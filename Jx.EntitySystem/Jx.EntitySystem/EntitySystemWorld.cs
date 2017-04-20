@@ -266,7 +266,7 @@ namespace Jx.EntitySystem
 		private void Simulate()
 		{
 			//EntitySystemWorld.entitySystemTimeCounter.Start();
-			Entities.Instance.A(this.engineTime, /*clientOnly*/true);
+			Entities.Instance.TickEntities(this.engineTime, /*clientOnly*/true);
 			//EntitySystemWorld.entitySystemTimeCounter.End();
 		}
 
@@ -291,7 +291,7 @@ namespace Jx.EntitySystem
 				this.clientTickTime = timeElipsed;
 			}
 			this.engineTime = time;
-			Simulate();
+			Simulate(); // WorldTick
 		}
 
 		public void Tick()
@@ -309,11 +309,11 @@ namespace Jx.EntitySystem
 			while (time > this.engineTime + Entity.TickDelta)
 			{
 				this.engineTime += Entity.TickDelta;
-				Simulate();
+				Simulate(); // Tick
 			}
 		}
 
-		internal bool isEntitySerializable(Entity.FieldSerializeSerializationTypes fieldSerializeSerializationTypes)
+		internal bool IsEntitySerializable(Entity.FieldSerializeSerializationTypes fieldSerializeSerializationTypes)
 		{
             return true;
             /*

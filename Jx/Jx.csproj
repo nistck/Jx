@@ -64,7 +64,6 @@
     <Compile Include="PathUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell32Api.cs" />
-    <Compile Include="ToolsLocalization.cs" />
     <Compile Include="_IWrappedCustomTypeDescriptor.cs" />
     <Compile Include="_IWrappedPropertyDescriptor.cs" />
     <Compile Include="_PropertyGridUtils.cs" />
