@@ -1,0 +1,159 @@
+
+
+    public class DLActionStateTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if (sourceType == typeof(string))
+                return true; 
+
+            return base.CanConvertFrom(context, sourceType);
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if( context != null && context.Instance != null && value != null )
+            {
+                Type instanceType = context.Instance.GetType();
+                string valueName = Convert.ToString(value);
+                DLActionState result = DLActionHelper.GetStateByName(instanceType, valueName);
+                return result;
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+                return true; 
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if( destinationType == typeof(string) )
+            {
+                DLActionState state = value as DLActionState;
+                DLActionStateBean bean = new DLActionStateBean(state);
+                return bean.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+
+    public class DLActionStateBean
+    {
+        public DLActionStateBean(DLActionState state)
+        {
+            this.State = state;
+        }
+
+        public DLActionState State { get; private set; }
+
+        public override string ToString()
+        {
+            if (State == null)
+                return "";
+
+            string text = string.Format("{0} ({1})", State.Desc, State.Name);
+            return text;
+        }
+    }
+
+    /// <summary>
+    /// 动作所处的状态
+    /// </summary>
+    [TypeConverter(typeof(DLActionStateTypeConverter))]
+    public class DLActionState
+    {
+        private string id = null; 
+
+ 
+        public string Id { get { return id; } }
+
+        public Type Type { get; private set; }
+        /// <summary>
+        /// 状态的名称
+        /// </summary>
+        public string Name { get; private set; }
+        public string Desc { get; private set; }
+
+        public override string ToString()
+        {
+            string text = string.Format("{0}", Name);
+            return text;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name == null ? 0 : Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            DLActionState state = obj as DLActionState;
+            if (state == null || state.Name == null || Name == null)
+                return false;
+            return state.Name == Name;
+        } 
+    }
+
+
+	public class BizBean 
+	{
+        /// <summary>
+        /// 当前马达状态
+        /// </summary> 
+        [Description("马达状态")]
+        [Editor("ProjectEntities.Editor.DLActionState_Editor, ProjectEntities.Editor", typeof(UITypeEditor))]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        public DLActionState CurrentState
+        {
+            get { return currentState; }
+            set {
+                if (value == null)
+                    return;
+                this.PrevState = currentState;
+                this.currentState = value; 
+            }
+        }
+	}
+
+	public class DLActionState_Editor : BasePropertyEditor
+    {
+        private ListBox list;
+
+        public DLActionState_Editor()
+        {
+            list = new ListBox(); 
+            list.Click += List_Click;
+        }
+
+        private void List_Click(object sender, EventArgs e)
+        {
+            CloseDropdownWindow();
+        }
+
+        protected override Control GetEditControl(ITypeDescriptorContext context, object currentValue)
+        {
+            list.BorderStyle = BorderStyle.None;            
+            list.Items.Clear();
+            var q = DLActionHelper
+                .ListStates(context.Instance == null ? null : context.Instance.GetType())
+                .Select(_state => new DLActionStateBean(_state))
+                ;
+            foreach (DLActionStateBean state in q)
+                list.Items.Add(state); 
+
+            list.SelectedIndex = list.FindString(Convert.ToString(currentValue));
+            list.Height = list.PreferredHeight;
+            return list;
+        }
+
+        protected override object EndEdit(Control editControl, ITypeDescriptorContext context, object value)
+        {
+            DLActionStateBean bean = list.SelectedItem as DLActionStateBean;
+            return bean == null ? null : bean.State;
+        } 
+    } 

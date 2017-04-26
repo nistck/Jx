@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BehaviorTree", "BehaviorTree", "{A6DBDB24-8785-4AF5-A2FD-6DE98C76831A}"
 	ProjectSection(SolutionItems) = preProject
+		PropertyGrid.txt = PropertyGrid.txt
 		Documents\BehaviorTree\行为树.txt = Documents\BehaviorTree\行为树.txt
 	EndProjectSection
 EndProject

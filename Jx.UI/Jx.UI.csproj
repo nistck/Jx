@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editors\BasePropertyEditor.cs" />
     <Compile Include="Controls\JxTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

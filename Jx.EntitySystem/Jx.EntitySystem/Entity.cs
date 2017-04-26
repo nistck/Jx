@@ -125,9 +125,9 @@ namespace Jx.EntitySystem
 
         public class TagInfo
         {
-            [FieldSerializeAttribute("name")]
+            [FieldSerialize("name")]
             private string name = "";
-            [FieldSerializeAttribute("value")]
+            [FieldSerialize("value")]
             private string value = "";
             public string Name
             {
@@ -175,7 +175,7 @@ namespace Jx.EntitySystem
         public delegate void DeleteSubscribedToDeletionEventDelegate(Entity entity, Entity deletedEntity);
         internal static float tickDelta;
 
-        [TypeFieldAttribute]
+        [TypeField]
         private EntityType entityType = null;
         internal Entity parent;
         internal LinkedListNode<Entity> zD;
@@ -183,7 +183,7 @@ namespace Jx.EntitySystem
         internal uint networkUIN;
         private LogicClass logicClass;
 
-        [FieldSerializeAttribute("logicObject")]
+        [FieldSerialize("logicObject")]
         private LogicEntityObject logicObject;
 
         private bool allowSave = true;
