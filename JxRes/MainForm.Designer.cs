@@ -38,6 +38,7 @@
             this.tsmiContentForm = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOthers = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiConsoleForm = new System.Windows.Forms.ToolStripMenuItem();
+            this.addonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
@@ -45,7 +46,6 @@
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.UIStatus_TIMER = new System.Windows.Forms.Timer(this.components);
-            this.addonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -122,6 +122,12 @@
             this.tsmiConsoleForm.Text = "信息输出";
             this.tsmiConsoleForm.Click += new System.EventHandler(this.tsmiConsoleForm_Click);
             // 
+            // addonsToolStripMenuItem
+            // 
+            this.addonsToolStripMenuItem.Name = "addonsToolStripMenuItem";
+            this.addonsToolStripMenuItem.Size = new System.Drawing.Size(63, 21);
+            this.addonsToolStripMenuItem.Text = "扩 展(&E)";
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
@@ -137,6 +143,7 @@
             this.dockPanel.Location = new System.Drawing.Point(0, 0);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.RightToLeftLayout = true;
+            this.dockPanel.ShowDocumentIcon = true;
             this.dockPanel.Size = new System.Drawing.Size(963, 615);
             this.dockPanel.TabIndex = 1;
             // 
@@ -148,12 +155,6 @@
             // 
             this.UIStatus_TIMER.Enabled = true;
             this.UIStatus_TIMER.Tick += new System.EventHandler(this.UIStatus_TIMER_Tick);
-            // 
-            // addonsToolStripMenuItem
-            // 
-            this.addonsToolStripMenuItem.Name = "addonsToolStripMenuItem";
-            this.addonsToolStripMenuItem.Size = new System.Drawing.Size(63, 21);
-            this.addonsToolStripMenuItem.Text = "扩 展(&E)";
             // 
             // MainForm
             // 
@@ -168,7 +169,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "JxEditor";
+            this.Text = "JxRes";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip.ResumeLayout(false);

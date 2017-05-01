@@ -12,7 +12,7 @@ using Jx.FileSystem;
 namespace Jx.EntitySystem
 {
     [LogicSystemBrowsable(true), Editor(typeof(EditorEntityTypeUITypeEditor), typeof(UITypeEditor))]
-    public class EntityType : JxObject, IDisposable
+    public class EntityType : IDisposable
     {
 
         /// <summary>

@@ -15,7 +15,7 @@ using Jx.EntitySystem.LogicSystem;
 namespace Jx.EntitySystem
 {
     [LogicSystemBrowsable(true), Editor(typeof(EditorEntityUITypeEditor), typeof(UITypeEditor))]
-    public class Entity : JxObject
+    public class Entity 
     {
  
         [Flags]

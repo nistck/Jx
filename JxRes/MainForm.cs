@@ -100,7 +100,7 @@ namespace JxRes
         private void MainForm_Load(object sender, EventArgs e)
         {
             Bootstrap();
-            SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
+            //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
 
             AddonManager.Instance.PostInit();
              
