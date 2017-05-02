@@ -38,7 +38,7 @@ namespace Jx.FileSystem
 			public class PathInfo
 			{
 				internal string path = "";
-				internal PlatformFlags ax = PlatformFlags.Windows | PlatformFlags.MacOSX;
+				internal PlatformFlags platformFlags = PlatformFlags.Windows | PlatformFlags.MacOSX;
 				internal bool entryPoint;
 
 				public string Path
@@ -52,7 +52,7 @@ namespace Jx.FileSystem
 				{
 					get
 					{
-						return this.ax;
+						return this.platformFlags;
 					}
 				}
 				public bool EntryPoint
@@ -81,7 +81,7 @@ namespace Jx.FileSystem
 			internal string fullName = "";
 			internal ComponentTypeFlags componentTypeFlag;
 			internal PlatformFlags platformFlag = PlatformFlags.Windows | PlatformFlags.MacOSX;
-			internal PlatformFlags aF;
+			internal PlatformFlags enableByDefaultPlatforms;
 			internal List<PathInfo> af = new List<PathInfo>();
 			internal ReadOnlyCollection<PathInfo> paths;
 			internal string applicationName_MacOSX = "";
@@ -119,7 +119,7 @@ namespace Jx.FileSystem
 			{
 				get
 				{
-					return this.aF;
+					return this.enableByDefaultPlatforms;
 				}
 			}
 			public ReadOnlyCollection<PathInfo> Paths
@@ -152,9 +152,9 @@ namespace Jx.FileSystem
 				switch (PlatformInfo.Platform)
 				{
 				case PlatformInfo.PlanformType.Windows:
-					return (this.aF & ComponentManager.PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0;
+					return (this.enableByDefaultPlatforms & ComponentManager.PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0;
 				case PlatformInfo.PlanformType.MacOSX:
-					return (this.aF & ComponentManager.PlatformFlags.MacOSX) != (ComponentManager.PlatformFlags)0;
+					return (this.enableByDefaultPlatforms & ComponentManager.PlatformFlags.MacOSX) != (ComponentManager.PlatformFlags)0;
 				default:
 					return false;
 				}
@@ -178,7 +178,7 @@ namespace Jx.FileSystem
 					List<PathInfo> list = new List<PathInfo>();
 					foreach (PathInfo current in this.af)
 					{
-						if (current.entryPoint && (current.ax & PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0)
+						if (current.entryPoint && (current.platformFlags & PlatformFlags.Windows) != (ComponentManager.PlatformFlags)0)
 						{
 							bool flag = false;
 							if (IntPtr.Size == 8)
@@ -205,7 +205,7 @@ namespace Jx.FileSystem
 					List<PathInfo> list2 = new List<PathInfo>();
 					foreach (PathInfo current2 in this.af)
 					{
-						if (current2.entryPoint && (current2.ax & PlatformFlags.MacOSX) != (PlatformFlags)0)
+						if (current2.entryPoint && (current2.platformFlags & PlatformFlags.MacOSX) != (PlatformFlags)0)
 						{
 							list2.Add(current2);
 						}
@@ -305,11 +305,11 @@ namespace Jx.FileSystem
 						string attribute = textBlock.GetAttribute("enableByDefaultPlatforms");
 						if (!string.IsNullOrEmpty(attribute))
 						{
-							componentInfo.aF = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), attribute);
+							componentInfo.enableByDefaultPlatforms = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), attribute);
 						}
 						else
 						{
-							componentInfo.aF = (ComponentManager.PlatformFlags)0;
+							componentInfo.enableByDefaultPlatforms = (ComponentManager.PlatformFlags)0;
 						}
 					}
 					foreach (TextBlock current in textBlock.Children)
@@ -320,7 +320,7 @@ namespace Jx.FileSystem
 							pathInfo.path = current.GetAttribute("path");
 							if (current.IsAttributeExist("platforms"))
 							{
-								pathInfo.ax = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), current.GetAttribute("platforms"));
+								pathInfo.platformFlags = (PlatformFlags)Enum.Parse(typeof(PlatformFlags), current.GetAttribute("platforms"));
 							}
 							if (current.IsAttributeExist("entryPoint"))
 							{

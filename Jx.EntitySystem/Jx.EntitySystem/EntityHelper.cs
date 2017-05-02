@@ -15,6 +15,12 @@ namespace Jx.EntitySystem
 {
     internal static class EntityHelper
     {
+        /// <summary>
+        /// 获得字段上的FieldSerializeAttribute标记
+        /// </summary>
+        /// <param name="entityOrEntityType">true, Entity; false, EntityType</param>
+        /// <param name="fieldInfo">字段</param>
+        /// <returns></returns>
         private static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
         {
             string result = fieldInfo.Name;
@@ -35,10 +41,10 @@ namespace Jx.EntitySystem
 
         public static bool GetLoadStringValue(Type type, string strValue, string errorString, out object outValue)
         {
-            outValue = null;
-            bool result;
+            outValue = null; 
             try
-            { 
+            {
+                #region Simple Type
                 if (SimpleTypesUtils.IsSimpleType(type))
                 { 
                     if (strValue == "")
@@ -46,93 +52,69 @@ namespace Jx.EntitySystem
                         if (type == typeof(string))
                         {
                             outValue = "";
-                            result = true;
+                            return true;
                         }
-                        else
-                        { 
-                            if (errorString != null)
-                            {
-                                Log.Error("Entity System: Serialization error. The invalid value \"{0}\" for type \"{1}\" ({2}).", strValue, type, errorString);
-                            }
-                            result = false;
-                        }
+                        if (errorString != null)
+                            Log.Error("Entity System: Serialization error. The invalid value \"{0}\" for type \"{1}\" ({2}).", strValue, type, errorString);
+                        
+                        return false;
                     }
-                    else
-                    {
-                        outValue = SimpleTypesUtils.GetSimpleTypeValue(type, strValue); 
-                        result = outValue != null;
-                    }
+
+                    outValue = SimpleTypesUtils.GetSimpleTypeValue(type, strValue);
+                    return outValue != null;
                 }
-                else
+                #endregion
+
+                #region Entity
+                if (typeof(Entity).IsAssignableFrom(type))
                 {
-                    if (typeof(Entity).IsAssignableFrom(type))
+                    if (strValue == "null" || strValue == "")
+                        return true;
+
+                    Entity loadingEntityBySerializedUIN = Entities.Instance.GetLoadingEntityBySerializedUIN(uint.Parse(strValue));
+                    bool flag8 = (EntitySystemWorld.Instance.IsSingle() || EntitySystemWorld.Instance.IsEditor()) && loadingEntityBySerializedUIN == null;
+                    if (flag8)
                     {
-                        if (strValue == "null" || strValue == "")
-                        {
-                            result = true;
-                        }
-                        else
-                        {
-                            Entity loadingEntityBySerializedUIN = Entities.Instance.GetLoadingEntityBySerializedUIN(uint.Parse(strValue));
-                            bool flag8 = (EntitySystemWorld.Instance.IsSingle() || EntitySystemWorld.Instance.IsEditor()) && loadingEntityBySerializedUIN == null;
-                            if (flag8)
-                            { 
-                                if (errorString != null)
-                                {
-                                    Log.Error("Entity System: Serialization error. The entity with UIN \"{0}\" is not exists ({1}).", strValue, errorString);
-                                }
-                                result = false;
-                            }
-                            else
-                            {
-                                outValue = loadingEntityBySerializedUIN;
-                                result = true;
-                            }
-                        }
+                        if (errorString != null)
+                            Log.Error("Entity System: Serialization error. The entity with UIN \"{0}\" is not exists ({1}).", strValue, errorString);
+
+                        return false;
                     }
-                    else
-                    { 
-                        if (typeof(EntityType).IsAssignableFrom(type))
-                        { 
-                            if (strValue == "null" || strValue == "")
-                            {
-                                result = true;
-                            }
-                            else
-                            {
-                                EntityType byName = EntityTypes.Instance.GetByName(strValue); 
-                                if (byName == null)
-                                { 
-                                    if (errorString != null)
-                                    {
-                                        Log.Error("Entity System: Serialization error. The entity type is not defined \"{0}\" ({1}).", strValue, errorString);                                        
-                                    }
-                                    result = false;
-                                }
-                                else
-                                {
-                                    outValue = byName;
-                                    result = true;
-                                }
-                            }
-                        }
-                        else
+
+                    outValue = loadingEntityBySerializedUIN;
+                    return true;
+                }
+                #endregion
+
+                #region EntityType
+                if (typeof(EntityType).IsAssignableFrom(type))
+                {
+                    if (strValue == "null" || strValue == "")
+                        return true;
+
+                    EntityType byName = EntityTypes.Instance.GetByName(strValue);
+                    if (byName == null)
+                    {
+                        if (errorString != null)
+                            Log.Error("Entity System: Serialization error. The entity type is not defined \"{0}\" ({1}).", strValue, errorString);
+
+                        return false;
+                    }
+                    outValue = byName;
+                    return true;
+                }
+                #endregion
+
+                #region typeof(Type) == type
+                if (typeof(Type) == type)
+                {
+                    if (strValue == "null" || strValue == "")
+                        return true;
+
+                    if (strValue.Contains("Engine.UISystem.E"))
+                    {
+                        string[] rControl = new string[]
                         {
-                            bool flag14 = typeof(Type) == type;
-                            if (flag14)
-                            {
-                                bool flag15 = strValue == "null" || strValue == "";
-                                if (flag15)
-                                {
-                                    result = true;
-                                }
-                                else
-                                {
-                                    bool flag16 = strValue.Contains("Engine.UISystem.E");
-                                    if (flag16)
-                                    {
-                                        string[] array = new string[]
-                                        {
                                             "VideoBox",
                                             "Button",
                                             "CheckBox",
@@ -143,62 +125,46 @@ namespace Jx.EntitySystem
                                             "ScrollBar",
                                             "TabControl",
                                             "TextBox"
-                                        };
-                                        string[] array2 = array;
-                                        for (int i = 0; i < array2.Length; i++)
-                                        {
-                                            string str = array2[i];
-                                            bool flag17 = strValue == "Engine.UISystem.E" + str;
-                                            if (flag17)
-                                            {
-                                                strValue = "Engine.UISystem." + str;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    Type type2 = null;
-                                    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                                    Assembly[] array3 = assemblies;
-                                    for (int j = 0; j < array3.Length; j++)
-                                    {
-                                        Assembly assembly = array3[j];
-                                        type2 = assembly.GetType(strValue);
-                                        bool flag18 = type2 != null;
-                                        if (flag18)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    bool flag19 = type2 == null;
-                                    if (flag19)
-                                    {
-                                        bool flag20 = errorString != null;
-                                        if (flag20)
-                                        {
-                                            Log.Error("Entity System: Serialization error. The entity type is not found \"{0}\" ({1}).", strValue, errorString);
-                                        }
-                                        result = false;
-                                    }
-                                    else
-                                    {
-                                        outValue = type2;
-                                        result = true;
-                                    }
-                                }
-                            }
-                            else
+                        };
+                        for (int i = 0; i < rControl.Length; i++)
+                        {
+                            string str = rControl[i];
+                            bool flag17 = strValue == "Engine.UISystem.E" + str;
+                            if (flag17)
                             {
-                                bool flag21 = errorString != null;
-                                if (flag21)
-                                {
-                                    Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
-                                    return false;
-                                }
-                                result = false;
+                                strValue = "Engine.UISystem." + str;
+                                break;
                             }
                         }
                     }
+                    Type typeControl = null;
+                    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    for (int j = 0; j < assemblies.Length; j++)
+                    {
+                        Assembly assembly = assemblies[j];
+                        typeControl = assembly.GetType(strValue);
+                        if (typeControl != null)
+                            break;
+                    }
+                    if (typeControl == null)
+                    {
+                        if (errorString != null)
+                            Log.Error("Entity System: Serialization error. The entity type is not found \"{0}\" ({1}).", strValue, errorString);
+
+                        return false;
+                    }
+
+                    outValue = typeControl;
+                    return true;
                 }
+                #endregion
+
+                if (errorString != null)
+                {
+                    Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
+                    return false;
+                }
+                return false;
             }
             catch (FormatException ex)
             {
@@ -207,248 +173,219 @@ namespace Jx.EntitySystem
                 {
                     Log.Error("Entity System: Serialization error: \"{0}\" ({1}).", ex.Message, errorString);
                 }
-                result = false;
-            }
-            return result;
+                return false;
+            } 
         }
 
-        private static void A(object obj, FieldInfo fieldInfo, List<object> list)
+        /// <summary>
+        /// 设置目标<paramref name="targetObj"/>的字段<paramref name="fieldInfo"/>的值为<paramref name="list"/>
+        /// </summary>
+        /// <param name="targetObj"></param>
+        /// <param name="fieldInfo"></param>
+        /// <param name="list"></param>
+        private static void SetArrayFieldValue(object targetObj, FieldInfo fieldInfo, List<object> list)
         {
-            bool isArray = fieldInfo.FieldType.IsArray;
-            if (isArray)
+            if (fieldInfo == null)
+                return;
+
+            if (fieldInfo.FieldType.IsArray)
             {
                 ConstructorInfo constructor = fieldInfo.FieldType.GetConstructor(new Type[]
                 {
                     typeof(int)
                 });
-                object obj2 = constructor.Invoke(new object[]
+                object r = constructor.Invoke(new object[]
                 {
                     list.Count
                 });
-                fieldInfo.SetValue(obj, obj2);
+                fieldInfo.SetValue(targetObj, r);
                 MethodInfo method = fieldInfo.FieldType.GetMethod("SetValue", new Type[]
                 {
                     typeof(object),
                     typeof(int)
                 });
-                object[] array = new object[2];
+                object[] args = new object[2];
                 for (int i = 0; i < list.Count; i++)
                 {
-                    array[0] = list[i];
-                    array[1] = i;
-                    method.Invoke(obj2, array);
+                    args[0] = list[i];
+                    args[1] = i;
+                    method.Invoke(r, args);
                 }
             }
             else
             {
-                object obj3 = fieldInfo.GetValue(obj);
-                bool flag = obj3 == null;
-                if (flag)
+                object vList = fieldInfo.GetValue(targetObj); 
+                if (vList == null)
                 {
-                    obj3 = fieldInfo.FieldType.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
-                    fieldInfo.SetValue(obj, obj3);
+                    vList = fieldInfo.FieldType.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
+                    fieldInfo.SetValue(targetObj, vList);
                 }
                 else
                 {
-                    MethodInfo method2 = fieldInfo.FieldType.GetMethod("Clear");
-                    method2.Invoke(obj3, new object[0]);
+                    MethodInfo methodClear = fieldInfo.FieldType.GetMethod("Clear");
+                    methodClear.Invoke(vList, new object[0]);
                 }
-                MethodInfo method3 = fieldInfo.FieldType.GetMethod("Add");
-                object[] array2 = new object[1];
+                MethodInfo methodAdd = fieldInfo.FieldType.GetMethod("Add");
+                object[] args = new object[1];
                 foreach (object current in list)
                 {
-                    array2[0] = current;
-                    method3.Invoke(obj3, array2);
+                    args[0] = current;
+                    methodAdd.Invoke(vList, args);
                 }
             }
         }
-        private static List<FieldInfo> A(bool flag, Type type)
+
+        /// <summary>
+        /// 获得类型<paramref name="type"/>可序列化的字段
+        /// </summary>
+        /// <param name="entityOrEntityType">true, Entity; false, EntityType</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static List<FieldInfo> GetTypeSerializableFields(bool entityOrEntityType, Type type)
         {
             List<FieldInfo> list = new List<FieldInfo>(16);
-            Type type2 = type;
-            while (type2 != null)
+            Type typeCurrent = type;
+            while (typeCurrent != null)
             {
-                FieldInfo[] fields = type2.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                FieldInfo[] array = fields;
-                int i = 0;
-                while (i < array.Length)
+                FieldInfo[] fields = typeCurrent.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+ 
+                for(int i = 0; i < fields.Length; i ++)
                 {
-                    FieldInfo fieldInfo = array[i];
-                    if (flag)
+                    FieldInfo fieldInfo = fields[i];
+                    if (entityOrEntityType)
                     {
-                        Entity.FieldSerializeAttribute[] array2 = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                        bool flag2 = array2.Length != 0;
-                        if (flag2)
+                        Entity.FieldSerializeAttribute[] rAttrs = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
+                        if (rAttrs.Length == 0)
+                            continue;
+                        if (EntitySystemWorld.Instance.IsEntitySerializable(rAttrs[0].SupportedSerializationTypes))
                         {
-                            bool flag3 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
-                            if (flag3)
-                            {
-                                goto IL_A1;
-                            }
+                            list.Add(fieldInfo);
+                            continue;
                         }
                     }
                     else
-                    {
-                        bool flag4 = fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true).Length != 0;
-                        if (flag4)
+                    { 
+                        if (fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true).Length != 0)
                         {
-                            goto IL_A1;
+                            list.Add(fieldInfo);
+                            continue;
                         }
-                    }
-                    IL_98:
-                    i++;
-                    continue;
-                    IL_A1:
-                    list.Add(fieldInfo);
-                    goto IL_98;
+                    } 
                 }
-                type2 = type2.BaseType;
+                typeCurrent = typeCurrent.BaseType;
             }
             return list;
         }
-        private static bool A(bool flag, object obj, FieldInfo fieldInfo, TextBlock textBlock, string text)
+
+        private static bool LoadArrayFieldValue(bool entityOrEntityType, object targetObj, FieldInfo fieldInfo, TextBlock textBlock, string text)
         {
             bool isArray = fieldInfo.FieldType.IsArray;
-            Type type;
+            Type typeElement;
             if (isArray)
-            {
-                type = fieldInfo.FieldType.GetElementType();
-            }
+                typeElement = fieldInfo.FieldType.GetElementType();
             else
-            {
-                type = fieldInfo.FieldType.GetGenericArguments()[0];
-            }
-            string name = EntityHelper.GetFieldSerializeName(flag, fieldInfo);
-            bool flag2 = type == typeof(string);
-            bool result;
-            if (flag2)
-            {
-                TextBlock textBlock2 = textBlock.FindChild(name);
-                bool flag3 = textBlock2 != null;
-                if (flag3)
+                typeElement = fieldInfo.FieldType.GetGenericArguments()[0];
+
+            string name = GetFieldSerializeName(entityOrEntityType, fieldInfo);
+            TextBlock blockChild = textBlock.FindChild(name);
+
+            #region typeElement == typeof(string) 
+            if (typeElement == typeof(string))
+            { 
+                if (blockChild != null)
                 {
-                    List<object> list = new List<object>(textBlock2.Children.Count);
-                    foreach (TextBlock current in textBlock2.Children)
+                    List<object> list = new List<object>(blockChild.Children.Count);
+                    foreach (TextBlock current in blockChild.Children)
                     {
-                        string text2 = current.GetAttribute("value");
-                        bool flag4 = string.IsNullOrEmpty(text2) && current.GetAttribute("_nullItem") == true.ToString();
-                        if (flag4)
-                        {
-                            text2 = null;
-                        }
-                        list.Add(text2);
+                        string currentValue = current.GetAttribute("value");
+                        if( string.IsNullOrEmpty(currentValue) && string.Compare(current.GetAttribute("_nullItem"), "true", true) == 0)
+                            currentValue = null;
+                        
+                        list.Add(currentValue);
                     }
-                    EntityHelper.A(obj, fieldInfo, list);
+                    SetArrayFieldValue(targetObj, fieldInfo, list);
                 }
-                result = true;
+                return true;
             }
-            else
+            #endregion
+
+            #region Simple Type
+            bool typeIsEntityType = typeof(EntityType).IsAssignableFrom(typeElement);
+            bool typeIsEntity = typeof(Entity).IsAssignableFrom(typeElement);
+            if ((SimpleTypesUtils.IsSimpleType(typeElement) | typeIsEntityType | typeIsEntity) || typeof(Type) == typeElement)
             {
-                bool flag5 = typeof(EntityType).IsAssignableFrom(type);
-                bool flag6 = typeof(Entity).IsAssignableFrom(type);
-                bool flag7 = (SimpleTypesUtils.IsSimpleType(type) | flag5 | flag6) || typeof(Type) == type;
-                if (flag7)
+                if (!entityOrEntityType & typeIsEntity)
                 {
-                    bool flag8 = !flag & flag6;
-                    if (flag8)
-                    {
-                        Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
-                        return false;
-                    }
-                    bool flag9 = textBlock.IsAttributeExist(name);
-                    if (flag9)
-                    {
-                        string attribute = textBlock.GetAttribute(name);
-                        bool flag10 = attribute.Length != 0;
-                        string[] array;
-                        if (flag10)
-                        {
-                            char c = ';';
-                            bool flag11 = type.IsPrimitive | flag6;
-                            if (flag11)
-                            {
-                                c = ' ';
-                            }
-                            array = attribute.Split(new char[]
-                            {
-                                c
-                            });
-                        }
-                        else
-                        {
-                            array = new string[0];
-                        }
-                        List<object> list2 = new List<object>(array.Length);
-                        string[] array2 = array;
-                        for (int i = 0; i < array2.Length; i++)
-                        {
-                            string strValue = array2[i];
-                            object item;
-                            bool flag12 = !EntityHelper.GetLoadStringValue(type, strValue, text, out item);
-                            if (flag12)
-                            {
-                                bool flag13 = false;
-                                result = flag13;
-                                return result;
-                            }
-                            list2.Add(item);
-                        }
-                        EntityHelper.A(obj, fieldInfo, list2);
-                    }
-                    result = true;
+                    Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
+                    return false;
                 }
-                else
+
+                if (textBlock.IsAttributeExist(name))
                 {
-                    TextBlock textBlock3 = textBlock.FindChild(name);
-                    bool flag14 = textBlock3 != null;
-                    if (flag14)
+                    string nameAttr = textBlock.GetAttribute(name);
+                    string[] nameArr;
+                    if (nameAttr.Length != 0)
                     {
-                        List<FieldInfo> list3 = EntityHelper.A(flag, type);
-                        List<object> list4 = new List<object>(textBlock3.Children.Count);
-                        foreach (TextBlock current2 in textBlock3.Children)
+                        char c = ';';
+                        bool flag11 = typeElement.IsPrimitive | typeIsEntity;
+                        if (flag11)
+                            c = ' ';
+                        nameArr = nameAttr.Split(new char[] { c });
+                    }
+                    else
+                        nameArr = new string[0];
+
+                    List<object> values = new List<object>(nameArr.Length);
+                    for (int i = 0; i < nameArr.Length; i++)
+                    {
+                        string strValue = nameArr[i];
+                        object item;
+                        bool loadFailure = !GetLoadStringValue(typeElement, strValue, text, out item);
+                        if (loadFailure)
+                            return false;
+
+                        values.Add(item);
+                    }
+                    SetArrayFieldValue(targetObj, fieldInfo, values);
+                }
+                return true;
+            }
+            #endregion
+
+            if (blockChild != null)
+            {
+                List<FieldInfo> typeElementFields = GetTypeSerializableFields(entityOrEntityType, typeElement);
+                List<object> children = new List<object>(blockChild.Children.Count);
+                foreach (TextBlock textChild in blockChild.Children)
+                {
+                    object elementObject;
+                    if (string.Compare(textChild.GetAttribute("_nullItem"), "true", true) != 0)
+                    {
+                        elementObject = typeElement.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
+                        if (elementObject == null)
                         {
-                            bool flag15 = current2.GetAttribute("_nullItem") != true.ToString();
-                            object obj2;
-                            if (flag15)
+                            Log.Fatal("EntitySystem: Serialization: InvokeMember failed for \"{0}\"", typeElement);
+                            return false;
+                        }
+
+                        using (List<FieldInfo>.Enumerator itElementField = typeElementFields.GetEnumerator())
+                        {
+                            while (itElementField.MoveNext())
                             {
-                                obj2 = type.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
-                                bool flag16 = obj2 == null;
-                                if (flag16)
-                                {
-                                    Log.Fatal("EntitySystem: Serialization: InvokeMember failed for \"{0}\"", type);
+                                FieldInfo currentField = itElementField.Current;
+                                bool loadFailure = !LoadFieldValue(entityOrEntityType, elementObject, currentField, textChild, text);
+                                if (loadFailure)
                                     return false;
-                                }
-                                using (List<FieldInfo>.Enumerator enumerator3 = list3.GetEnumerator())
-                                {
-                                    while (enumerator3.MoveNext())
-                                    {
-                                        FieldInfo current3 = enumerator3.Current;
-                                        bool flag17 = !EntityHelper.LoadFieldValue(flag, obj2, current3, current2, text);
-                                        if (flag17)
-                                        {
-                                            bool flag18 = false;
-                                            result = flag18;
-                                            return result;
-                                        }
-                                    }
-                                    goto IL_347;
-                                }
-                                goto IL_345;
                             }
-                            goto IL_345;
-                            IL_347:
-                            list4.Add(obj2);
+                            children.Add(elementObject);
                             continue;
-                            IL_345:
-                            obj2 = null;
-                            goto IL_347;
-                        }
-                        EntityHelper.A(obj, fieldInfo, list4);
+                        } 
                     }
-                    result = true;
+                    children.Add(null); 
                 }
+                SetArrayFieldValue(targetObj, fieldInfo, children);
             }
-            return result;
+            return true;
         }
 
         public static bool LoadFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, string errorString)
@@ -467,7 +404,7 @@ namespace Jx.EntitySystem
                     Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
                     return false;
                 }
-                result = EntityHelper.A(entitySerialize, owner, field, block, errorString);
+                result = LoadArrayFieldValue(entitySerialize, owner, field, block, errorString);
             }
             else
             {
@@ -810,7 +747,7 @@ namespace Jx.EntitySystem
                 else
                 {
                     TextBlock textBlock4 = textBlock.AddChild(text2);
-                    List<FieldInfo> list = EntityHelper.A(flag, type); 
+                    List<FieldInfo> list = EntityHelper.GetTypeSerializableFields(flag, type); 
                     int m = 0;
                     while (m < items.Count)
                     {
@@ -976,12 +913,9 @@ namespace Jx.EntitySystem
                                 {
                                     defaultValue2 = array3[0].Value;
                                 }
-                                bool flag18 = !EntityHelper.SaveFieldValue(entitySerialize, value, fieldInfo, block2, defaultValue2, errorString);
+                                bool flag18 = !SaveFieldValue(entitySerialize, value, fieldInfo, block2, defaultValue2, errorString);
                                 if (flag18)
-                                {
-                                    result = false;
-                                    return result;
-                                }
+                                    return false;
                                 goto IL_2D1;
                             }
                             type = type.BaseType;

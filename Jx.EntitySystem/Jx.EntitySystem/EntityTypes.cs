@@ -620,11 +620,11 @@ namespace Jx.EntitySystem
             if (loadFromTextBlockFailure)
                 return false;
 
-            bool initByTextBlockFailure = !entityType.OnLoad(entityType.textBlock);
+            bool initByTextBlockFailure = !entityType._OnLoad(entityType.textBlock);
             if (initByTextBlockFailure)
                 return false;
 
-            entityType.OnLoaded();
+            entityType._OnLoaded();
             entityType.textBlock = null;
             return true;
         }
@@ -634,12 +634,11 @@ namespace Jx.EntitySystem
             TextBlock textBlock = new TextBlock();
             TextBlock typeBlock = textBlock.AddChild("type", type.Name);
             typeBlock.SetAttribute("class", type.ClassInfo.EntityClassType.Name);
-
-            type.OnBeforeSave(typeBlock);
+ 
             if (!type.Save(typeBlock))
                 return false;
 
-            if (!type.OnSave(typeBlock))
+            if (!type._OnSave(typeBlock))
                 return false;
 
             try
@@ -685,19 +684,10 @@ namespace Jx.EntitySystem
 
             ClassInfo classInfo = GetClassInfoByEntityClassType(type);
             if (classInfo != null)
-                return classInfo;
-
-            Type typeEntityType = null;
-            string name = type.FullName + "Type";
-            foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
-            {
-                Type typeFound = current.GetType(name);
-                if (typeFound != null)
-                {
-                    typeEntityType = typeFound;
-                    break;
-                }
-            }
+                return classInfo; 
+            
+            string typeName = type.FullName + "Type";
+            Type typeEntityType = EntitySystemWorld.Instance.FindEntityClassType(typeName);
 
             if (typeEntityType == null)
             {
@@ -830,6 +820,18 @@ namespace Jx.EntitySystem
 
         private void loadEntityFromAssembly()
         {
+            foreach(Type type in EntitySystemWorld.Instance.EntityClassTypes)
+            {
+                if (typeof(Entity).IsAssignableFrom(type))
+                {
+                    addClassInfo(type);
+#if DEBUG_ENTITY
+                    Log.Info(">> Entity类型: {0} ", type);
+#endif
+                }
+            }
+
+            /*
             foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
             {
                 Type[] types = current.GetTypes(); 
@@ -845,6 +847,7 @@ namespace Jx.EntitySystem
                     }
                 }
             }
+            //*/
         }
 
         /// <summary>

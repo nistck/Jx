@@ -101,11 +101,6 @@ namespace Jx.EntitiesCommon.Behaviors
                     continue;
                 }
             }
-        }
-
-        protected override void OnBeforeSave(TextBlock block)
-        {
-            CheckCycle();
         } 
     }
 

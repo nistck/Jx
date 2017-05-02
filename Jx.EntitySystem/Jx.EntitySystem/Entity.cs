@@ -937,25 +937,11 @@ namespace Jx.EntitySystem
             TextBlock textBlock2 = block.FindChild("extendedProperties");
             if (textBlock2 != null)
             {
-                string attribute = textBlock2.GetAttribute("class");
-                Type type = null;
-                foreach (Assembly current2 in EntitySystemWorld.Instance.EntityClassAssemblies)
-                {
-                    Type[] types = current2.GetTypes();
-                    for (int j = 0; j < types.Length; j++)
-                    {
-                        Type type2 = types[j];
-                        if (type2.Name == attribute)
-                        {
-                            type = type2;
-                            goto IL_281;
-                        }
-                    }
-                }
-                IL_281:
+                string typeClass = textBlock2.GetAttribute("class");
+                Type type = EntitySystemWorld.Instance.FindEntityClassType(typeClass); 
                 if (type == null)
                 {
-                    Log.Error("Extended properties class \"{0}\" not exists.", attribute);
+                    Log.Error("Extended properties class \"{0}\" not exists.", typeClass);
                     return false;
                 }
                 this.CreateExtendedProperties(type);

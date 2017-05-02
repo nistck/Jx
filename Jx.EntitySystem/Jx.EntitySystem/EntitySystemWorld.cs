@@ -71,7 +71,58 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		public Assembly LogicSystemScriptsAssembly
+        public ReadOnlyCollection<Type> EntityClassTypes
+        {
+            get {
+                lock (entityClassTypeCache)
+                {
+                    List<Type> L = new List<Type>();
+                    L.AddRange(entityClassTypeCache.Values);
+                    return L.AsReadOnly();
+                }
+            }
+        }
+
+        private static readonly Dictionary<string, Type> entityClassTypeCache = new Dictionary<string, Type>(); 
+
+        internal static void InitEntityClassTypes(Assembly assembly) 
+        {
+            if (assembly == null)
+                return; 
+
+            lock (entityClassTypeCache)
+            {
+                Type[] types = assembly.GetTypes();
+                foreach (Type type in types)
+                    entityClassTypeCache[type.Name] = type;
+            }
+        } 
+
+        public Type FindEntityClassType(string typeName, bool findInCache = true)
+        {
+            if ( string.IsNullOrEmpty(typeName))
+                return null;
+
+            lock (entityClassTypeCache)
+            {
+                if (findInCache && entityClassTypeCache.ContainsKey(typeName))
+                    return entityClassTypeCache[typeName];
+            }
+
+            foreach (Assembly current in EntityClassAssemblies)
+            {
+                Type typeFound = current.GetType(typeName);
+                if (typeFound != null)
+                {
+                    lock(entityClassTypeCache)
+                        entityClassTypeCache[typeName] = typeFound;
+                    return typeFound;
+                }
+            }
+            return null;
+        }
+
+        public Assembly LogicSystemScriptsAssembly
 		{
 			get
 			{
@@ -126,6 +177,8 @@ namespace Jx.EntitySystem
             if (entityClassAssemblies.Contains(assembly))
                 return;
             entityClassAssemblies.Add(assembly);
+
+            InitEntityClassTypes(assembly);
         }
 
 		private bool _Startup()
@@ -157,11 +210,8 @@ namespace Jx.EntitySystem
 				{
 					ComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
 					Assembly assembly = AssemblyUtils.LoadAssemblyByRealFileName(pathInfo.Path, false);
-					if (assembly != null && !entityClassAssemblies.Contains(assembly))
-					{
-						entityClassAssemblies.Add(assembly);
-					}
-				}
+                    CreateEntityClassAssembly(assembly);
+                }
 			}
 			if (textBlock != null)
 			{

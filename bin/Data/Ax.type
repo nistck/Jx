@@ -1,7 +1,7 @@
 type Ax
 {
 	class = SimpleBean
-	id = 672
+	id = 672878
 	scope = property
 	networkType = Synchronized
 }

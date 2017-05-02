@@ -199,101 +199,99 @@ namespace Jx.EntitySystem
 
         internal bool loadEntityTypeFromTextBlock(TextBlock block)
         {
-            string errorString = string.Format("File path: \"{0}\"", this.FilePath);
-            bool result;
+            string errorString = string.Format("File path: \"{0}\"", this.FilePath); 
             for (EntityTypes.ClassInfo baseClassInfo = this.ClassInfo; baseClassInfo != null; baseClassInfo = baseClassInfo.BaseClassInfo)
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
-                    bool flag = !EntityHelper.LoadFieldValue(false, this, current.Field, block, errorString);
-                    if (flag)
-                    {
-                        result = false;
-                        return result;
-                    }
+                    bool failure = !EntityHelper.LoadFieldValue(false, this, current.Field, block, errorString);
+                    if (failure)
+                        return false; 
                 }
             }
-            result = true;
-            return result;
+            return true;
         }
 
         internal bool Save(TextBlock block)
         {
-            string errorString = string.Format("File path: \"{0}\"", this.FilePath);
-            bool result;
+            string errorString = string.Format("File path: \"{0}\"", this.FilePath); 
             for (EntityTypes.ClassInfo baseClassInfo = this.ClassInfo; baseClassInfo != null; baseClassInfo = baseClassInfo.BaseClassInfo)
             {
                 foreach (EntityTypes.ClassInfo.EntityTypeSerializableFieldItem current in baseClassInfo.EntityTypeSerializableFields)
                 {
                     object defaultValue = entityTypeSerializableFields[current];
-                    bool flag = !EntityHelper.SaveFieldValue(false, this, current.Field, block, defaultValue, errorString);
-                    if (flag)
-                    {
-                        result = false;
-                        return result;
-                    }
+                    bool failure = !EntityHelper.SaveFieldValue(false, this, current.Field, block, defaultValue, errorString);
+                    if (failure)
+                        return false;
                 }
             }
-            result = true;
-            return result;
+            return true;
         }
+
         /// <summary>
         /// Releases all resources used by the <see cref="T:Engine.EntitySystem.EntityType" />.
         /// </summary>
         public virtual void Dispose()
         {
         }
+
+        internal bool _OnLoad(TextBlock block)
+        {
+            return OnLoad(block);
+        }
+
         /// <summary>
         /// Called when the type during loading.
         /// </summary>
         /// <param name="block">The text block in which data of type will be loaded.</param>
         /// <returns><b>true</b> if the data are correct; otherwise, <b>false</b>.</returns>
-        protected internal virtual bool OnLoad(TextBlock block)
+        protected virtual bool OnLoad(TextBlock block)
         {
-            bool flag = block.IsAttributeExist("networkType");
-            if (flag)
+            if (block.IsAttributeExist("networkType"))
             {
                 try
                 {
                     this.entityNetworkType = (EntityNetworkTypes)Enum.Parse(typeof(EntityNetworkTypes), block.GetAttribute("networkType"));
                 }
-                catch
-                {
-                }
+                catch { }
             }
-            bool flag2 = block.IsAttributeExist("allowEditorCreate");
-            if (flag2)
+
+            if (block.IsAttributeExist("allowEditorCreate"))
             {
                 this.CreatableInMapEditor = bool.Parse(block.GetAttribute("allowEditorCreate"));
             }
             return true;
         }
+
+        internal void _OnLoaded()
+        {
+            OnLoaded();
+        }
+
         /// <summary>
         /// Called when the type is loaded.
         /// </summary>
-        protected internal virtual void OnLoaded()
+        protected virtual void OnLoaded()
         {
         }
+
+        internal bool _OnSave(TextBlock block)
+        {
+            return OnSave(block);
+        }
+
         /// <summary>
         /// Called when the type during saving.
         /// </summary>
         /// <param name="block">The text block in which data of type will be saved.</param>
         /// <returns><b>true</b> if the data are correct; otherwise, <b>false</b>.</returns>
-        protected internal virtual bool OnSave(TextBlock block)
+        protected virtual bool OnSave(TextBlock block)
         {
-            bool flag = this.entityNetworkType > EntityNetworkTypes.NotSynchronized;
-            if (flag)
-            {
+            if (this.entityNetworkType > EntityNetworkTypes.NotSynchronized)
                 block.SetAttribute("networkType", this.entityNetworkType.ToString());
-            }
             return true;
         }
-
-        protected internal virtual void OnBeforeSave(TextBlock block)
-        {
-
-        }
-
+ 
         /// <summary>
         /// Returns a string containing the type class name and name of the entity type.
         /// </summary>
