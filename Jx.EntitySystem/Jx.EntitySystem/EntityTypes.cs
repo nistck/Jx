@@ -68,13 +68,13 @@ namespace Jx.EntitySystem
             }
             internal Type typeClassType;
             internal Type entityClassType;
-            internal EntityTypes.ClassInfo baseClassInfo;
-            internal List<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem> entityTypeSerializableFieldItemList;
-            internal ReadOnlyCollection<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem> entityTypeSerializableFields;
-            internal List<EntityTypes.ClassInfo.EntitySerializableFieldItem> entitySerializableFieldItemList;
-            internal ReadOnlyCollection<EntityTypes.ClassInfo.EntitySerializableFieldItem> entitySerializableFields;
+            internal ClassInfo baseClassInfo;
+            internal List<EntityTypeSerializableFieldItem> entityTypeSerializableFieldItemList;
+            internal ReadOnlyCollection<EntityTypeSerializableFieldItem> entityTypeSerializableFields;
+            internal List<EntitySerializableFieldItem> entitySerializableFieldItemList;
+            internal ReadOnlyCollection<EntitySerializableFieldItem> entitySerializableFields;
             internal FieldInfo fieldInfo;
-            internal List<EntityTypes.ClassInfo.NetworkSynchronizedMeta> networkSynchronizedMetaBuffer = new List<EntityTypes.ClassInfo.NetworkSynchronizedMeta>();
+            internal List<NetworkSynchronizedMeta> networkSynchronizedMetaBuffer = new List<NetworkSynchronizedMeta>();
             internal uint networkUIN;
             /// <summary>
             /// Gets the entity type class.
@@ -86,6 +86,7 @@ namespace Jx.EntitySystem
                     return this.typeClassType;
                 }
             }
+             
             /// <summary>
             /// Gets the entity class.
             /// </summary>
@@ -326,13 +327,13 @@ namespace Jx.EntitySystem
         public EntityType GetByName(string name)
         {
             EntityType result = null;
-            this.entityTypeNameDic.TryGetValue(name, out result);
+            entityTypeNameDic.TryGetValue(name, out result);
             return result;
         }
 
         private EntityType CreateEntityType(string typeName, string entityClassTypeName, string filePath)
         {
-            EntityType byName = this.GetByName(typeName);
+            EntityType byName = GetByName(typeName);
             if( byName != null )
             {
                 Log.Error(string.Format("EntityTypes: Entity type with name \"{0}\" is already exists.\nFiles:\n\"{1}\",\n\"{2}\".", typeName, byName.FilePath, filePath), typeName);
@@ -345,6 +346,10 @@ namespace Jx.EntitySystem
                 Log.Error("EntityTypes: The class with name \"{0}\" is not exists. File \"{1}\".", entityClassTypeName, filePath);
                 return null;
             }
+
+#if DEBUG_ENTITY
+            long _ts0 = DateTime.Now.Ticks;
+#endif
 
             ConstructorInfo constructor = classInfoByEntityClassName.TypeClassType.GetConstructor(new Type[0]);
             EntityType entityType = (EntityType)constructor.Invoke(null);
@@ -363,32 +368,31 @@ namespace Jx.EntitySystem
             entityTypeNetworkUIN += 1u;
             entityType.networkUIN = this.entityTypeNetworkUIN;
 #if DEBUG_ENTITY
-            Log.Info(">> 创建EntityType: {0}, TypeName: {1}, 路径: {2}", entityType, entityClassTypeName, filePath);
+            long _ts1 = DateTime.Now.Ticks;
+            Log.Info(">> 创建EntityType: {0}, TypeName: {1}, 路径: {2}, 用时: {3} ms",
+                entityType, entityClassTypeName, filePath, (_ts1 - _ts0) / 10000);
 #endif
             return entityType;
         }
 
         private bool ManualCreateTypes()
         {
-            foreach (ClassInfo current in classes)
+            var q = classes
+                .Select(_clazz => new Tuple<ClassInfo, ManualTypeCreateAttribute>(_clazz, _clazz.TypeClassType.GetCustomAttribute<ManualTypeCreateAttribute>(false)))
+                .Where(_t => _t.Item2 != null)
+                .Select(_t => new Tuple<ClassInfo, string>(_t.Item1, _t.Item2.TypeName?? _t.Item1.EntityClassType.Name))
+                ;
+            foreach(Tuple<ClassInfo, string> tx in q)
             {
-                ManualTypeCreateAttribute[] attrs = (ManualTypeCreateAttribute[])current.typeClassType.GetCustomAttributes(typeof(ManualTypeCreateAttribute), false);
-                for (int i = 0; i < attrs.Length; i++)
-                {
-                    ManualTypeCreateAttribute manualTypeCreateAttribute = attrs[i];
-                    string text = manualTypeCreateAttribute.TypeName;
-                    if (string.IsNullOrEmpty(text))
-                        text = current.entityClassType.Name;
-
-                    EntityType entityType = ManualCreateType(text, current);
-                    if (entityType == null)
-                        return false; 
-                }
+                EntityType entityType = ManualCreateType(tx.Item2, tx.Item1);
+                if (entityType == null)
+                    return false;
             }
+            
             return true;
         }
 
-        public EntityType ManualCreateType(string typeName, EntityTypes.ClassInfo classInfo)
+        public EntityType ManualCreateType(string typeName, ClassInfo classInfo)
         {
             EntityType entityTypeExists = GetByName(typeName);
             if( entityTypeExists != null ) 
@@ -673,7 +677,7 @@ namespace Jx.EntitySystem
         public ClassInfo GetClassInfoByEntityClassName(string entityClassName)
         {
             ClassInfo result;
-            this.typeNameClassInfoDic.TryGetValue(entityClassName, out result);
+            typeNameClassInfoDic.TryGetValue(entityClassName, out result);
             return result;
         }
 
@@ -820,34 +824,14 @@ namespace Jx.EntitySystem
 
         private void loadEntityFromAssembly()
         {
-            foreach(Type type in EntitySystemWorld.Instance.EntityClassTypes)
+            var q = EntitySystemWorld.Instance.EntityClassTypes.Where(_type => typeof(Entity).IsAssignableFrom(_type));
+            foreach (Type type in q)
             {
-                if (typeof(Entity).IsAssignableFrom(type))
-                {
-                    addClassInfo(type);
+                addClassInfo(type);
 #if DEBUG_ENTITY
-                    Log.Info(">> Entity类型: {0} ", type);
+                Log.Info(">> Entity类型: {0} ", type);
 #endif
-                }
             }
-
-            /*
-            foreach (Assembly current in EntitySystemWorld.Instance.EntityClassAssemblies)
-            {
-                Type[] types = current.GetTypes(); 
-                for (int i = 0; i < types.Length; i++)
-                {
-                    Type type = types[i];
-                    if (typeof(Entity).IsAssignableFrom(type))
-                    {
-                        addClassInfo(type);
-#if DEBUG_ENTITY
-                        Log.Info(">> Entity类型: {0}, Assembly: {1}", type, current);
-#endif
-                    }
-                }
-            }
-            //*/
         }
 
         /// <summary>

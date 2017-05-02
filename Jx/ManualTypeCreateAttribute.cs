@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Jx
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class ManualTypeCreateAttribute : Attribute
     {
         private string typeName;
