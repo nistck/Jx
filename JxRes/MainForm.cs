@@ -6,7 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using JxRes.UI;
@@ -15,6 +15,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Jx;
 using Jx.UI.Forms;
 using Jx.FileSystem;
+ 
 
 namespace JxRes
 {
@@ -35,8 +36,29 @@ namespace JxRes
 
         public MainForm()
         {
+            this.Hide();
+            LongOperationCallbackManager.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
+
+            Thread splashthread = new Thread(new ParameterizedThreadStart(SplashScreen.ShowSplashScreen));
+            splashthread.IsBackground = true;
+
+            string p0 = Path.GetDirectoryName(Application.ExecutablePath);
+            string filePath = Path.Combine(p0, @"Resources\Splash.jpg");
+
+            splashthread.Start(filePath);
+
             InitializeComponent();
             instance = this;
+        }
+
+        private void LongOperationCallbackManager_LongOperationNotify(string text, params object[] args)
+        {
+            if (text == null)
+                return; 
+
+            string t = string.Format(text, args);
+            SplashScreen.UdpateStatusText(t); 
+
         }
 
         public PropertiesForm PropertiesForm
@@ -114,6 +136,14 @@ namespace JxRes
             }
 
             resourcesForm.UpdateView();
+
+            #region Splash Screen
+
+            LongOperationCallbackManager.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
+            this.Show();
+            SplashScreen.CloseSplashScreen();
+            this.Activate();
+            #endregion
         }
 
         public void UpdateLastSelectedResourcePath(string resourcePath)

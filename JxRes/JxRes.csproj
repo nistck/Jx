@@ -91,6 +91,13 @@
     <Compile Include="UI\ResourcesForm.Designer.cs">
       <DependentUpon>ResourcesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SplashScreen.cs" />
+    <Compile Include="UI\SplashScreenForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SplashScreenForm.designer.cs">
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -112,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ResourcesForm.resx">
       <DependentUpon>ResourcesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SplashScreenForm.resx">
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -202,6 +212,9 @@
     <Content Include="Resources\sort_descend_16.png" />
     <Content Include="Resources\default_16.png" />
     <Content Include="Resources\yes_16.png" />
+    <Content Include="Resources\Splash.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
