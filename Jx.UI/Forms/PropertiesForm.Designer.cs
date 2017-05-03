@@ -34,8 +34,8 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripPropertyGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.jxPropertyGrid = new Jx.UI.Controls.PGEx.JxPropertyGrid();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
+            this.jxPropertyGrid = new Jx.UI.Controls.PGEx.JxPropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.SplitView)).BeginInit();
             this.SplitView.Panel1.SuspendLayout();
             this.SplitView.SuspendLayout();
@@ -78,6 +78,12 @@
             this.resetToolStripMenuItem.Text = "重 置(&R)";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
+            // IL16
+            // 
+            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
+            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16.Images.SetKeyName(0, "reset");
+            // 
             // jxPropertyGrid
             // 
             this.jxPropertyGrid.ContextMenuStrip = this.contextMenuStripPropertyGrid;
@@ -102,7 +108,7 @@
             this.jxPropertyGrid.DocCommentTitle.TabIndex = 0;
             this.jxPropertyGrid.DocCommentTitle.UseMnemonic = false;
             this.jxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jxPropertyGrid.LabelRatio = 6.1304347826086953D;
+            this.jxPropertyGrid.LabelRatio = 2.4D;
             this.jxPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.jxPropertyGrid.Name = "jxPropertyGrid";
             this.jxPropertyGrid.ReadOnly = true;
@@ -128,12 +134,6 @@
             this.jxPropertyGrid.GridItemDoubleClick += new System.EventHandler(this.propertyGrid1_GridItemDoubleClick);
             this.jxPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.jxPropertyGrid_PropertyValueChanged);
             this.jxPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.propertyGrid1_SelectedGridItemChanged);
-            // 
-            // IL16
-            // 
-            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
-            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
-            this.IL16.Images.SetKeyName(0, "reset");
             // 
             // PropertiesForm
             // 

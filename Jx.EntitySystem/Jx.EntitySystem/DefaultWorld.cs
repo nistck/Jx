@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Jx.EntitySystem
 { 
     [ManualTypeCreate]
-    public class DefaultWorldType : WorldType
+    public sealed class DefaultWorldType : WorldType
     {
     }
 
-    public class DefaultWorld : World
+    public sealed class DefaultWorld : World
     {
         private DefaultWorldType _type = null;
         public new DefaultWorldType Type { get { return _type; } }

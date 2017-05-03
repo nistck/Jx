@@ -140,12 +140,12 @@ namespace Jx.UI.Controls.PGEx
 		protected void AutoSizeSplitter(int RightMargin)
 		{
 			
-			GridItemCollection oItemCollection =  (System.Windows.Forms.GridItemCollection) oPropertyGridEntries.GetValue(internalPropertyGridView);
+			GridItemCollection oItemCollection =  (GridItemCollection) oPropertyGridEntries.GetValue(internalPropertyGridView);
 			if (oItemCollection == null)
 			{
 				return;
 			}
-			System.Drawing.Graphics oGraphics = System.Drawing.Graphics.FromHwnd(this.Handle);
+			Graphics oGraphics = Graphics.FromHwnd(this.Handle);
 			int CurWidth = 0;
 			int MaxWidth = 0;
 			
