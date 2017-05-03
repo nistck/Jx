@@ -389,7 +389,7 @@ namespace Jx.EntitySystem
             {
                 EntityType entityType = ManualCreateType(tx.Item2, tx.Item1);
                 readyCount++;
-                LongOperationNotifier.Notify("手工创建EntityType: {0}/{1}", readyCount, totalCount);
+                LongOperationNotifier.Notify("手工创建EntityType ({0}/{1}): {2}", readyCount, totalCount, entityType);
                 if (entityType == null)
                 {
                     LongOperationNotifier.Notify("手工创建EntityType失败, ClassInfo: {0}", tx.Item1);
@@ -423,7 +423,7 @@ namespace Jx.EntitySystem
 
         public EntityType LoadType(string p)
         {
-            LongOperationNotifier.Notify("EntityTypes: PreLoadTypeFromFile: " + p);
+            LongOperationNotifier.Notify("加载EntityType: {0}", p);
             TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
             if (textBlock == null || textBlock.Children.Count != 1)
                 return null; 
@@ -497,7 +497,7 @@ namespace Jx.EntitySystem
                 }
                 loadedTypes.Add(entityType);
 
-                LongOperationNotifier.Notify("加载type文件: {0}, {1}/{2}", typeFile, i + 1, typeFiles.Length);
+                LongOperationNotifier.Notify("加载type文件 ({0}/{1}): {2}", i + 1, typeFiles.Length, typeFile);
 
 #if DEBUG_ENTITY
                 Log.Info(">> #{0:000} EntityType: {1}, 文件: {2}", i + 1, entityType, typeFile);
@@ -515,33 +515,23 @@ namespace Jx.EntitySystem
 
         public bool LoadGroupOfTypes(IList<TextBlock> blocks, out List<EntityType> loadedTypes)
         {
-            LongOperationNotifier.Notify("EntityTypes: LoadGroupOfTypes");
             loadedTypes = new List<EntityType>(blocks.Count);
-            bool result;
+            
             foreach (TextBlock current in blocks)
             {
                 EntityType entityType = loadEntityType(current, "", "");    // LoadGroupOfTypes
-                bool flag = entityType == null;
-                if (flag)
-                {
-                    bool flag2 = false;
-                    result = flag2;
-                    return result;
-                }
+                if (entityType == null)
+                    return false;  
+
                 loadedTypes.Add(entityType);
             }
-            foreach (EntityType current2 in loadedTypes)
+            foreach (EntityType entityType in loadedTypes)
             {
-                bool flag3 = !this.loadTypeFromLoadedTextBlock(current2);
-                if (flag3)
-                {
-                    bool flag4 = false;
-                    result = flag4;
-                    return result;
-                }
+                bool state = loadTypeFromLoadedTextBlock(entityType);
+                if (!state)
+                    return false;  
             }
-            result = true;
-            return result;
+            return true;
         }
 
         public EntityType LoadTypeFromFile(string virtualFileName)
@@ -631,7 +621,7 @@ namespace Jx.EntitySystem
 
         private bool loadTypeFromLoadedTextBlock(EntityType entityType)
         {
-            LongOperationNotifier.Notify("EntityTypes: LoadTypeFromLoadTextBlock: " + entityType.FilePath);
+            LongOperationNotifier.Notify("从TextBlock初始化EntityType: {0}", entityType.FilePath);
             bool loadFromTextBlockFailure = !entityType.loadEntityTypeFromTextBlock(entityType.textBlock);
             if (loadFromTextBlockFailure)
                 return false;
@@ -844,7 +834,7 @@ namespace Jx.EntitySystem
             {
                 addClassInfo(type);
                 readyCount++;
-                LongOperationNotifier.Notify("初始化EntityType类型信息: {0}/{1}", readyCount, totalCount);
+                LongOperationNotifier.Notify("初始化EntityType类型信息 ({0}/{1}): {2}", readyCount, totalCount, type);
 #if DEBUG_ENTITY
                 Log.Info(">> Entity类型: {0} ", type);
 #endif

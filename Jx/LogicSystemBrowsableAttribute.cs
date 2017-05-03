@@ -8,17 +8,17 @@ namespace Jx
 {
     public class LogicSystemBrowsableAttribute : Attribute
     {
-        private bool Cx;
+        private bool browsable;
         public bool Browsable
         {
             get
             {
-                return this.Cx;
+                return this.browsable;
             }
         }
         public LogicSystemBrowsableAttribute(bool browsable)
         {
-            this.Cx = browsable;
+            this.browsable = browsable;
         }
     }
 }

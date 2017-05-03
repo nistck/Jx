@@ -1,5 +1,6 @@
 using Jx.Ext;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -10,10 +11,10 @@ namespace Jx.EntitySystem.LogicSystem
 	public class LogicSystemClasses
 	{
 		private static LogicSystemClasses instance;
-		private Dictionary<string, LogicSystemClass> aAT = new Dictionary<string, LogicSystemClass>();
-		private Dictionary<string, LogicSystemClass> logicSystemClassNameDic = 
+		private Dictionary<string, LogicSystemClass> logicSystemClassNameDic = new Dictionary<string, LogicSystemClass>();
+		private Dictionary<string, LogicSystemClass> logicSystemClassTypeNameDic = 
                     new Dictionary<string, LogicSystemClass>();
-		private Dictionary<Type, LogicSystemClass> aAU = new Dictionary<Type, LogicSystemClass>();
+		private Dictionary<Type, LogicSystemClass> logicSystemClassTypeDic = new Dictionary<Type, LogicSystemClass>();
 
 		public static LogicSystemClasses Instance
 		{
@@ -27,7 +28,7 @@ namespace Jx.EntitySystem.LogicSystem
 		{
 			get
 			{
-				return this.aAT.Values;
+				return this.logicSystemClassNameDic.Values;
 			}
 		}
 
@@ -55,30 +56,38 @@ namespace Jx.EntitySystem.LogicSystem
 		private void Startup()
 		{
 			DefineBaseObject();
-			this.C();
+			LoadLogicClasses();
 		}
 
-		private LogicSystemClass A(Type classType)
+		private LogicSystemClass DefineLogicClass(Type classType)
 		{
+            if (classType == null)
+                return null; 
+
 			LogicSystemClass logicSystemClass = new LogicSystemClass(classType);
-			this.aAT.Add(logicSystemClass.Name, logicSystemClass);
-			this.logicSystemClassNameDic.Add(logicSystemClass.ClassType.FullName, logicSystemClass);
-			this.aAU.Add(logicSystemClass.ClassType, logicSystemClass);
+            if (logicSystemClassNameDic.ContainsKey(logicSystemClass.Name))
+                return logicSystemClassNameDic[logicSystemClass.Name];
+
+			logicSystemClassNameDic.Add(logicSystemClass.Name, logicSystemClass);
+			logicSystemClassTypeNameDic.Add(logicSystemClass.ClassType.FullName, logicSystemClass);
+			logicSystemClassTypeDic.Add(logicSystemClass.ClassType, logicSystemClass);
 			return logicSystemClass;
 		}
 
 		private void DefineBaseObject()
 		{
-			LogicSystemClass logicSystemClass = this.A(typeof(object));
+			LogicSystemClass logicSystemClass = DefineLogicClass(typeof(object));
 			logicSystemClass.DefineMethod(logicSystemClass.ClassType.GetMethod("ToString"));
-			logicSystemClass = this.A(typeof(ValueType));
-			logicSystemClass = this.A(typeof(string));
-			logicSystemClass = this.A(typeof(bool));
+			logicSystemClass = DefineLogicClass(typeof(ValueType));
+			logicSystemClass = DefineLogicClass(typeof(string));
+
+			logicSystemClass = DefineLogicClass(typeof(bool));
 			logicSystemClass.DefineMethod(logicSystemClass.ClassType.GetMethod("Parse", new Type[]
 			{
 				typeof(string)
 			}));
-			logicSystemClass = this.A(typeof(int));
+
+			logicSystemClass = DefineLogicClass(typeof(int));
 			logicSystemClass.DefineMethod(logicSystemClass.ClassType.GetMethod("ToString", new Type[]
 			{
 				typeof(string)
@@ -87,7 +96,8 @@ namespace Jx.EntitySystem.LogicSystem
 			{
 				typeof(string)
 			}));
-			logicSystemClass = this.A(typeof(float));
+
+			logicSystemClass = DefineLogicClass(typeof(float));
 			logicSystemClass.DefineMethod(logicSystemClass.ClassType.GetMethod("ToString", new Type[]
 			{
 				typeof(string)
@@ -96,7 +106,8 @@ namespace Jx.EntitySystem.LogicSystem
 			{
 				typeof(string)
 			}));
-			logicSystemClass = this.A(typeof(Log));
+
+			logicSystemClass = DefineLogicClass(typeof(Log));
 			logicSystemClass.DefineMethod(logicSystemClass.ClassType.GetMethod("Info", new Type[]
 			{
 				typeof(string)
@@ -115,7 +126,7 @@ namespace Jx.EntitySystem.LogicSystem
 			}));
 		}
 
-		private void C()
+		private void LoadLogicClasses()
 		{
 			List<Assembly> list = new List<Assembly>();
 			foreach (string current in EntitySystemWorld.Instance.LogicSystemSystemClassesAssemblies)
@@ -123,53 +134,39 @@ namespace Jx.EntitySystem.LogicSystem
 				Assembly item = AssemblyUtils.LoadAssemblyByRealFileName(current, false);
 				list.Add(item);
 			}
-			float time = EngineApp.Instance.Time;
-			Dictionary<Type, Type> dictionary = new Dictionary<Type, Type>();
-			List<Type> list2 = new List<Type>();
-			foreach (Assembly current2 in list)
+
+			Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>(); 
+			foreach (Assembly current in list)
 			{
-				Type[] types = current2.GetTypes();
+                string assemblyMessage = string.Format("ËÑË÷LogicClass, ³ÌÐò¼¯: {0}", current.GetName().Name);
+
+				Type[] types = current.GetTypes().Where(_type => !typeDic.ContainsKey(_type)).ToArray(); 
 				for (int i = 0; i < types.Length; i++)
 				{
 					Type type = types[i];
-					if (!dictionary.ContainsKey(type))
-					{
-						Type type2 = type;
-						while (type2 != null)
-						{
-							list2.Add(type2);
-							type2 = type2.BaseType;
-						}
-						for (int j = list2.Count - 1; j >= 0; j--)
-						{
-							Type type3 = list2[j];
-							if (!dictionary.ContainsKey(type3))
-							{
-								dictionary.Add(type3, type3);
-								bool flag = false;
-								LogicSystemBrowsableAttribute[] array = (LogicSystemBrowsableAttribute[])type3.GetCustomAttributes(typeof(LogicSystemBrowsableAttribute), true);
-								LogicSystemBrowsableAttribute[] array2 = array;
-								for (int k = 0; k < array2.Length; k++)
-								{
-									LogicSystemBrowsableAttribute logicSystemBrowsableAttribute = array2[k];
-									if (!logicSystemBrowsableAttribute.Browsable)
-									{
-										flag = false;
-										break;
-									}
-									flag = true;
-								}
-								if (flag)
-								{
-									this.A(type3);
-								}
-							}
-						}
-						list2.Clear();
-					}
-				}
-			}
-			float arg_197_0 = EngineApp.Instance.Time;
+
+                    List<Type> typeList = new List<Type>();
+                    Type typeCurrent = type;
+                    while (typeCurrent != null)
+                    {
+                        typeList.Add(typeCurrent);
+                        typeCurrent = typeCurrent.BaseType;
+                    }
+                    var typeQuery = typeList.Where(_type => !typeDic.ContainsKey(_type))
+                        .Where(_type => {
+                            LogicSystemBrowsableAttribute[] _rAttrs = (LogicSystemBrowsableAttribute[])_type.GetCustomAttributes(typeof(LogicSystemBrowsableAttribute), true);
+                            bool _typeBrowsable = _rAttrs.Where(_attr => !_attr.Browsable).Count() == 0;
+                            return _typeBrowsable;
+                        })
+                        ;
+                    typeQuery.Any(_type => {
+                        DefineLogicClass(_type);
+                        return false;
+                    });
+
+                    LongOperationNotifier.Notify("{0}, {1}/{2}", assemblyMessage, i + 1, types.Length);
+                }
+			} 
 		}
 
 		private void _Shutdown()
@@ -179,21 +176,21 @@ namespace Jx.EntitySystem.LogicSystem
 		public LogicSystemClass GetByName(string name)
 		{
 			LogicSystemClass result;
-			aAT.TryGetValue(name, out result);
+			logicSystemClassNameDic.TryGetValue(name, out result);
 			return result;
 		}
 
 		public LogicSystemClass GetByFullName(string fullName)
 		{
 			LogicSystemClass result;
-			logicSystemClassNameDic.TryGetValue(fullName, out result);
+			logicSystemClassTypeNameDic.TryGetValue(fullName, out result);
 			return result;
 		}
 
 		public LogicSystemClass GetByType(Type type)
 		{
 			LogicSystemClass result;
-			this.aAU.TryGetValue(type, out result);
+			this.logicSystemClassTypeDic.TryGetValue(type, out result);
 			return result;
 		}
 	}

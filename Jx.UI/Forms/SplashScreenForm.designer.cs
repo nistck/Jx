@@ -47,13 +47,12 @@
             // labelMessage
             // 
             this.labelMessage.AutoSize = true;
-            this.labelMessage.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMessage.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelMessage.ForeColor = System.Drawing.Color.Green;
-            this.labelMessage.Location = new System.Drawing.Point(1, 338);
+            this.labelMessage.Location = new System.Drawing.Point(1, 360);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(77, 19);
+            this.labelMessage.Size = new System.Drawing.Size(0, 14);
             this.labelMessage.TabIndex = 1;
-            this.labelMessage.Text = "Waiting...";
             // 
             // SplashView
             // 

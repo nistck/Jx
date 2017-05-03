@@ -202,11 +202,15 @@ namespace Jx.EntitySystem
             //*/
 
 			ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.EntityClasses, true);
+                        
 			for (int i = 0; i < componentsByType.Length; i++)
 			{
 				ComponentManager.ComponentInfo componentInfo = componentsByType[i];
 				ComponentManager.ComponentInfo.PathInfo[] allEntryPointsForThisPlatform = componentInfo.GetAllEntryPointsForThisPlatform();
-				for (int j = 0; j < allEntryPointsForThisPlatform.Length; j++)
+
+                LongOperationNotifier.Notify("初始化组件({0}/{1}): {2}, 入口数: {3}",
+                    i + 1, componentsByType.Length, componentInfo.FullName, allEntryPointsForThisPlatform.Length);
+                for (int j = 0; j < allEntryPointsForThisPlatform.Length; j++)
 				{
 					ComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
 					Assembly assembly = AssemblyUtils.LoadAssemblyByRealFileName(pathInfo.Path, false);
@@ -215,13 +219,13 @@ namespace Jx.EntitySystem
 			}
 			if (textBlock != null)
 			{
-				TextBlock textBlock2 = textBlock.FindChild("logicSystem");
-				if (textBlock2 != null)
+				TextBlock logicSystemBlock = textBlock.FindChild("logicSystem");
+				if (logicSystemBlock != null)
 				{
-					TextBlock textBlock3 = textBlock2.FindChild("systemClassesAssemblies");
-					if (textBlock3 != null)
+					TextBlock logicSystemClassAssembliesBlock = logicSystemBlock.FindChild("systemClassesAssemblies");
+					if (logicSystemClassAssembliesBlock != null)
 					{
-						foreach (TextBlock current in textBlock3.Children)
+						foreach (TextBlock current in logicSystemClassAssembliesBlock.Children)
 						{
 							string attribute = current.GetAttribute("file");
 							this.logicSystemSystemClassesAssemblies.Add(attribute);
