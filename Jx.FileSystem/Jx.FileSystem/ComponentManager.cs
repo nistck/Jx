@@ -21,7 +21,7 @@ namespace Jx.FileSystem
 			EngineInitializationClass = 256,
 			ResourceEditorAddon = 512,
 			ImportingModel = 1024,
-			MapEditorAddon = 2048,
+			DesignerAddon = 2048,
 			StaticLightingCalculation = 4096,
 			Localization = 8192,
 			Application = 16384,

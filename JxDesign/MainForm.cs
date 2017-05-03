@@ -126,6 +126,8 @@ namespace JxDesign
         {
             Bootstrap();
 
+            AddonManager.Instance.PostInit();
+
             serializeContext = new DeserializeDockContent(GetContentFromPersistString);
             if (!LoadLayoutConfig())
             {
@@ -163,7 +165,7 @@ namespace JxDesign
 
         public ToolStripMenuItem AddonsToolStripMenuItem
         {
-            get { return null; }
+            get { return this.addonsToolStripMenuItem; }
         }
 
         public ToolStrip ToolStripGeneral

@@ -62,7 +62,7 @@ namespace JxDesign.UI
             DesignerAddon.Internal_InitApplicationData(MainForm.Instance, MainForm.Instance.MainMenu, MainForm.Instance.ToolStripGeneral, MainForm.Instance.DockPanel);
             List<Assembly> list = new List<Assembly>();
 
-            ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.ResourceEditorAddon, true);
+            ComponentManager.ComponentInfo[] componentsByType = ComponentManager.Instance.GetComponentsByType(ComponentManager.ComponentTypeFlags.DesignerAddon, true);
             for (int i = 0; i < componentsByType.Length; i++)
             {
                 ComponentManager.ComponentInfo componentInfo = componentsByType[i];

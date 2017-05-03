@@ -1,0 +1,11 @@
+fullName = "JxDesignAddon classes"
+componentTypes = "DesignerAddon"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "JxDesign.Addon.dll"
+	platforms = "Windows"
+	entryPoint = True
+}
