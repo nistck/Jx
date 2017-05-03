@@ -23,13 +23,11 @@ namespace JxRes.Editors
             {
                 base.AllowEditMode = true;
             }
-
-            /*
+             
             MainForm.Instance.PropertiesForm.SelectObjects(new object[]
             {
                 this
-            });
-            //*/
+            }); 
         }
 
         protected override void OnBeginEditMode()
@@ -49,7 +47,7 @@ namespace JxRes.Editors
 
         protected override bool OnSave()
         {
-            //MainForm.Instance.ResourcesForm.WatchFileSystem = false;
+            MainForm.Instance.ResourcesForm.WatchFileSystem = false;
             string value = this.textBlock.DumpToString();
             try
             {
@@ -66,7 +64,7 @@ namespace JxRes.Editors
             }
             finally
             {
-                //MainForm.Instance.ResourcesForm.WatchFileSystem = true;
+                MainForm.Instance.ResourcesForm.WatchFileSystem = true;
             }
             return base.OnSave();
         }

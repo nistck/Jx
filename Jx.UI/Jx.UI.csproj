@@ -70,6 +70,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Wizards\WizardPagesCollection.cs" />
+    <Compile Include="Editors\ExtendedFunctionalityDescriptor.cs" />
     <Compile Include="Forms\ConsoleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +101,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
+      <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
+      <Name>Jx.Ext</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
       <Name>Jx</Name>

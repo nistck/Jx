@@ -49,7 +49,6 @@
     <Compile Include="ConfigAttribute.cs" />
     <Compile Include="EngineApp.cs" />
     <Compile Include="EngineRandom.cs" />
-    <Compile Include="ExtendedFunctionalityDescriptorAttribute.cs" />
     <Compile Include="FunctionalityArea.cs" />
     <Compile Include="JxObject.cs" />
     <Compile Include="JxNameAttribute.cs" />

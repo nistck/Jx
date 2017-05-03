@@ -11,6 +11,7 @@ using Jx.Editors;
 using Jx.EntitySystem; 
 
 using JxRes.UI;
+using JxRes.Descriptors;
 
 namespace JxRes.Editors
 {
@@ -21,11 +22,11 @@ namespace JxRes.Editors
         private ToolStripMenuItem awP;
         private ToolStripMenuItem awp;
         private EntityType currentEntityType;
-        private Entity awq;
+        private Entity currentEntity;
         private bool awR;
         internal List<object> objectSelection = new List<object>();
  
-        private string aws;
+        private string filterObjectsByAlias;
         private int awT; 
         private List<int> awU = new List<int>(); 
 
@@ -49,7 +50,7 @@ namespace JxRes.Editors
         {
             get
             {
-                return this.awq;
+                return this.currentEntity;
             }
         }
 
@@ -57,11 +58,11 @@ namespace JxRes.Editors
         {
             get
             {
-                return this.aws;
+                return this.filterObjectsByAlias;
             }
             set
             {
-                this.aws = value;
+                this.filterObjectsByAlias = value;
             }
         }
 
@@ -100,16 +101,16 @@ namespace JxRes.Editors
                 MainForm.Instance.PropertiesForm.SelectObjects(null);
             }
 
-            /*
+            
             if (this.currentEntityType != null)
             {
-                //MainForm.Instance.PropertiesForm.CreateExtendedFunctionalityDescriptor(typeof(EntityTypeExtendedFunctionalityDescriptor), this);
+                MainForm.Instance.PropertiesForm.CreateExtendedFunctionalityDescriptor(typeof(EntityTypeExtendedFunctionalityDescriptor), this);
             }
             else
             {
-                //MainForm.Instance.PropertiesForm.DestroyExtendedFunctionalityDescriptor();
+                MainForm.Instance.PropertiesForm.DestroyExtendedFunctionalityDescriptor();
             }
-            
+            /*
             if (this.F())
             {
                 MapHelper.CreateMap();
@@ -175,7 +176,7 @@ namespace JxRes.Editors
             }
             //*/
             this.SetSelectObject(this.currentEntityType, true, true);
-            this.B();
+            this.CreateMainMenuExtendItem();
         }
 
         protected override bool OnEndEditMode()
@@ -186,7 +187,7 @@ namespace JxRes.Editors
                 return false;
             }
             this.objectSelection.Clear();
-            this.b();
+            this.RemoveMainMenuExtendItem();
             if (this.awo != null)
             {
                 this.awo.Hide();
@@ -226,23 +227,25 @@ namespace JxRes.Editors
             base.OnModifiedSet();
             this.SetNeedRecreateEntity();
         }
+
         private void A()
         {
             this.a();
             this.awT--; 
         }
+
         private void a()
         {
  
-            this.awq = null;
+            this.currentEntity = null;
         }
+
         public override void OnContextMenuCreate(ContextMenuStrip menu)
         {
-
             base.OnContextMenuCreate(menu);
         } 
 
-        private void B()
+        private void CreateMainMenuExtendItem()
         {
             /*
             this.awP = MainForm.Instance.AddMainMenuExtendItem(this.Translate("&Type Editor"));
@@ -251,7 +254,8 @@ namespace JxRes.Editors
             this.awP.DropDownItems.Add(this.awp);
             //*/
         }
-        private void b()
+
+        private void RemoveMainMenuExtendItem()
         {
             /*
             if (this.awP != null)

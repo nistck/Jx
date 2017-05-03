@@ -4,33 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jx
+namespace Jx.Ext
 {
     public class ExtendedFunctionalityDescriptorAttribute : Attribute
     {
-        private Type Ep;
-        private string EQ;
+        private Type descriptorType;
+        private string descriptorTypeName;
         public Type DescriptorType
         {
             get
             {
-                return this.Ep;
+                return this.descriptorType;
             }
         }
         public string DescriptorTypeName
         {
             get
             {
-                return this.EQ;
+                return this.descriptorTypeName;
             }
         }
         public ExtendedFunctionalityDescriptorAttribute(Type descriptorType)
         {
-            this.Ep = descriptorType;
+            this.descriptorType = descriptorType;
         }
         public ExtendedFunctionalityDescriptorAttribute(string descriptorTypeName)
         {
-            this.EQ = descriptorTypeName;
+            this.descriptorTypeName = descriptorTypeName;
         }
     }
 }

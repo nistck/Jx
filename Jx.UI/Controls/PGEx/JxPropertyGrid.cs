@@ -19,11 +19,14 @@ namespace Jx.UI.Controls.PGEx
 {
 
     public partial class JxPropertyGrid : PropertyGrid
-	{			
-		#region "Protected variables and objects"
- 
-		// Internal PropertyGrid Controls
-		protected object internalPropertyGridView;
+	{
+        private const int WM_PARENTNOTIFY = 528;
+        private const int WM_LBUTTONDOWN = 513;
+
+        #region "Protected variables and objects"
+
+        // Internal PropertyGrid Controls
+        protected object internalPropertyGridView;
 		protected object internalHotCommands;
 		protected object internalDocComment;
 		protected ToolStrip internalToolStrip;
@@ -39,9 +42,13 @@ namespace Jx.UI.Controls.PGEx
         protected bool bAutoSizeProperties;
         protected bool bDrawFlatToolbar;
         #endregion
-		
-		#region "Public Functions"
-		public JxPropertyGrid()
+
+        private DateTime lastTimeClick;
+        private GridItem selectedObject;
+        public event EventHandler GridItemDoubleClick;
+
+        #region "Public Functions"
+        public JxPropertyGrid()
 		{
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
@@ -805,10 +812,26 @@ namespace Jx.UI.Controls.PGEx
                 ((Control)internalDocComment).BackgroundImage = value;
 			}
 		}
-		
-		#endregion
-		
-	}
+
+        #endregion
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if (m.Msg == WM_PARENTNOTIFY && m.WParam.ToInt32() == WM_LBUTTONDOWN)
+            {
+                DateTime now = DateTime.Now;
+                if ((now - this.lastTimeClick).TotalMilliseconds < (double)SystemInformation.DoubleClickTime && base.SelectedGridItem == this.selectedObject && this.GridItemDoubleClick != null)
+                {
+                    this.GridItemDoubleClick(this, EventArgs.Empty);
+                }
+                this.lastTimeClick = DateTime.Now;
+                this.selectedObject = base.SelectedGridItem;
+            }
+        }
+ 
+    }
 	
 }
 

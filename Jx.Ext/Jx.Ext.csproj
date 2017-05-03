@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CJ.cs" />
+    <Compile Include="ExtendedFunctionalityDescriptorAttribute.cs" />
     <Compile Include="ExtendedFunctionalityDescriptorCustomTypeDescriptor.cs" />
     <Compile Include="JxObjectExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Descriptors\EntityTypeExtendedFunctionalityDescriptor.cs" />
     <Compile Include="Editors\ConfigurationEditor.cs" />
     <Compile Include="Editors\EntityTypeResourceEditor.cs" />
     <Compile Include="Editors\ResourceObjectEditor.cs" />
