@@ -41,7 +41,9 @@ namespace Jx.UI.Forms
         private Font propertyGrid1FontOriginal;
         private string propertyGrid1FontCurrent = "";
         private Font extendedPropertiesFontOriginal;
-        private string extendedPropertiesFontCurrent = "";  
+        private string extendedPropertiesFontCurrent = "";
+
+        private ImageCache imageCache = null;
 
         public PropertiesForm()
         {
@@ -50,6 +52,10 @@ namespace Jx.UI.Forms
 
         private void PropertiesForm_Load(object sender, EventArgs e)
         {
+            imageCache = new ImageCache(IL16);
+
+            this.resetToolStripMenuItem.Image = imageCache["reset"];
+
             UpdateSplitterPosition();
         }
 
@@ -432,9 +438,8 @@ namespace Jx.UI.Forms
                 PropertyDescriptor arg_1D_0 = selectedGridItem.PropertyDescriptor;
                 this.jxPropertyGrid.ResetSelectedProperty();
                 if (this.PropertyValueChanged != null)
-                {
                     this.PropertyValueChanged(this.jxPropertyGrid, selectedGridItem, null);
-                }
+                
             }
         }
 

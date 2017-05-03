@@ -195,6 +195,7 @@
     <Content Include="Resources\no_16.png" />
     <Content Include="Resources\refresh_16.png" />
     <Content Include="Resources\rename_16.png" />
+    <Content Include="Resources\reset_16.png" />
     <Content Include="Resources\sort_ascend_16.png" />
     <Content Include="Resources\sort_by_date_16.png" />
     <Content Include="Resources\sort_by_name_16.png" />

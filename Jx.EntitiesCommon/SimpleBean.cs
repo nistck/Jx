@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Jx.EntitiesCommon
         private string scope; 
 
         [JxName("Id")]
+        [DefaultValue(1981)]
         public int Id
         {
             get { return id; }
@@ -25,6 +27,7 @@ namespace Jx.EntitiesCommon
         }
 
         [JxName("作用域")]
+        [DefaultValue("property")]
         public string Scope
         {
             get { return scope; }
