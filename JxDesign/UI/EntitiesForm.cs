@@ -12,9 +12,9 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace JxDesign.UI
 {
-    public partial class DesignerEntitiesForm : DockContent
+    public partial class EntitiesForm : DockContent
     {
-        public DesignerEntitiesForm()
+        public EntitiesForm()
         {
             InitializeComponent();
         }

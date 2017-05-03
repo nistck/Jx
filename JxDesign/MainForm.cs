@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+using Jx; 
 using Jx.UI.Forms;
 using JxDesign.UI;
 using Jx.FileSystem;
@@ -26,7 +27,7 @@ namespace JxDesign
         }
 
         private DeserializeDockContent serializeContext;
-        private DesignerEntitiesForm entitiesForm = new DesignerEntitiesForm();
+        private EntitiesForm entitiesForm = new EntitiesForm();
         private PropertiesForm propertiesForm = new PropertiesForm();
         private ConsoleForm consoleForm = new ConsoleForm();
         private ContentForm contentForm = new ContentForm();
@@ -34,11 +35,26 @@ namespace JxDesign
 
         public MainForm()
         {
+            this.Hide();
+            LongOperationNotifier.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
+
+            string p0 = Path.GetDirectoryName(Application.ExecutablePath);
+            string filePath = Path.Combine(p0, @"Resources\Splash.jpg");
+            SplashScreen.Show(filePath);
+
             InitializeComponent();
             instance = this;
         }
 
-        public DesignerEntitiesForm MapEntitiesForm
+        private void LongOperationCallbackManager_LongOperationNotify(string text)
+        {
+            if (text == null)
+                return;
+
+            SplashScreen.UpdateStatusText(text);
+        }
+
+        public EntitiesForm MapEntitiesForm
         {
             get { return entitiesForm; }
         }
@@ -95,7 +111,7 @@ namespace JxDesign
 
         private IDockContent GetContentFromPersistString(string persistString)
         {
-            if (persistString == typeof(DesignerEntitiesForm).ToString())
+            if (persistString == typeof(EntitiesForm).ToString())
                 return entitiesForm;
             else if (persistString == typeof(PropertiesForm).ToString())
                 return propertiesForm;
@@ -108,6 +124,8 @@ namespace JxDesign
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Bootstrap();
+
             serializeContext = new DeserializeDockContent(GetContentFromPersistString);
             if (!LoadLayoutConfig())
             {
@@ -116,6 +134,26 @@ namespace JxDesign
                 contentForm.Show(dockPanel, DockState.Document);
                 consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
             }
+
+            #region Splash Screen
+
+            LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
+            this.Show();
+            SplashScreen.Hide();
+            this.Activate();
+            #endregion
+        }
+
+        private void Bootstrap()
+        {
+            EngineApp.Init(new JxDesignApp());
+
+            bool created = EngineApp.Instance.Create();
+            if (created)
+            {
+                EngineApp.Instance.Run();
+            }
+            EngineApp.Shutdown();
         }
 
         public MenuStrip MainMenu

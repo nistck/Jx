@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Jx.UI
+namespace Jx.UI.Forms
 {
     public partial class SplashScreenForm : Form
     {

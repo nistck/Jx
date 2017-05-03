@@ -1,6 +1,6 @@
 ﻿namespace JxDesign.UI
 {
-    partial class DesignerEntitiesForm
+    partial class EntitiesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,13 +30,13 @@
         {
             this.SuspendLayout();
             // 
-            // DesignerEntitiesForm
+            // EntitiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(390, 543);
-            this.Name = "DesignerEntitiesForm";
-            this.Text = "DesignerEntitiesForm";
+            this.Name = "EntitiesForm";
+            this.Text = "EntitiesForm";
             this.ResumeLayout(false);
 
         }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Jx.UI
+namespace Jx.UI.Forms
 {
     /// <summary>
     /// Defined types of messages: Success/Warning/Error.

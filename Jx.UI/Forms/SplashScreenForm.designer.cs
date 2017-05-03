@@ -1,4 +1,4 @@
-﻿namespace Jx.UI
+﻿namespace Jx.UI.Forms
 {
     partial class SplashScreenForm
     {
