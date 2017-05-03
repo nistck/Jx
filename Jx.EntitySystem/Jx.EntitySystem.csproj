@@ -99,7 +99,9 @@
     <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileAction.cs" />
     <Compile Include="Jx.EntitySystem.LogicSystem\LogicWhileActionType.cs" />
     <Compile Include="Jx.EntitySystem\AllowToCreateTypeBasedOnThisClassAttribute.cs" />
+    <Compile Include="Jx.EntitySystem\DefaultWorld.cs" />
     <Compile Include="Jx.EntitySystem\EntityException.cs" />
+    <Compile Include="Jx.EntitySystem\EntityExtension.cs" />
     <Compile Include="Jx.EntitySystem\EntityHelper.cs" />
     <Compile Include="Jx.EntitySystem\EditorEntityExtendedPropertiesUITypeEditor.cs" />
     <Compile Include="Jx.EntitySystem\EditorEntityTypeUITypeEditor.cs" />

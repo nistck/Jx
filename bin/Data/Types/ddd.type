@@ -1,6 +1,6 @@
 type ddd
 {
 	class = SimpleBean
-	id = 232
-	scope = dddd
+	id = 1981
+	scope = property
 }

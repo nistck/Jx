@@ -240,12 +240,13 @@ namespace Jx.EntitySystem
 			if (textBlock != null)
 			{
 				string defaultWorldType = textBlock.GetAttribute("defaultWorldType");
-				if (string.IsNullOrEmpty(defaultWorldType))
-				{
-					Log.Fatal("EntitySystemWorld: Init: Default world type is not defined. (Base\\Constants\\EntitySystem.config: \"defaultWorldType\" attribute)");
-                    return false;
-				}
-				this.defaultWorldType = (EntityTypes.Instance.GetByName(defaultWorldType) as WorldType);
+                if( !string.IsNullOrEmpty(defaultWorldType))
+                {
+                    this.defaultWorldType = EntityTypes.Instance.GetByName(defaultWorldType) as WorldType;
+                    if(this.defaultWorldType == null )
+                        this.defaultWorldType = EntityTypes.Instance.GetByName(typeof(DefaultWorld).Name) as WorldType;
+                }
+ 
 				if (this.defaultWorldType == null)
 				{
 					Log.Fatal("EntitySystemWorld: Init: World type \"{0}\" is not defined or it is not a WorldType (Base\\Constants\\EntitySystem.config: \"defaultWorldType\" attribute).", defaultWorldType);
