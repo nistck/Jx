@@ -31,6 +31,7 @@ namespace JxDesign
         private PropertiesForm propertiesForm = new PropertiesForm();
         private ConsoleForm consoleForm = new ConsoleForm();
         private ContentForm contentForm = new ContentForm();
+        private EntityTypesForm entityTypesForm = new EntityTypesForm();
 
 
         public MainForm()
@@ -54,7 +55,15 @@ namespace JxDesign
             SplashScreen.UpdateStatusText(text);
         }
 
-        public EntitiesForm MapEntitiesForm
+        private void SetTheme(VisualStudioToolStripExtender.VsVersion version, ThemeBase theme)
+        {
+            this.dockPanel.Theme = theme;
+            vsToolStripExtender1.SetStyle(this.menuStrip1, version, theme);
+            vsToolStripExtender1.SetStyle(this.toolStrip1, version, theme);
+            vsToolStripExtender1.SetStyle(this.statusStrip1, version, theme);
+        }
+
+        public EntitiesForm EntitiesForm
         {
             get { return entitiesForm; }
         }
@@ -62,6 +71,11 @@ namespace JxDesign
         public PropertiesForm PropertiesForm
         {
             get { return propertiesForm; }
+        }
+
+        public EntityTypesForm EntityTypesForm
+        {
+            get { return entityTypesForm; }
         }
 
 
@@ -98,6 +112,8 @@ namespace JxDesign
             return false;
         }
 
+        private bool SaveLayoutFlag = true;
+
         private void SaveLayoutConfig(bool saveLayout = true)
         {
             if (string.IsNullOrEmpty(LayoutConfig))
@@ -119,6 +135,8 @@ namespace JxDesign
                 return consoleForm;
             else if (persistString == typeof(ContentForm).ToString())
                 return contentForm;
+            else if (persistString == typeof(EntityTypesForm).ToString())
+                return entityTypesForm;
             return null;
         }
 
@@ -126,12 +144,15 @@ namespace JxDesign
         {
             Bootstrap();
 
+            //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
+
             AddonManager.Instance.PostInit();
 
             serializeContext = new DeserializeDockContent(GetContentFromPersistString);
             if (!LoadLayoutConfig())
             {
                 entitiesForm.Show(dockPanel, DockState.DockLeft);
+                entityTypesForm.Show(dockPanel, DockState.DockLeft);
                 propertiesForm.Show(dockPanel, DockState.DockRight);
                 contentForm.Show(dockPanel, DockState.Document);
                 consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
@@ -179,5 +200,10 @@ namespace JxDesign
         }
 
         public bool MapModified { get; set; }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveLayoutConfig(SaveLayoutFlag);
+        }
     }
 }

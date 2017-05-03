@@ -40,12 +40,12 @@
             this.tsmiConsoleForm = new System.Windows.Forms.ToolStripMenuItem();
             this.addonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.UIStatus_TIMER = new System.Windows.Forms.Timer(this.components);
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
-            this.UIStatus_TIMER = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -136,35 +136,35 @@
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // UIStatus_TIMER
+            // 
+            this.UIStatus_TIMER.Enabled = true;
+            this.UIStatus_TIMER.Tick += new System.EventHandler(this.UIStatus_TIMER_Tick);
+            // 
             // dockPanel
             // 
             this.dockPanel.BackColor = System.Drawing.SystemColors.Control;
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.Location = new System.Drawing.Point(0, 0);
+            this.dockPanel.Location = new System.Drawing.Point(0, 50);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.RightToLeftLayout = true;
             this.dockPanel.ShowDocumentIcon = true;
-            this.dockPanel.Size = new System.Drawing.Size(963, 615);
+            this.dockPanel.Size = new System.Drawing.Size(963, 543);
             this.dockPanel.TabIndex = 1;
             // 
             // vsToolStripExtender1
             // 
             this.vsToolStripExtender1.DefaultRenderer = null;
             // 
-            // UIStatus_TIMER
-            // 
-            this.UIStatus_TIMER.Enabled = true;
-            this.UIStatus_TIMER.Tick += new System.EventHandler(this.UIStatus_TIMER_Tick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 615);
+            this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip);
-            this.Controls.Add(this.dockPanel);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";

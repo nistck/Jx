@@ -68,6 +68,12 @@
     <Compile Include="UI\ContentForm.Designer.cs">
       <DependentUpon>ContentForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\EntityTypesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EntityTypesForm.Designer.cs">
+      <DependentUpon>EntityTypesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\EntitiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     </Compile>
     <EmbeddedResource Include="UI\ContentForm.resx">
       <DependentUpon>ContentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EntityTypesForm.resx">
+      <DependentUpon>EntityTypesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\EntitiesForm.resx">
       <DependentUpon>EntitiesForm.cs</DependentUpon>

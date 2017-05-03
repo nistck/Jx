@@ -1,6 +1,6 @@
 ﻿namespace JxDesign.UI
 {
-    partial class EntitiesForm
+    partial class EntityTypesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -36,18 +36,18 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(344, 543);
+            this.treeView1.Size = new System.Drawing.Size(390, 543);
             this.treeView1.TabIndex = 0;
             // 
-            // EntitiesForm
+            // EntityTypesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(344, 543);
+            this.ClientSize = new System.Drawing.Size(390, 543);
             this.Controls.Add(this.treeView1);
             this.HideOnClose = true;
-            this.Name = "EntitiesForm";
-            this.Text = "实体管理";
+            this.Name = "EntityTypesForm";
+            this.Text = "类型管理";
             this.ResumeLayout(false);
 
         }
