@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\AddonManager.cs" />
+    <Compile Include="DesignerInterfaceImpl.cs" />
+    <Compile Include="EntityWorld.cs" />
+    <Compile Include="JxDesignApp.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +58,22 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ContentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ContentForm.Designer.cs">
+      <DependentUpon>ContentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DesignerEntitiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\DesignerEntitiesForm.Designer.cs">
+      <DependentUpon>DesignerEntitiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XUI.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -63,6 +83,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\ContentForm.resx">
+      <DependentUpon>ContentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DesignerEntitiesForm.resx">
+      <DependentUpon>DesignerEntitiesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -75,6 +101,40 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jx.Editors\Jx.Editors.csproj">
+      <Project>{762d1435-8784-448d-9486-3ce30787b6bb}</Project>
+      <Name>Jx.Editors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
+      <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
+      <Name>Jx.EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
+      <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
+      <Name>Jx.Ext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
+      <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
+      <Name>Jx.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
+      <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>
+      <Name>Jx.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx\Jx.csproj">
+      <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
+      <Name>Jx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

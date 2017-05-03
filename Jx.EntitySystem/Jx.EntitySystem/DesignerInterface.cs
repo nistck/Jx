@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace Jx.EntitySystem
 {
-    public abstract class MapEditorInterface
+    public abstract class DesignerInterface
     {
         public enum FontNames
         {
@@ -18,12 +18,12 @@ namespace Jx.EntitySystem
             PropertyGrid,
             SourceCodeEditor
         }
-        private static MapEditorInterface aAX;
-        public static MapEditorInterface Instance
+        private static DesignerInterface instace;
+        public static DesignerInterface Instance
         {
             get
             {
-                return MapEditorInterface.aAX;
+                return DesignerInterface.instace;
             }
         }
         /// <summary>
@@ -34,10 +34,12 @@ namespace Jx.EntitySystem
             get;
             set;
         }
-        public static void Init(MapEditorInterface overridedObject)
+
+        public static void Init(DesignerInterface overridedObject)
         {
-            MapEditorInterface.aAX = overridedObject;
+            DesignerInterface.instace = overridedObject;
         }
+
         /// <summary>
         /// To select the list of entities in the Map Editor.
         /// </summary>
@@ -62,8 +64,7 @@ namespace Jx.EntitySystem
         public abstract void AddCustomCreatedEntity(Entity entity);
         public abstract void SetMapModified();
         public abstract void RefreshPropertiesForm();
-        public abstract object SendCustomMessage(Entity sender, string message, object data);
-        public abstract Font GetFont(MapEditorInterface.FontNames fontName, Font defaultFont);
+        public abstract object SendCustomMessage(Entity sender, string message, object data); 
         public abstract bool EntityUITypeEditorEditValue(Entity ownerEntity, Type entityClassType, ref Entity entity);
         public abstract void EntityExtendedPropertiesUITypeEditorEditValue();
     }

@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Controls\Wizards\WizardPagesCollection.cs" />
     <Compile Include="Editors\ExtendedFunctionalityDescriptor.cs" />
+    <Compile Include="Editors\ResourceEditorInterface.cs" />
     <Compile Include="Forms\ConsoleForm.cs">
       <SubType>Form</SubType>
     </Compile>

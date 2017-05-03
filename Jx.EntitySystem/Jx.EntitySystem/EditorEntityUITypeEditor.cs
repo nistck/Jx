@@ -21,7 +21,7 @@ namespace Jx.EntitySystem
 			}
 			Type propertyType = context.PropertyDescriptor.PropertyType;
 			Entity result = (Entity)value;
-			if (MapEditorInterface.Instance.EntityUITypeEditorEditValue(ownerEntity, propertyType, ref result))
+			if (DesignerInterface.Instance.EntityUITypeEditorEditValue(ownerEntity, propertyType, ref result))
 			{
 				return result;
 			}

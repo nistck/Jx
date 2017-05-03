@@ -55,6 +55,7 @@
       <DependentUpon>ChooseResourceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DefaultResourceTypeImages.cs" />
+    <Compile Include="DesignerAddon.cs" />
     <Compile Include="EntityUIEditor.cs" />
     <Compile Include="GeneralListCollectionEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

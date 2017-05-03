@@ -77,7 +77,7 @@ namespace Jx.EntitySystem.LogicSystem
 				return base.OnLinkedTextClick(linkName);
 			}
 			Entity entity = this.abT;
-			if (!MapEditorInterface.Instance.EntityUITypeEditorEditValue(null, null, ref entity))
+			if (!DesignerInterface.Instance.EntityUITypeEditorEditValue(null, null, ref entity))
 			{
 				return false;
 			}

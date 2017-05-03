@@ -16,6 +16,7 @@ using Jx.FileSystem;
 using JxRes.Types;
 using JxRes.UI;
 using JxRes.Editors;
+using Jx.UI.Editors;
 
 namespace JxRes
 {
@@ -28,19 +29,22 @@ namespace JxRes
             get { return instance; }
         }
          
-        private ResourceObjectEditor atm;
-        private string atn;
-        private long atO;
-        private bool ato;
-        private bool atP;
+        private ResourceObjectEditor currentResourceObjectEditor;
+        private string currentResourcePath;
+        private long currentResourceFileSize;
+        private bool currentResourceIsArchive;
+        private bool currentResourceIsInArchive;
 
         public ResourceObjectEditor ResourceObjectEditor
         {
-            get { return atm; }
+            get { return currentResourceObjectEditor; }
         }
 
         protected override bool OnCreate()
         {
+            if (!base.OnCreate())
+                return false; 
+
             LongOperationNotifier.Setup();
 
             Log.Info(">> 初始化 EntitySystemWorld...");
@@ -57,6 +61,7 @@ namespace JxRes
                 return false;
             }
 
+            ResourceEditorInterface.Init(new ResourceEditorInterfaceImpl());
             if (MainForm.Instance != null)
             {
                 if (MainForm.Instance.ResourcesForm != null)
@@ -139,7 +144,7 @@ namespace JxRes
 
         private void OnIsResourceEditMode(ResourcesForm.ActiveEventArgs activeEventArgs)
         {
-            if (this.atm != null && this.atm.EditModeActive)
+            if (this.currentResourceObjectEditor != null && this.currentResourceObjectEditor.EditModeActive)
             {
                 activeEventArgs.Active = true;
             }
@@ -147,24 +152,24 @@ namespace JxRes
 
         private void OnResourceBeginEditMode(EventArgs eventArgs)
         {
-            if (this.atm == null)
+            if (this.currentResourceObjectEditor == null)
             {
-                string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(this.atn);
+                string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(this.currentResourcePath);
                 Shell32Api.ShellExecuteEx(null, realPathByVirtual);
                 return;
             }
-            if (!this.atm.AllowEditMode)
+            if (!this.currentResourceObjectEditor.AllowEditMode)
             {
-                string realPathByVirtual2 = VirtualFileSystem.GetRealPathByVirtual(this.atn);
+                string realPathByVirtual2 = VirtualFileSystem.GetRealPathByVirtual(this.currentResourcePath);
                 Shell32Api.ShellExecuteEx(null, realPathByVirtual2);
                 return;
             }
-            if (VirtualFile.IsInArchive(this.atm.FileName))
+            if (VirtualFile.IsInArchive(this.currentResourceObjectEditor.FileName))
             {
                 Log.Warning(ToolsLocalization.Translate("Various", "This file is inside an archive. Unable to edit it."));
                 return;
             }
-            this.atm.BeginEditMode();
+            this.currentResourceObjectEditor.BeginEditMode();
 
             Log.Info("MainForm.Instance.EngineAppControl.Focus();");            
         }
@@ -177,52 +182,52 @@ namespace JxRes
 
         public bool ChangeResourceObjectEditor(string fileName)
         {
-            this.atn = fileName;
-            this.atO = 0L;
+            this.currentResourcePath = fileName;
+            this.currentResourceFileSize = 0L;
             try
             {
-                if (!string.IsNullOrEmpty(this.atn))
+                if (!string.IsNullOrEmpty(this.currentResourcePath))
                 {
-                    this.atO = VirtualFile.GetLength(this.atn);
+                    this.currentResourceFileSize = VirtualFile.GetLength(this.currentResourcePath);
                 }
             }
             catch
             {
             }
-            this.ato = false;
+            this.currentResourceIsArchive = false;
             try
             {
-                if (!string.IsNullOrEmpty(this.atn))
+                if (!string.IsNullOrEmpty(this.currentResourcePath))
                 {
-                    this.ato = VirtualFile.IsArchive(this.atn);
+                    this.currentResourceIsArchive = VirtualFile.IsArchive(this.currentResourcePath);
                 }
             }
             catch
             {
             }
-            this.atP = false;
+            this.currentResourceIsInArchive = false;
             try
             {
-                if (!string.IsNullOrEmpty(this.atn))
+                if (!string.IsNullOrEmpty(this.currentResourcePath))
                 {
-                    this.atP = VirtualFile.IsInArchive(this.atn);
+                    this.currentResourceIsInArchive = VirtualFile.IsInArchive(this.currentResourcePath);
                 }
             }
             catch
             {
             }
-            if (this.atm != null)
+            if (this.currentResourceObjectEditor != null)
             {
-                if (fileName != null && string.Compare(this.atm.FileName, fileName, true) == 0)
+                if (fileName != null && string.Compare(this.currentResourceObjectEditor.FileName, fileName, true) == 0)
                 {
                     return true;
                 }
-                if (this.atm.EditModeActive && !this.atm.EndEditMode())
+                if (this.currentResourceObjectEditor.EditModeActive && !this.currentResourceObjectEditor.EndEditMode())
                 {
                     return false;
                 }
-                this.atm.Dispose();
-                this.atm = null;
+                this.currentResourceObjectEditor.Dispose();
+                this.currentResourceObjectEditor = null;
             }
             if (fileName != null)
             {
@@ -237,13 +242,13 @@ namespace JxRes
                         {
                             Type resourceObjectEditorType = byExtension.ResourceObjectEditorType;
                             ConstructorInfo constructor = resourceObjectEditorType.GetConstructor(new Type[0]);
-                            this.atm = (ResourceObjectEditor)constructor.Invoke(new object[0]);
-                            this.atm.Create(byExtension, fileName);
+                            this.currentResourceObjectEditor = (ResourceObjectEditor)constructor.Invoke(new object[0]);
+                            this.currentResourceObjectEditor.Create(byExtension, fileName);
                         }
                     }
                 }
             }
-            if (MainForm.Instance != null && this.atm == null)
+            if (MainForm.Instance != null && this.currentResourceObjectEditor == null)
             {
                 MainForm.Instance.PropertiesForm.SelectObjects(null);
             }

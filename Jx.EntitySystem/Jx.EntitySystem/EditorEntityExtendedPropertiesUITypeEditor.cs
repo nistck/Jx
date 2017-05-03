@@ -7,7 +7,7 @@ namespace Jx.EntitySystem
 	{
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
 		{
-			MapEditorInterface.Instance.EntityExtendedPropertiesUITypeEditorEditValue();
+			DesignerInterface.Instance.EntityExtendedPropertiesUITypeEditorEditValue();
 			return null;
 		}
 		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)

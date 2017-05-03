@@ -50,6 +50,7 @@
     <Compile Include="Editors\ConfigurationEditor.cs" />
     <Compile Include="Editors\EntityTypeResourceEditor.cs" />
     <Compile Include="Editors\ResourceObjectEditor.cs" />
+    <Compile Include="ResourceEditorInterfaceImpl.cs" />
     <Compile Include="Types\ConfigurationResourceType.cs" />
     <Compile Include="JxResApp.cs" />
     <Compile Include="MainForm.cs">
