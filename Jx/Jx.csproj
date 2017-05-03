@@ -59,7 +59,7 @@
     <Compile Include="LogicSystemCallStaticOverInstanceAttribute.cs" />
     <Compile Include="LogicSystemClassDisplayAttribute.cs" />
     <Compile Include="LogicSystemMethodDisplayAttribute.cs" />
-    <Compile Include="LongOperationCallbackManager.cs" />
+    <Compile Include="LongOperationNotifier.cs" />
     <Compile Include="ManualTypeCreateAttribute.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

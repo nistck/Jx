@@ -382,11 +382,19 @@ namespace Jx.EntitySystem
                 .Where(_t => _t.Item2 != null)
                 .Select(_t => new Tuple<ClassInfo, string>(_t.Item1, _t.Item2.TypeName?? _t.Item1.EntityClassType.Name))
                 ;
+
+            int totalCount = q.Count();
+            int readyCount = 0;
             foreach(Tuple<ClassInfo, string> tx in q)
             {
                 EntityType entityType = ManualCreateType(tx.Item2, tx.Item1);
+                readyCount++;
+                LongOperationNotifier.Notify("手工创建EntityType: {0}/{1}", readyCount, totalCount);
                 if (entityType == null)
+                {
+                    LongOperationNotifier.Notify("手工创建EntityType失败, ClassInfo: {0}", tx.Item1);
                     return false;
+                }
             }
             
             return true;
@@ -415,7 +423,7 @@ namespace Jx.EntitySystem
 
         public EntityType LoadType(string p)
         {
-            LongOperationCallbackManager.CallCallback("EntityTypes: PreLoadTypeFromFile: " + p);
+            LongOperationNotifier.Notify("EntityTypes: PreLoadTypeFromFile: " + p);
             TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
             if (textBlock == null || textBlock.Children.Count != 1)
                 return null; 
@@ -458,7 +466,7 @@ namespace Jx.EntitySystem
 
         public bool LoadGroupOfTypes(string virtualDirectory, SearchOption searchOption, out List<EntityType> loadedTypes)
         {
-            LongOperationCallbackManager.CallCallback("EntityTypes: LoadGroupOfTypes: " + virtualDirectory);
+            LongOperationNotifier.Notify("从资源目录中搜索type文件: {0}", virtualDirectory);
             loadedTypes = null;
             string[] typeFiles = new string[0]; 
             try
@@ -483,9 +491,13 @@ namespace Jx.EntitySystem
                 if (entityType == null)
                 {
                     Log.Error("EntityTypes: Entity type loading failed \"{0}\".", typeFile);
+
+                    LongOperationNotifier.Notify("加载type文件失败: {0}", typeFile);
                     return false;
                 }
                 loadedTypes.Add(entityType);
+
+                LongOperationNotifier.Notify("加载type文件: {0}, {1}/{2}", typeFile, i + 1, typeFiles.Length);
 
 #if DEBUG_ENTITY
                 Log.Info(">> #{0:000} EntityType: {1}, 文件: {2}", i + 1, entityType, typeFile);
@@ -503,7 +515,7 @@ namespace Jx.EntitySystem
 
         public bool LoadGroupOfTypes(IList<TextBlock> blocks, out List<EntityType> loadedTypes)
         {
-            LongOperationCallbackManager.CallCallback("EntityTypes: LoadGroupOfTypes");
+            LongOperationNotifier.Notify("EntityTypes: LoadGroupOfTypes");
             loadedTypes = new List<EntityType>(blocks.Count);
             bool result;
             foreach (TextBlock current in blocks)
@@ -608,7 +620,7 @@ namespace Jx.EntitySystem
 
         private EntityType loadEntityTypeFromFile(string p)
         {
-            LongOperationCallbackManager.CallCallback("EntityTypes: PreLoadTypeFromFile: " + p);
+            LongOperationNotifier.Notify("加载type文件: {0}", p);
             TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
             if (textBlock == null)
                 return null; 
@@ -619,7 +631,7 @@ namespace Jx.EntitySystem
 
         private bool loadTypeFromLoadedTextBlock(EntityType entityType)
         {
-            LongOperationCallbackManager.CallCallback("EntityTypes: LoadTypeFromLoadTextBlock: " + entityType.FilePath);
+            LongOperationNotifier.Notify("EntityTypes: LoadTypeFromLoadTextBlock: " + entityType.FilePath);
             bool loadFromTextBlockFailure = !entityType.loadEntityTypeFromTextBlock(entityType.textBlock);
             if (loadFromTextBlockFailure)
                 return false;
@@ -823,11 +835,16 @@ namespace Jx.EntitySystem
         }
 
         private void loadEntityFromAssembly()
-        {
+        {            
             var q = EntitySystemWorld.Instance.EntityClassTypes.Where(_type => typeof(Entity).IsAssignableFrom(_type));
+
+            int totalCount = q.Count();
+            int readyCount = 0; 
             foreach (Type type in q)
             {
                 addClassInfo(type);
+                readyCount++;
+                LongOperationNotifier.Notify("初始化EntityType类型信息: {0}/{1}", readyCount, totalCount);
 #if DEBUG_ENTITY
                 Log.Info(">> Entity类型: {0} ", type);
 #endif
@@ -853,16 +870,13 @@ namespace Jx.EntitySystem
         public void ChangeAllReferencesToType(string oldVirtualPathByReal, string newVirtualPathByReal)
         {
             EntityType entityType = this.GetEntityTypeByPath(newVirtualPathByReal);
-            bool flag = entityType == null;
-            if (flag)
-            {
-                entityType = this.LoadType(newVirtualPathByReal);
-            }
-            EntityType entityTypeByPath = this.GetEntityTypeByPath(oldVirtualPathByReal);
-            if (!(entityType == null || entityTypeByPath == null))
-            {
+            if (entityType == null)
+                entityType = LoadType(newVirtualPathByReal);
+            
+            EntityType entityTypeByPath = GetEntityTypeByPath(oldVirtualPathByReal);
+            if (entityType != null && entityTypeByPath != null)
                 ChangeAllReferencesToType(entityTypeByPath, entityType);
-            }
+
         }
 
         /// <summary>
@@ -872,7 +886,7 @@ namespace Jx.EntitySystem
         public List<ReferenceInfo> ChangeAllReferencesToType(EntityType type, EntityType newValue)
         {
             List<ReferenceInfo> result = new List<ReferenceInfo>();
-            foreach (EntityType current in this.Types)
+            foreach (EntityType current in Types)
             {
                 List<ClassInfo.EntityTypeSerializableFieldItem> r = current.OnChangeReferencesToObject(type, newValue);
                 ReferenceInfo ri = new ReferenceInfo(type, current);
@@ -890,7 +904,7 @@ namespace Jx.EntitySystem
         public List<EntityType> GetTypesBasedOnClass(ClassInfo classInfo)
         {
             List<EntityType> list = new List<EntityType>();
-            foreach (EntityType current in this.types)
+            foreach (EntityType current in types)
             {
                 for (ClassInfo classInfo2 = current.classInfo; classInfo2 != null; classInfo2 = classInfo2.BaseClassInfo)
                 {

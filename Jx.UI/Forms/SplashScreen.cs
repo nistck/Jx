@@ -1,12 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
-namespace JxRes.UI
+namespace Jx.UI
 {
     /// <summary>
     /// Defined types of messages: Success/Warning/Error.
@@ -15,16 +17,44 @@ namespace JxRes.UI
     {
         Success,
         Warning,
-        Error,
+        Error, 
     }
     /// <summary>
     /// Initiate instance of SplashScreen
     /// </summary>
     public static class SplashScreen
     {
-        static SplashScreenForm sf = null;
+        private static SplashScreenForm sf = null;
+        private static Thread splashThread = null;
 
-        public static void ShowSplashScreen(object state)
+        public static void Show(string splashScreenImagePath)
+        {
+            splashThread = new Thread(new ParameterizedThreadStart(_ShowSplashScreen));
+            splashThread.IsBackground = true; 
+            splashThread.Start(splashScreenImagePath); 
+        }
+
+        public static void Hide()
+        {
+            if( splashThread != null )
+            {
+                try
+                {
+                    splashThread.Interrupt();
+                    splashThread.Abort();
+                    splashThread = null; 
+                }
+                catch (Exception) { }
+            }
+
+            if (sf != null)
+            {
+                sf.CloseSplashScreen();
+                sf = null;
+            }
+        }
+
+        private static void _ShowSplashScreen(object state) 
         {
             ShowSplashScreen(state as string);
         }
@@ -58,13 +88,13 @@ namespace JxRes.UI
         /// Update text in default green color of success message
         /// </summary>
         /// <param name="Text">Message</param>
-        public static void UdpateStatusText(string Text)
+        public static void UpdateStatusText(string Text)
         {
             if (sf != null)
-                sf.UdpateStatusText(Text);
+                sf.UpdateStatusText(Text);
 
         }
-        
+ 
         /// <summary>
         /// Update text with message color defined as green/yellow/red/ for success/warning/failure
         /// </summary>

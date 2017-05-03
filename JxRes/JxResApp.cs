@@ -41,6 +41,8 @@ namespace JxRes
 
         protected override bool OnCreate()
         {
+            LongOperationNotifier.Setup();
+
             Log.Info(">> 初始化 EntitySystemWorld...");
             if (!EntitySystemWorld.Init(new EntitySystemWorld()))
             {
@@ -75,10 +77,16 @@ namespace JxRes
             AddonManager.PreInit();
             InitResourceTypeManager();
 
-            UndoSystem.Init(64);
+            UndoSystem.Init(64); 
 
             instance = this;
             return true;
+        }
+
+        protected override void OnShutdown()
+        {
+            base.OnShutdown();
+            LongOperationNotifier.Shutdown();
         }
 
         private void ResourceUtils_OnUITypeEditorEditValue(ResourceUtils.ResourceUITypeEditorEditValueEventHandler e)

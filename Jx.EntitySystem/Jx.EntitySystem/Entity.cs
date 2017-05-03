@@ -962,7 +962,7 @@ namespace Jx.EntitySystem
         }
         internal bool A(TextBlock block)
         {
-            LongOperationCallbackManager.CallCallback("Entity: Load: " + this.ToString());
+            LongOperationNotifier.Notify("Entity: Load: " + this.ToString());
             return this.OnLoad(block);
         }
         protected internal virtual void OnPreLoadChildEntity(EntityType childType, TextBlock childBlock, ref bool needLoad)
@@ -986,7 +986,7 @@ namespace Jx.EntitySystem
 
         internal bool Load(TextBlock textBlock)
         {
-            LongOperationCallbackManager.CallCallback("Entity: LoadingGenerateHierarchy: " + this.ToString());
+            LongOperationNotifier.Notify("Entity: LoadingGenerateHierarchy: " + this.ToString());
             foreach (TextBlock current in textBlock.Children)
             {
                 if (!(current.Name != "entity"))

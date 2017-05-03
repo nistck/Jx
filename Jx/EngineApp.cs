@@ -66,6 +66,7 @@ namespace Jx
         {
             if (instance != null)
             {
+                instance.OnShutdown();
                 instance.shutdown();
                 instance = null;
             }
@@ -85,6 +86,11 @@ namespace Jx
         protected virtual bool OnCreate()
         {
             return true;
+        }
+
+        protected virtual void OnShutdown()
+        {
+
         }
 
         private void shutdown()

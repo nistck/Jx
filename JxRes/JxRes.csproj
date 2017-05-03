@@ -91,13 +91,6 @@
     <Compile Include="UI\ResourcesForm.Designer.cs">
       <DependentUpon>ResourcesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SplashScreen.cs" />
-    <Compile Include="UI\SplashScreenForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SplashScreenForm.designer.cs">
-      <DependentUpon>SplashScreenForm.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,9 +112,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ResourcesForm.resx">
       <DependentUpon>ResourcesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SplashScreenForm.resx">
-      <DependentUpon>SplashScreenForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

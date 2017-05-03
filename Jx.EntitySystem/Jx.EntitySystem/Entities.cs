@@ -497,7 +497,7 @@ namespace Jx.EntitySystem
 
 		private void PostCreateInitLoadedEntities()
 		{
-			LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities");
+			LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities");
 			foreach (EntityTextBlock current in this.aAF)
 			{
 				if (current.entity.LogicObject != null)
@@ -508,7 +508,7 @@ namespace Jx.EntitySystem
 			}
 			foreach (EntityTextBlock current2 in this.aAF)
 			{
-				LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities: OnPostCreate: " + current2.entity.ToString());
+				LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities: OnPostCreate: " + current2.entity.ToString());
 				if (current2.entity.isPostCreated)
 				{
 					Log.Fatal("Entities: PostCreateInitLoadedEntities : entity.postCreated.");
@@ -517,7 +517,7 @@ namespace Jx.EntitySystem
 			}
 			foreach (Entities.EntityTextBlock current3 in this.aAF)
 			{
-				LongOperationCallbackManager.CallCallback("Entities: PostCreateInitLoadedEntities: OnPostCreate2: " + current3.entity.ToString());
+				LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities: OnPostCreate2: " + current3.entity.ToString());
 				current3.entity.OnPostCreate2(true);
 				current3.entity.loadingTextBlock = null;
 				current3.entity.isPostCreated = true;

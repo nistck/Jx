@@ -13,6 +13,7 @@ using JxRes.UI;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Jx;
+using Jx.UI;
 using Jx.UI.Forms;
 using Jx.FileSystem;
  
@@ -37,28 +38,22 @@ namespace JxRes
         public MainForm()
         {
             this.Hide();
-            LongOperationCallbackManager.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
-
-            Thread splashthread = new Thread(new ParameterizedThreadStart(SplashScreen.ShowSplashScreen));
-            splashthread.IsBackground = true;
+            LongOperationNotifier.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
 
             string p0 = Path.GetDirectoryName(Application.ExecutablePath);
             string filePath = Path.Combine(p0, @"Resources\Splash.jpg");
-
-            splashthread.Start(filePath);
+            SplashScreen.Show(filePath);
 
             InitializeComponent();
             instance = this;
         }
 
-        private void LongOperationCallbackManager_LongOperationNotify(string text, params object[] args)
+        private void LongOperationCallbackManager_LongOperationNotify(string text)
         {
             if (text == null)
                 return; 
-
-            string t = string.Format(text, args);
-            SplashScreen.UdpateStatusText(t); 
-
+             
+            SplashScreen.UpdateStatusText(text); 
         }
 
         public PropertiesForm PropertiesForm
@@ -139,9 +134,9 @@ namespace JxRes
 
             #region Splash Screen
 
-            LongOperationCallbackManager.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
+            LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
             this.Show();
-            SplashScreen.CloseSplashScreen();
+            SplashScreen.Hide();
             this.Activate();
             #endregion
         }
