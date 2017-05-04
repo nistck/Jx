@@ -71,10 +71,8 @@ namespace JxRes.UI
                 {
                     ComponentManager.ComponentInfo.PathInfo pathInfo = allEntryPointsForThisPlatform[j];
                     Assembly item = AssemblyUtils.LoadAssemblyByRealFileName(pathInfo.Path, false);
-                    if (!list.Contains(item))
-                    {
+                    if (item != null && !list.Contains(item))
                         list.Add(item);
-                    }
                 }
             }
 

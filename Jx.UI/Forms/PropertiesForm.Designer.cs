@@ -31,11 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertiesForm));
             this.SplitView = new System.Windows.Forms.SplitContainer();
-            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.jxPropertyGrid = new Jx.UI.Controls.PGEx.JxPropertyGrid();
             this.contextMenuStripPropertyGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
-            this.jxPropertyGrid = new Jx.UI.Controls.PGEx.JxPropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.SplitView)).BeginInit();
             this.SplitView.Panel1.SuspendLayout();
             this.SplitView.SuspendLayout();
@@ -54,35 +54,8 @@
             this.SplitView.Panel1.Controls.Add(this.jxPropertyGrid);
             this.SplitView.Panel2MinSize = 12;
             this.SplitView.Size = new System.Drawing.Size(284, 428);
-            this.SplitView.SplitterDistance = 330;
+            this.SplitView.SplitterDistance = 403;
             this.SplitView.TabIndex = 0;
-            // 
-            // timer
-            // 
-            this.timer.Enabled = true;
-            this.timer.Interval = 20;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
-            // 
-            // contextMenuStripPropertyGrid
-            // 
-            this.contextMenuStripPropertyGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetToolStripMenuItem});
-            this.contextMenuStripPropertyGrid.Name = "contextMenuStrip1";
-            this.contextMenuStripPropertyGrid.Size = new System.Drawing.Size(121, 26);
-            this.contextMenuStripPropertyGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripPropertyGrid_Opening);
-            // 
-            // resetToolStripMenuItem
-            // 
-            this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
-            this.resetToolStripMenuItem.Text = "重 置(&R)";
-            this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
-            // 
-            // IL16
-            // 
-            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
-            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
-            this.IL16.Images.SetKeyName(0, "reset");
             // 
             // jxPropertyGrid
             // 
@@ -108,11 +81,11 @@
             this.jxPropertyGrid.DocCommentTitle.TabIndex = 0;
             this.jxPropertyGrid.DocCommentTitle.UseMnemonic = false;
             this.jxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jxPropertyGrid.LabelRatio = 2.4D;
+            this.jxPropertyGrid.LabelRatio = 2.5636363636363635D;
             this.jxPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.jxPropertyGrid.Name = "jxPropertyGrid";
             this.jxPropertyGrid.ReadOnly = true;
-            this.jxPropertyGrid.Size = new System.Drawing.Size(284, 330);
+            this.jxPropertyGrid.Size = new System.Drawing.Size(284, 403);
             this.jxPropertyGrid.TabIndex = 0;
             // 
             // 
@@ -134,6 +107,33 @@
             this.jxPropertyGrid.GridItemDoubleClick += new System.EventHandler(this.propertyGrid1_GridItemDoubleClick);
             this.jxPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.jxPropertyGrid_PropertyValueChanged);
             this.jxPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.propertyGrid1_SelectedGridItemChanged);
+            // 
+            // contextMenuStripPropertyGrid
+            // 
+            this.contextMenuStripPropertyGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resetToolStripMenuItem});
+            this.contextMenuStripPropertyGrid.Name = "contextMenuStrip1";
+            this.contextMenuStripPropertyGrid.Size = new System.Drawing.Size(121, 26);
+            this.contextMenuStripPropertyGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripPropertyGrid_Opening);
+            // 
+            // resetToolStripMenuItem
+            // 
+            this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.resetToolStripMenuItem.Text = "重 置(&R)";
+            this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
+            // 
+            // timer
+            // 
+            this.timer.Enabled = true;
+            this.timer.Interval = 20;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // IL16
+            // 
+            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
+            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16.Images.SetKeyName(0, "reset");
             // 
             // PropertiesForm
             // 
