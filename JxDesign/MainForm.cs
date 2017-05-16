@@ -167,6 +167,15 @@ namespace JxDesign
             #endregion
 
             this.WindowState = FormWindowState.Maximized;
+
+            Debug("准备就绪...");
+        }
+
+        public void Debug(string format, params object[] args)
+        {
+            if (ConsoleForm.DefaultInstance == null)
+                return;
+            ConsoleForm.DefaultInstance.WriteLine(format, args);
         }
 
         private void Bootstrap()

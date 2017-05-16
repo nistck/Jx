@@ -44,6 +44,72 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FCTB\AutocompleteItem.cs" />
+    <Compile Include="Controls\FCTB\AutocompleteMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\Bookmarks.cs" />
+    <Compile Include="Controls\FCTB\Char.cs" />
+    <Compile Include="Controls\FCTB\CommandManager.cs" />
+    <Compile Include="Controls\FCTB\Commands.cs" />
+    <Compile Include="Controls\FCTB\DocumentMap.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\EncodingDetector.cs" />
+    <Compile Include="Controls\FCTB\ExportToHTML.cs" />
+    <Compile Include="Controls\FCTB\ExportToRTF.cs" />
+    <Compile Include="Controls\FCTB\FastColoredTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\FileTextSource.cs" />
+    <Compile Include="Controls\FCTB\FindForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\FindForm.designer.cs">
+      <DependentUpon>FindForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FCTB\GoToForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\GoToForm.designer.cs">
+      <DependentUpon>GoToForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FCTB\Hints.cs" />
+    <Compile Include="Controls\FCTB\Hotkeys.cs" />
+    <Compile Include="Controls\FCTB\HotkeysEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\HotkeysEditorForm.designer.cs">
+      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FCTB\LimitedStack.cs" />
+    <Compile Include="Controls\FCTB\Line.cs" />
+    <Compile Include="Controls\FCTB\LinesAccessor.cs" />
+    <Compile Include="Controls\FCTB\MacrosManager.cs" />
+    <Compile Include="Controls\FCTB\Place.cs" />
+    <Compile Include="Controls\FCTB\PlatformType.cs" />
+    <Compile Include="Controls\FCTB\Range.cs" />
+    <Compile Include="Controls\FCTB\ReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\ReplaceForm.designer.cs">
+      <DependentUpon>ReplaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FCTB\Ruler.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\Ruler.designer.cs">
+      <DependentUpon>Ruler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FCTB\Style.cs" />
+    <Compile Include="Controls\FCTB\SyntaxDescriptor.cs" />
+    <Compile Include="Controls\FCTB\SyntaxHighlighter.cs" />
+    <Compile Include="Controls\FCTB\TextSource.cs" />
+    <Compile Include="Controls\FCTB\TypeDescriptor.cs" />
+    <Compile Include="Controls\FCTB\UnfocusablePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FCTB\VisualMarker.cs" />
     <Compile Include="Controls\KRBTabControl\CaptionColorChooser.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -94,6 +160,9 @@
     <Compile Include="Forms\ConsoleForm.Designer.cs">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ConsoleTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\PropertiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +198,10 @@
       <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
       <Name>Jx.Ext</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
       <Name>Jx</Name>
@@ -143,6 +216,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\FCTB\FastColoredTextBox.resx">
+      <DependentUpon>FastColoredTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FCTB\FindForm.resx">
+      <DependentUpon>FindForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FCTB\GoToForm.resx">
+      <DependentUpon>GoToForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FCTB\HotkeysEditorForm.resx">
+      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FCTB\ReplaceForm.resx">
+      <DependentUpon>ReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Wizards\Wizard.resx">
       <DependentUpon>Wizard.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,6 +239,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConsoleForm.resx">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PropertiesForm.resx">
       <DependentUpon>PropertiesForm.cs</DependentUpon>
@@ -164,6 +253,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Controls\FCTB\FastColoredTextBox.csproj" />
+    <Content Include="Forms\ConsoleSyntax.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\KRBTabControl\CaptionClose.bmp" />
     <Content Include="Resources\KRBTabControl\delete_12x12.png" />
     <Content Include="Resources\KRBTabControl\DownArrow.png" />
@@ -211,6 +304,10 @@
     <Content Include="Resources\KRBTabControl\TabPressed.png" />
     <Content Include="Resources\KRBTabControl\UpArrow.png" />
     <Content Include="Resources\reset_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Controls\FCTB\FCTB_key.snk" />
+    <None Include="Controls\FCTB\SyntaxHighlighter.cs.old" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
