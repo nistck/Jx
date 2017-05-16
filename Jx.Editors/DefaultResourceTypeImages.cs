@@ -16,5 +16,15 @@ namespace Jx.Editors
             object @object = Resources.ResourceManager.GetObject(name);
             return (Bitmap)@object;
         }
+
+        public static Bitmap Config_16
+        {
+            get { return GetByName("Config_16"); }
+        }
+
+        public static Bitmap EntityType_16
+        {
+            get { return GetByName("EntityType_16");  }
+        }
     }
 }

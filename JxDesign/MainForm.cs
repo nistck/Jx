@@ -205,5 +205,24 @@ namespace JxDesign
         {
             SaveLayoutConfig(SaveLayoutFlag);
         }
+
+        public bool ToolsProcessKeyDownHotKeys(Keys keyCode, Keys modifiers, bool processCharactersWithoutModifiers)
+        {
+            bool shiftPressing = (modifiers & Keys.Shift) != Keys.None;
+            bool ctrlPressing = (modifiers & Keys.Control) != Keys.None;
+            bool altPressing = (modifiers & Keys.Alt) != Keys.None;
+            bool noFuncKeyPressing = !shiftPressing && !ctrlPressing && !altPressing;
+            bool onlyShiftPressing = shiftPressing && !ctrlPressing && !altPressing;
+            bool onlyCtrlPressing = ctrlPressing && !shiftPressing && !altPressing;
+            bool onlyAltPressing = altPressing && !shiftPressing && !ctrlPressing;
+
+            if (keyCode == Keys.F9 && noFuncKeyPressing)
+            {
+                 
+                return true;
+            } 
+            return false;
+        }
+
     }
 }

@@ -18,5 +18,10 @@ namespace JxDesign.UI
         {
             InitializeComponent();
         }
+
+        private void EntitiesForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

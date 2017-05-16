@@ -44,6 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\KRBTabControl\CaptionColorChooser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\KRBTabControl\CaptionColorChooser.designer.cs">
+      <DependentUpon>CaptionColorChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\KRBTabControl\CaptionColorChooserEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\KRBTabControl\ICaptionRandomizer.cs" />
+    <Compile Include="Controls\KRBTabControl\JxTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\KRBTabControl\SelectedIndexChangingEventArgs.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Editors\BasePropertyEditor.cs" />
     <Compile Include="Controls\JxTextBox.cs">
       <SubType>Component</SubType>
@@ -100,6 +116,13 @@
     <Compile Include="Controls\PGEx\JxPropertyGrid.Designer.cs">
       <DependentUpon>JxPropertyGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Win32\User32.Enum.cs" />
+    <Compile Include="Win32\User32.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
@@ -135,8 +158,58 @@
     <EmbeddedResource Include="Forms\SplashScreenForm.resx">
       <DependentUpon>SplashScreenForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\KRBTabControl\CaptionClose.bmp" />
+    <Content Include="Resources\KRBTabControl\delete_12x12.png" />
+    <Content Include="Resources\KRBTabControl\DownArrow.png" />
+    <Content Include="Resources\KRBTabControl\DropDown.bmp" />
+    <Content Include="Resources\KRBTabControl\InsertTabControlHS.png" />
+    <Content Include="Resources\KRBTabControl\leftArrow.bmp" />
+    <Content Include="Resources\KRBTabControl\leftArrowDown.bmp" />
+    <Content Include="Resources\KRBTabControl\leftArrowHover.bmp" />
+    <Content Include="Resources\KRBTabControl\LeftDownBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\LeftDownKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftDownOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftDownOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\LeftDownOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\LeftHoverBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\LeftHoverKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftHoverOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftHoverOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\LeftHoverOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\LeftNormalBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\LeftNormalKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftNormalOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\LeftNormalOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\LeftNormalOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\PushpinHS.png" />
+    <Content Include="Resources\KRBTabControl\RightArrow.bmp" />
+    <Content Include="Resources\KRBTabControl\RightArrowDown.bmp" />
+    <Content Include="Resources\KRBTabControl\RightArrowHover.bmp" />
+    <Content Include="Resources\KRBTabControl\RightDownBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\RightDownKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightDownOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightDownOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\RightDownOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\RightHoverBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\RightHoverKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightHoverOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightHoverOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\RightHoverOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\RightNormalBlackGlass.png" />
+    <Content Include="Resources\KRBTabControl\RightNormalKRBBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightNormalOfficeBlue.png" />
+    <Content Include="Resources\KRBTabControl\RightNormalOfficeOlive.png" />
+    <Content Include="Resources\KRBTabControl\RightNormalOfficeSilver.png" />
+    <Content Include="Resources\KRBTabControl\TabClose.png" />
+    <Content Include="Resources\KRBTabControl\TabHover.png" />
+    <Content Include="Resources\KRBTabControl\TabPressed.png" />
+    <Content Include="Resources\KRBTabControl\UpArrow.png" />
     <Content Include="Resources\reset_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

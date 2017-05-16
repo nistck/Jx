@@ -262,12 +262,12 @@ namespace JxRes
             ResourceTypeManager.Instance.Register(new EntityTypeResourceType("EntityType", "Entity Type", new string[]
             {
                 "type"
-            }, DefaultResourceTypeImages.GetByName("Config_16")));
+            }, DefaultResourceTypeImages.EntityType_16));
 
             ResourceTypeManager.Instance.Register(new ConfigurationResourceType("Configuration", "Configuration File", new string[]
             {
                 "config"
-            }, DefaultResourceTypeImages.GetByName("Config_16")));
+            }, DefaultResourceTypeImages.Config_16));
 
 
         }

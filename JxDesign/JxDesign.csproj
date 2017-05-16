@@ -92,6 +92,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="UI\ContentForm.resx">
       <DependentUpon>ContentForm.cs</DependentUpon>
@@ -150,6 +151,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\find_10.png" />
+    <Content Include="Resources\file_16.png" />
+    <Content Include="Resources\folder_16.png" />
+    <Content Include="Resources\refresh_16.png" />
     <Content Include="Resources\Splash.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -48,6 +48,7 @@
             this.HideOnClose = true;
             this.Name = "EntitiesForm";
             this.Text = "实体管理";
+            this.Load += new System.EventHandler(this.EntitiesForm_Load);
             this.ResumeLayout(false);
 
         }

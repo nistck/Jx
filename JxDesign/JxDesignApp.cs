@@ -107,12 +107,12 @@ namespace JxDesign
             ResourceTypeManager.Instance.Register(new ResourceType("EntityType", "Entity Type", new string[]
             {
                 "type"
-            }, DefaultResourceTypeImages.GetByName("Config_16")));
+            }, DefaultResourceTypeImages.EntityType_16));
 
             ResourceTypeManager.Instance.Register(new ResourceType("Configuration", "Configuration File", new string[]
             {
                 "config"
-            }, DefaultResourceTypeImages.GetByName("Config_16")));
+            }, DefaultResourceTypeImages.Config_16));
 
 
         }

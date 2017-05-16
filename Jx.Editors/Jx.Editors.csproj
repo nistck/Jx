@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Config_16.png" />
+    <None Include="Resources\EntityType_16.png" />
     <Content Include="Resources\file_16.png" />
     <Content Include="Resources\folder_16.png" />
     <Content Include="Resources\no_16.png" />
