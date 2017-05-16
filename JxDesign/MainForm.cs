@@ -165,6 +165,8 @@ namespace JxDesign
             SplashScreen.Hide();
             this.Activate();
             #endregion
+
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void Bootstrap()

@@ -139,6 +139,8 @@ namespace JxRes
             SplashScreen.Hide();
             this.Activate();
             #endregion
+
+            this.WindowState = FormWindowState.Maximized;
         }
 
         public void UpdateLastSelectedResourcePath(string resourcePath)
