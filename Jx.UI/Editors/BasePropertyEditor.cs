@@ -22,9 +22,12 @@ namespace Jx.UI.Editors
         {
             try
             {
-                Control c = GetEditControl(context, context.PropertyDescriptor.GetValue(context.Instance));
-                if (c is Form)
-                    return UITypeEditorEditStyle.Modal;
+                if (context != null && context.Instance != null)
+                {
+                    Control c = GetEditControl(context, context.PropertyDescriptor.GetValue(context.Instance));
+                    if (c is Form)
+                        return UITypeEditorEditStyle.Modal;
+                }
             }
             catch (Exception) { }
             return UITypeEditorEditStyle.DropDown;
