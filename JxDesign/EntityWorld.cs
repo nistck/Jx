@@ -30,6 +30,7 @@ namespace JxDesign
         
 
         private FunctionalityArea functionalityArea;
+        private Entity creatingEntity = null;
 
         private EntityWorld() { }
 
@@ -41,7 +42,7 @@ namespace JxDesign
 
         public Entity CreatingEntity
         {
-            get { return null; }
+            get { return creatingEntity; }
         }
 
         public List<Entity> SelectedEntities

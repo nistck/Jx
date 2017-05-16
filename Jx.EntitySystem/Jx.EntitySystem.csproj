@@ -137,6 +137,8 @@
     <Compile Include="Jx.EntitySystem\LogicVariable.cs" />
     <Compile Include="Jx.EntitySystem\LogicVariableType.cs" />
     <Compile Include="Jx.EntitySystem\DesignerInterface.cs" />
+    <Compile Include="Jx.EntitySystem\Map.cs" />
+    <Compile Include="Jx.EntitySystem\MapGeneralObject.cs" />
     <Compile Include="Jx.EntitySystem\WorldSimulationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Jx.EntitySystem\World.cs" />
