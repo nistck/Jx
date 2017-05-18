@@ -77,7 +77,7 @@ namespace JxRes
             {
                 EngineApp.Instance.Run();
             }
-            EngineApp.Shutdown();
+            //EngineApp.Shutdown();
         }
 
         private string LayoutConfig
@@ -246,6 +246,8 @@ namespace JxRes
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveLayoutConfig(SaveLayoutFlag);
+
+            EngineApp.Shutdown();
         }
 
         private void UIStatus_TIMER_Tick(object sender, EventArgs e)

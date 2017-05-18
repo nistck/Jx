@@ -1,0 +1,11 @@
+fullName = "Jx.MapSystem classes"
+componentTypes = "EntityClasses"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "Jx.MapSystem.dll"
+	platforms = "Windows"
+	entryPoint = True
+}

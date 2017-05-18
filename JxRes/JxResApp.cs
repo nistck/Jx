@@ -61,6 +61,8 @@ namespace JxRes
                 return false;
             }
 
+            instance = this;
+
             ResourceEditorInterface.Init(new ResourceEditorInterfaceImpl());
             if (MainForm.Instance != null)
             {
@@ -82,9 +84,7 @@ namespace JxRes
             AddonManager.PreInit();
             InitResourceTypeManager();
 
-            UndoSystem.Init(64); 
-
-            instance = this;
+            UndoSystem.Init(64);  
             return true;
         }
 

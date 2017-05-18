@@ -34,6 +34,11 @@ namespace JxDesign
             }
         }
 
+        public static bool MapLoaded
+        {
+            get { return Map.Instance != null && !string.IsNullOrEmpty(Map.Instance.VirtualFileName); }
+        }
+
         private static void RecordRecentlyLoadedMap(string p)
         {
             if (p == null)
@@ -74,12 +79,16 @@ namespace JxDesign
             string p = string.Format("Base/Constants/{0}.config", Program.ExecutableName);
             Log.Info(">> 配置文件: {0}", p);
 
+            string defaultMapTypeName = typeof(DefaultMap).Name;
             if (VirtualFile.Exists(p))
             {
                 TextBlock textBlock = TextBlockUtils.LoadFromVirtualFile(p);
                 if (textBlock != null)
-                    this.MapTypeName = textBlock.GetAttribute("mapTypeForNewMaps", typeof(DefaultMapType).Name);
+                    this.MapTypeName = textBlock.GetAttribute("mapTypeForNewMaps", defaultMapTypeName);
             }
+
+            if (string.IsNullOrEmpty(this.MapTypeName))
+                this.MapTypeName = defaultMapTypeName;
 
             Log.Info(">> 缺省地图类型: {0}", this.MapTypeName);
         }

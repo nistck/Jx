@@ -49,6 +49,8 @@ namespace JxDesign
                 return false;
             }
 
+            instance = this;
+
             DesignerInterface.Init(new DesignerInterfaceImpl());
             EntityWorld.Setup();
 
@@ -73,9 +75,8 @@ namespace JxDesign
             AddonManager.PreInit();
             InitResourceTypeManager();
 
-            UndoSystem.Init(64); 
-
-            instance = this;
+            UndoSystem.Init(64);  
+            
             return true;
         }
 

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -14,11 +15,14 @@ using Jx;
 using Jx.UI.Forms;
 using JxDesign.UI;
 using Jx.FileSystem;
+using Jx.MapSystem;
 
 namespace JxDesign
 {
     public partial class MainForm : Form
     {
+        public const string APP_NAME = "地图设计器";
+
         private static MainForm instance = null; 
 
         public static MainForm Instance
@@ -178,9 +182,10 @@ namespace JxDesign
             this.WindowState = FormWindowState.Maximized;
 
             #region File System Watcher
-            this.fileSystemWatcher = new FileSystemWatcher();             
+            this.fileSystemWatcher = new FileSystemWatcher();
             #endregion
 
+            UpdateWindowTitle();
             Debug("准备就绪...");
         }
 
@@ -200,7 +205,7 @@ namespace JxDesign
             {
                 EngineApp.Instance.Run();
             }
-            EngineApp.Shutdown();
+            //EngineApp.Shutdown();
         }
 
         public MenuStrip MainMenu
@@ -228,6 +233,8 @@ namespace JxDesign
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveLayoutConfig(SaveLayoutFlag);
+
+            EngineApp.Shutdown();
         }
 
         public bool ToolsProcessKeyDownHotKeys(Keys keyCode, Keys modifiers, bool processCharactersWithoutModifiers)
@@ -248,15 +255,39 @@ namespace JxDesign
             return false;
         }
 
+        /// <summary>
+        /// 更新窗口标题
+        /// </summary>
+        public void UpdateWindowTitle()
+        {
+            string title = !MapWorld.MapLoaded
+                        ? APP_NAME
+                        : string.Format("{0} - {1}{2}", APP_NAME, Map.Instance.VirtualFileName, MapModified ? "*" : "");
+            this.Text = title;
+        }
 
         public void NotifyUpdate()
         {
+            UpdateWindowTitle();
             EntitiesForm.UpdateData();
         }
 
         private void tsmiNew_Click(object sender, EventArgs e)
         {
             MapWorld.Instance.New();
+        }
+
+        private void tsmiSave_Click(object sender, EventArgs e)
+        {
+            if( MapWorld.MapLoaded )
+                MapWorld.Instance.Save(Map.Instance.VirtualFileName);
+            else
+                MapWorld.Instance.SaveAs();
+        }
+
+        private void tsmiSaveAs_Click(object sender, EventArgs e)
+        {
+            MapWorld.Instance.SaveAs();
         }
     }
 }
