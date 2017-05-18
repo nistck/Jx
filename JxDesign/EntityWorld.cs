@@ -49,5 +49,15 @@ namespace JxDesign
         {
             get { return null; }
         }
+
+        public void ResetBeforeMapSave()
+        {
+
+        }
+
+        public void ClearEntitySelection(bool f1, bool f2)
+        {
+
+        }
     }
 }

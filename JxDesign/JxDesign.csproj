@@ -50,6 +50,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapWorld.cs" />
+    <Compile Include="NewConfig.cs" />
     <Compile Include="UI\AddonManager.cs" />
     <Compile Include="DesignerInterfaceImpl.cs" />
     <Compile Include="EntityWorld.cs" />
@@ -136,6 +138,10 @@
     <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
       <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
       <Name>Jx.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
+      <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
+      <Name>Jx.MapSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
       <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>

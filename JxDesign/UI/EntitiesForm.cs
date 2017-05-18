@@ -23,5 +23,10 @@ namespace JxDesign.UI
         {
 
         }
+
+        public void UpdateData()
+        {
+
+        }
     }
 }

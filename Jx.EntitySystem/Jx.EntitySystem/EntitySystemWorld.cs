@@ -274,7 +274,7 @@ namespace Jx.EntitySystem
 			return false;
 		}
 
-		private bool WorldCreateWithoutPostCreate(WorldSimulationTypes worldSimulationType, WorldType worldType)
+		public bool WorldCreateWithoutPostCreate(WorldSimulationTypes worldSimulationType, WorldType worldType)
 		{
 			WorldDestroy();
             if (worldType == null)

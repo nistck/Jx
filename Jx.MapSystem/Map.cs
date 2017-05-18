@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jx.EntitySystem
+using Jx.FileSystem;
+
+namespace Jx.MapSystem
 {
     [ManualTypeCreate]
     public class MapType : MapGeneralObjectType
@@ -14,6 +16,8 @@ namespace Jx.EntitySystem
 
     public class Map : MapGeneralObject
     {
+        public static string WorldFileName { get; internal set; }
+
         public class Layer
         {
             private Layer parent; 
@@ -45,6 +49,14 @@ namespace Jx.EntitySystem
 
         }
 
+        public class EditorData
+        {
+            public void ClearDeletedEntities()
+            {
+
+            }
+        }
+
         private static Map instance = null; 
 
         public static Map Instance
@@ -55,12 +67,41 @@ namespace Jx.EntitySystem
         private MapType _type = null; 
         public new MapType Type { get { return _type; } }
 
+        internal string virtualFileName;
+
+        private EditorData editorData = new EditorData();
+
         public Map ()
         {
             if (instance != null)
                 throw new Exception("地图实例已存在");
 
             instance = this; 
+        }
+
+        /// <summary>
+        /// 地图文件虚拟路径
+        /// </summary>
+        public string VirtualFileName
+        {
+            get { return this.virtualFileName; }
+        }
+
+        /// <summary>
+        /// 地图全路径
+        /// </summary>
+        public string FileName
+        {
+            get {
+                if (!string.IsNullOrEmpty(virtualFileName))
+                    return VirtualFileSystem.GetRealPathByVirtual(virtualFileName);
+                return ""; 
+            }
+        }
+
+        public EditorData GetDataForEditor()
+        {
+            return editorData;
         }
     }
 }

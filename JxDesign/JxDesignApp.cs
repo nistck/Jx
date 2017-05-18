@@ -49,7 +49,9 @@ namespace JxDesign
                 return false;
             }
 
-            DesignerInterface.Init(new DesignerInterfaceImpl()); 
+            DesignerInterface.Init(new DesignerInterfaceImpl());
+            EntityWorld.Setup();
+
             if (MainForm.Instance != null)
             {
                 /*

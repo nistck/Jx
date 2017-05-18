@@ -33,6 +33,8 @@ namespace JxDesign
         private ContentForm contentForm = new ContentForm();
         private EntityTypesForm entityTypesForm = new EntityTypesForm();
 
+        private FileSystemWatcher fileSystemWatcher = null;
+        private bool watchFileSystem = false;
 
         public MainForm()
         {
@@ -53,6 +55,13 @@ namespace JxDesign
                 return;
 
             SplashScreen.UpdateStatusText(text);
+        }
+
+        
+        public bool WatchFileSystem
+        {
+            get { return watchFileSystem; }
+            set { this.watchFileSystem = value; }
         }
 
         private void SetTheme(VisualStudioToolStripExtender.VsVersion version, ThemeBase theme)
@@ -168,6 +177,10 @@ namespace JxDesign
 
             this.WindowState = FormWindowState.Maximized;
 
+            #region File System Watcher
+            this.fileSystemWatcher = new FileSystemWatcher();             
+            #endregion
+
             Debug("准备就绪...");
         }
 
@@ -235,5 +248,15 @@ namespace JxDesign
             return false;
         }
 
+
+        public void NotifyUpdate()
+        {
+            EntitiesForm.UpdateData();
+        }
+
+        private void tsmiNew_Click(object sender, EventArgs e)
+        {
+            MapWorld.Instance.New();
+        }
     }
 }

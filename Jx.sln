@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.EntitiesCommon.Editors",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JxDesign.Addon", "JxDesign.Addon\JxDesign.Addon.csproj", "{B891DEA1-7E89-4CBD-AD73-A34B1FEF9893}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.MapSystem", "Jx.MapSystem\Jx.MapSystem.csproj", "{7F668DB9-2E9E-4A5A-972B-A2822AA93AED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{B891DEA1-7E89-4CBD-AD73-A34B1FEF9893}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B891DEA1-7E89-4CBD-AD73-A34B1FEF9893}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B891DEA1-7E89-4CBD-AD73-A34B1FEF9893}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F668DB9-2E9E-4A5A-972B-A2822AA93AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F668DB9-2E9E-4A5A-972B-A2822AA93AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F668DB9-2E9E-4A5A-972B-A2822AA93AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F668DB9-2E9E-4A5A-972B-A2822AA93AED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

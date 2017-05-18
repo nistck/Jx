@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jx.EntitySystem
+using Jx.EntitySystem;
+
+namespace Jx.MapSystem
 {
     public class MapGeneralObjectType : EntityType
     {
