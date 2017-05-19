@@ -18,7 +18,7 @@ namespace Jx.EntitySystem
         /// <summary>
         /// Specifies that a field will be serialized. This class cannot be inherited.
         /// </summary>
-        [AttributeUsage(AttributeTargets.Field)]
+        [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
         public sealed class FieldSerializeAttribute : Attribute
         {
             private string propertyName;

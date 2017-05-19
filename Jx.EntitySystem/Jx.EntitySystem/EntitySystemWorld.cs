@@ -368,7 +368,7 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		internal bool IsEntitySerializable(Entity.FieldSerializeSerializationTypes fieldSerializeSerializationTypes)
+		internal bool IsEntityFieldSerializable(Entity.FieldSerializeSerializationTypes fieldSerializeSerializationTypes)
 		{
             return true;
             /*

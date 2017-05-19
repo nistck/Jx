@@ -170,36 +170,31 @@ namespace Jx.EntitySystem
 
         private bool LoadCustomSerializationValues(TextBlock textBlock)
         {
-            TextBlock textBlock2 = textBlock.FindChild("customSerializationValues");
-            if (textBlock2 != null)
+            TextBlock customValuesBlock = textBlock.FindChild("customSerializationValues");
+            if (customValuesBlock == null)
+                return true;
+
+            foreach (TextBlock current in customValuesBlock.Children)
             {
-                foreach (TextBlock current in textBlock2.Children)
+                string name = current.Name;
+                string typeName = current.GetAttribute("type");
+                string valueString = current.GetAttribute("value");
+                string text = string.Format("World: Custom serialization value \"{0}\"", name);
+                Type type = null;
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                for (int i = 0; i < assemblies.Length; i++)
                 {
-                    string name = current.Name;
-                    string attribute = current.GetAttribute("type");
-                    string attribute2 = current.GetAttribute("value");
-                    string text = string.Format("World: Custom serialization value \"{0}\"", name);
-                    Type type = null;
-                    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                    for (int i = 0; i < assemblies.Length; i++)
-                    {
-                        Assembly assembly = assemblies[i];
-                        type = assembly.GetType(attribute);
-                        if (type != null)
-                        {
-                            break;
-                        }
-                    }
-                    object value;
-                    if (type == null)
-                    {
-                        Log.Warning("Entity System: Serialization error. The class type is not found \"{0}\" ({1}).", attribute, text);
-                    }
-                    else if (EntityHelper.GetLoadStringValue(type, attribute2, text, out value))
-                    {
-                        SetCustomSerializationValue(name, value);
-                    }
+                    Assembly assembly = assemblies[i];
+                    type = assembly.GetType(typeName);
+                    if (type != null)
+                        break;
                 }
+
+                object value;
+                if (type == null)
+                    Log.Warning("Entity System: Serialization error. The class type is not found \"{0}\" ({1}).", typeName, text);
+                else if (EntityHelper.ConvertFromString(type, valueString, text, out value))
+                    SetCustomSerializationValue(name, value);
             }
             return true;
         }
@@ -207,23 +202,21 @@ namespace Jx.EntitySystem
         private void SaveCustomSerializationValues(TextBlock textBlock)
         {
             if (customSerializationValues.Count == 0)
-            {
                 return;
-            }
-            TextBlock textBlock2 = textBlock.AddChild("customSerializationValues");
+            
+            TextBlock customValuesBlock = textBlock.AddChild("customSerializationValues");
             foreach (KeyValuePair<string, object> current in customSerializationValues)
             {
                 string key = current.Key;
                 object value = current.Value;
-                if (value != null)
-                {
-                    Type type = value.GetType();
-                    string errorString = string.Format("World: Custom serialization value \"{0}\"", key);
-                    string saveValueString = EntityHelper.GetSaveValueString(type, value, errorString);
-                    TextBlock textBlock3 = textBlock2.AddChild(key);
-                    textBlock3.SetAttribute("type", type.FullName);
-                    textBlock3.SetAttribute("value", saveValueString);
-                }
+                if (value == null)
+                    continue;
+                Type type = value.GetType();
+                string errorString = string.Format("World: Custom serialization value \"{0}\"", key);
+                string saveValueString = EntityHelper.ConvertToString(type, value, errorString);
+                TextBlock customValueBlock = customValuesBlock.AddChild(key);
+                customValueBlock.SetAttribute("type", type.FullName);
+                customValueBlock.SetAttribute("value", saveValueString);
             }
             ClearAllCustomSerializationValues();
         }

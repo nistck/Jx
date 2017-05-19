@@ -15,31 +15,68 @@ namespace Jx.EntitySystem
 {
     internal static class EntityHelper
     {
+        public const string NULL_ITEM = "_nullItem";
+
+        private static readonly Dictionary<Type, List<FieldInfo>> typeFieldsSerializationDic = new Dictionary<Type, List<FieldInfo>>();
+
         /// <summary>
         /// 获得字段上的FieldSerializeAttribute标记
         /// </summary>
         /// <param name="entityOrEntityType">true, Entity; false, EntityType</param>
         /// <param name="fieldInfo">字段</param>
         /// <returns></returns>
-        private static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
+        public static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
         {
             string result = fieldInfo.Name;
             if (entityOrEntityType)
             {
-                Entity.FieldSerializeAttribute[] r = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                if (r.Length != 0 && r[0].PropertyName != null)
-                    result = r[0].PropertyName;
+                Entity.FieldSerializeAttribute attr = fieldInfo.GetCustomAttribute<Entity.FieldSerializeAttribute>(true);
+                if (attr != null)
+                    result = attr.PropertyName;
             }
             else
             {
-                EntityType.FieldSerializeAttribute[] r = (EntityType.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true);
-                if (r.Length != 0 && r[0].PropertyName != null)
-                    result = r[0].PropertyName;
+                EntityType.FieldSerializeAttribute attr = fieldInfo.GetCustomAttribute<EntityType.FieldSerializeAttribute>(true);
+                if (attr != null)
+                    result = attr.PropertyName;
             }
             return result;
         }
+        public static string ConvertToString(Type type, object value, string errorString)
+        {
+            if (typeof(EntityType).IsAssignableFrom(type))
+            {
+                EntityType entityType = (EntityType)value;
+                return entityType.Name;
+            }
 
-        public static bool GetLoadStringValue(Type type, string strValue, string errorString, out object outValue)
+            if (typeof(Entity).IsAssignableFrom(type))
+            {
+                Entity entity = (Entity)value;
+                return entity.UIN.ToString();
+            }
+
+            if (typeof(Type) == type)
+                return ((Type)value).FullName;
+
+            if (SimpleTypesUtils.IsSimpleType(type))
+                return value.ToString();
+
+            if (errorString != null)
+                Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
+
+            return null;
+        }
+
+        /// <summary>
+        /// 数据转换: 将<paramref name="strValue"/>转化成<paramref name="type"/>，输出<paramref name="outValue"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="strValue"></param>
+        /// <param name="errorString"></param>
+        /// <param name="outValue"></param>
+        /// <returns></returns>
+        public static bool ConvertFromString(Type type, string strValue, string errorString, out object outValue)
         {
             outValue = null; 
             try
@@ -55,8 +92,7 @@ namespace Jx.EntitySystem
                             return true;
                         }
                         if (errorString != null)
-                            Log.Error("Entity System: Serialization error. The invalid value \"{0}\" for type \"{1}\" ({2}).", strValue, type, errorString);
-                        
+                            Log.Error("Entity System: Serialization error. The invalid value \"{0}\" for type \"{1}\" ({2}).", strValue, type, errorString); 
                         return false;
                     }
 
@@ -72,12 +108,11 @@ namespace Jx.EntitySystem
                         return true;
 
                     Entity loadingEntityBySerializedUIN = Entities.Instance.GetLoadingEntityBySerializedUIN(uint.Parse(strValue));
-                    bool flag8 = (EntitySystemWorld.Instance.IsSingle() || EntitySystemWorld.Instance.IsEditor()) && loadingEntityBySerializedUIN == null;
-                    if (flag8)
+                    bool isEntityExists = (EntitySystemWorld.Instance.IsSingle() || EntitySystemWorld.Instance.IsEditor()) && loadingEntityBySerializedUIN == null;
+                    if (isEntityExists)
                     {
                         if (errorString != null)
-                            Log.Error("Entity System: Serialization error. The entity with UIN \"{0}\" is not exists ({1}).", strValue, errorString);
-
+                            Log.Error("Entity System: Serialization error. The entity with UIN \"{0}\" is not exists ({1}).", strValue, errorString); 
                         return false;
                     }
 
@@ -160,23 +195,19 @@ namespace Jx.EntitySystem
                 #endregion
 
                 if (errorString != null)
-                {
                     Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
-                    return false;
-                }
                 return false;
             }
             catch (FormatException ex)
-            {
-                bool flag22 = errorString != null;
-                if (flag22)
+            { 
+                if (errorString != null)
                 {
                     Log.Error("Entity System: Serialization error: \"{0}\" ({1}).", ex.Message, errorString);
                 }
                 return false;
             } 
         }
-
+         
         /// <summary>
         /// 设置目标<paramref name="targetObj"/>的字段<paramref name="fieldInfo"/>的值为<paramref name="list"/>
         /// </summary>
@@ -187,34 +218,24 @@ namespace Jx.EntitySystem
         {
             if (fieldInfo == null)
                 return;
-
             if (fieldInfo.FieldType.IsArray)
             {
-                ConstructorInfo constructor = fieldInfo.FieldType.GetConstructor(new Type[]
-                {
-                    typeof(int)
-                });
-                object r = constructor.Invoke(new object[]
-                {
-                    list.Count
-                });
+                ConstructorInfo constructor = fieldInfo.FieldType.GetConstructor(new Type[] { typeof(int) });
+                object r = constructor.Invoke(new object[] { list.Count });
                 fieldInfo.SetValue(targetObj, r);
+
                 MethodInfo method = fieldInfo.FieldType.GetMethod("SetValue", new Type[]
                 {
                     typeof(object),
                     typeof(int)
                 });
-                object[] args = new object[2];
+
                 for (int i = 0; i < list.Count; i++)
-                {
-                    args[0] = list[i];
-                    args[1] = i;
-                    method.Invoke(r, args);
-                }
+                    method.Invoke(r, new object[] { list[i], i });
             }
             else
             {
-                object vList = fieldInfo.GetValue(targetObj); 
+                object vList = fieldInfo.GetValue(targetObj);
                 if (vList == null)
                 {
                     vList = fieldInfo.FieldType.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
@@ -238,46 +259,36 @@ namespace Jx.EntitySystem
         /// <summary>
         /// 获得类型<paramref name="type"/>可序列化的字段
         /// </summary>
-        /// <param name="entityOrEntityType">true, Entity; false, EntityType</param>
+        /// <param name="entitySerialize">true, Entity; false, EntityType</param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private static List<FieldInfo> GetTypeSerializableFields(bool entityOrEntityType, Type type)
+        private static List<FieldInfo> GetTypeSerializableFields(bool entitySerialize, Type type)
         {
-            List<FieldInfo> list = new List<FieldInfo>(16);
+            List<FieldInfo> list = new List<FieldInfo>();
+            if (type == null)
+                return list;
+
+            if(typeFieldsSerializationDic.ContainsKey(type))
+            {
+                list.AddRange(typeFieldsSerializationDic[type]);
+                return list;
+            }
+
             Type typeCurrent = type;
             while (typeCurrent != null)
             {
-                FieldInfo[] fields = typeCurrent.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
- 
-                for(int i = 0; i < fields.Length; i ++)
-                {
-                    FieldInfo fieldInfo = fields[i];
-                    if (entityOrEntityType)
-                    {
-                        Entity.FieldSerializeAttribute[] rAttrs = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                        if (rAttrs.Length == 0)
-                            continue;
-                        if (EntitySystemWorld.Instance.IsEntitySerializable(rAttrs[0].SupportedSerializationTypes))
-                        {
-                            list.Add(fieldInfo);
-                            continue;
-                        }
-                    }
-                    else
-                    { 
-                        if (fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true).Length != 0)
-                        {
-                            list.Add(fieldInfo);
-                            continue;
-                        }
-                    } 
-                }
+                var q = typeCurrent.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(_f => IsFieldSerializable(_f, entitySerialize))
+                    ;
+                list.AddRange(q); 
                 typeCurrent = typeCurrent.BaseType;
             }
-            return list;
+
+            typeFieldsSerializationDic[type] = list;
+            return list.ToList();
         }
 
-        private static bool LoadArrayFieldValue(bool entityOrEntityType, object targetObj, FieldInfo fieldInfo, TextBlock textBlock, string text)
+        private static bool LoadArrayFieldValue(bool entitySerialize, object targetObj, FieldInfo fieldInfo, TextBlock textBlock, string text)
         {
             bool isArray = fieldInfo.FieldType.IsArray;
             Type typeElement;
@@ -286,7 +297,7 @@ namespace Jx.EntitySystem
             else
                 typeElement = fieldInfo.FieldType.GetGenericArguments()[0];
 
-            string name = GetFieldSerializeName(entityOrEntityType, fieldInfo);
+            string name = GetFieldSerializeName(entitySerialize, fieldInfo);
             TextBlock blockChild = textBlock.FindChild(name);
 
             #region typeElement == typeof(string) 
@@ -298,7 +309,7 @@ namespace Jx.EntitySystem
                     foreach (TextBlock current in blockChild.Children)
                     {
                         string currentValue = current.GetAttribute("value");
-                        if( string.IsNullOrEmpty(currentValue) && string.Compare(current.GetAttribute("_nullItem"), "true", true) == 0)
+                        if( string.IsNullOrEmpty(currentValue) && string.Compare(current.GetAttribute(NULL_ITEM), "true", true) == 0)
                             currentValue = null;
                         
                         list.Add(currentValue);
@@ -314,7 +325,7 @@ namespace Jx.EntitySystem
             bool typeIsEntity = typeof(Entity).IsAssignableFrom(typeElement);
             if ((SimpleTypesUtils.IsSimpleType(typeElement) | typeIsEntityType | typeIsEntity) || typeof(Type) == typeElement)
             {
-                if (!entityOrEntityType & typeIsEntity)
+                if (!entitySerialize & typeIsEntity)
                 {
                     Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
                     return false;
@@ -340,7 +351,7 @@ namespace Jx.EntitySystem
                     {
                         string strValue = nameArr[i];
                         object item;
-                        bool loadFailure = !GetLoadStringValue(typeElement, strValue, text, out item);
+                        bool loadFailure = !ConvertFromString(typeElement, strValue, text, out item);
                         if (loadFailure)
                             return false;
 
@@ -354,12 +365,12 @@ namespace Jx.EntitySystem
 
             if (blockChild != null)
             {
-                List<FieldInfo> typeElementFields = GetTypeSerializableFields(entityOrEntityType, typeElement);
+                List<FieldInfo> typeElementFields = GetTypeSerializableFields(entitySerialize, typeElement);
                 List<object> children = new List<object>(blockChild.Children.Count);
                 foreach (TextBlock textChild in blockChild.Children)
                 {
                     object elementObject;
-                    if (string.Compare(textChild.GetAttribute("_nullItem"), "true", true) != 0)
+                    if (string.Compare(textChild.GetAttribute(NULL_ITEM), "true", true) != 0)
                     {
                         elementObject = typeElement.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
                         if (elementObject == null)
@@ -373,13 +384,13 @@ namespace Jx.EntitySystem
                             while (itElementField.MoveNext())
                             {
                                 FieldInfo currentField = itElementField.Current;
-                                bool loadFailure = !LoadFieldValue(entityOrEntityType, elementObject, currentField, textChild, text);
-                                if (loadFailure)
+                                bool loadOk = LoadFieldValue(entitySerialize, elementObject, currentField, textChild, text);
+                                if (!loadOk)
                                     return false;
                             }
                             children.Add(elementObject);
                             continue;
-                        } 
+                        }
                     }
                     children.Add(null); 
                 }
@@ -390,170 +401,80 @@ namespace Jx.EntitySystem
 
         public static bool LoadFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, string errorString)
         {
-            string text = EntityHelper.GetFieldSerializeName(entitySerialize, field);
-            errorString += string.Format(", property: \"{0}\"", text);
-            bool flag = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
-            bool isArray = field.FieldType.IsArray;
-            bool flag2 = flag | isArray;
-            bool result;
-            if (flag2)
-            {
-                bool flag3 = isArray && field.FieldType.GetArrayRank() != 1;
-                if (flag3)
+            string fieldName = GetFieldSerializeName(entitySerialize, field);
+            errorString += string.Format(", property: \"{0}\"", fieldName);
+            bool isList = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
+            bool isArray = field.FieldType.IsArray;  
+
+            if (isList || isArray)
+            { 
+                if (isArray && field.FieldType.GetArrayRank() != 1)
                 {
                     Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
                     return false;
                 }
-                result = LoadArrayFieldValue(entitySerialize, owner, field, block, errorString);
+                bool loadResult = LoadArrayFieldValue(entitySerialize, owner, field, block, errorString);
+                return loadResult;
             }
-            else
+
+            bool isEntityType = typeof(EntityType).IsAssignableFrom(field.FieldType);
+            bool isEntity = typeof(Entity).IsAssignableFrom(field.FieldType);
+            bool typeSupport = (SimpleTypesUtils.IsSimpleType(field.FieldType) | isEntityType | isEntity) || typeof(Type) == field.FieldType;
+            if (typeSupport)
             {
-                bool flag4 = typeof(EntityType).IsAssignableFrom(field.FieldType);
-                bool flag5 = typeof(Entity).IsAssignableFrom(field.FieldType);
-                bool flag6 = (SimpleTypesUtils.IsSimpleType(field.FieldType) | flag4 | flag5) || typeof(Type) == field.FieldType;
-                if (flag6)
+                if (!entitySerialize & isEntity)
                 {
-                    bool flag7 = !entitySerialize & flag5;
-                    if (flag7)
-                    {
-                        Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                    Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                    return false;
+                }
+                bool fieldExists = block.IsAttributeExist(fieldName);
+                if (fieldExists)
+                {
+                    string fieldValue = block.GetAttribute(fieldName);
+                    object value;
+                    bool convertFailure = !ConvertFromString(field.FieldType, fieldValue, errorString, out value);
+                    if (convertFailure)
                         return false;
-                    }
-                    bool flag8 = block.IsAttributeExist(text);
-                    if (flag8)
-                    {
-                        string attribute = block.GetAttribute(text);
-                        object value;
-                        bool flag9 = !EntityHelper.GetLoadStringValue(field.FieldType, attribute, errorString, out value);
-                        if (flag9)
-                        {
-                            result = false;
-                            return result;
-                        }
-                        field.SetValue(owner, value);
-                    }
-                    result = true;
+                    field.SetValue(owner, value);
                 }
-                else
-                {
-                    TextBlock textBlock = block.FindChild(text);
-                    bool flag10 = textBlock != null;
-                    if (flag10)
-                    {
-                        object obj = field.GetValue(owner);
-                        bool flag11 = obj == null;
-                        if (flag11)
-                        {
-                            obj = field.FieldType.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
-                            field.SetValue(owner, obj);
-                        }
-                        Type type = field.FieldType;
-                        bool flag12 = field.FieldType == typeof(LogicEntityObject);
-                        if (flag12)
-                        {
-                            type = field.GetValue(owner).GetType();
-                        }
-                        while (type != null)
-                        {
-                            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            FieldInfo[] array = fields;
-                            int i = 0;
-                            while (i < array.Length)
-                            {
-                                FieldInfo fieldInfo = array[i];
-                                if (entitySerialize)
-                                {
-                                    Entity.FieldSerializeAttribute[] array2 = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                                    bool flag13 = array2.Length != 0;
-                                    if (flag13)
-                                    {
-                                        bool flag14 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
-                                        if (flag14)
-                                        {
-                                            goto IL_288;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    bool flag15 = fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true).Length != 0;
-                                    if (flag15)
-                                    {
-                                        goto IL_288;
-                                    }
-                                }
-                                IL_27F:
-                                i++;
-                                continue;
-                                IL_288:
-                                bool flag16 = !EntityHelper.LoadFieldValue(entitySerialize, obj, fieldInfo, textBlock, errorString);
-                                if (flag16)
-                                {
-                                    result = false;
-                                    return result;
-                                }
-                                goto IL_27F;
-                            }
-                            type = type.BaseType;
-                        }
-                        bool isValueType = obj.GetType().IsValueType;
-                        if (isValueType)
-                        {
-                            field.SetValue(owner, obj);
-                        }
-                    }
-                    result = true;
-                }
+                return true;
             }
-            return result;
-        }
-        public static string GetSaveValueString(Type type, object value, string errorString)
-        {
-            bool flag = typeof(EntityType).IsAssignableFrom(type);
-            string result;
-            if (flag)
+
+            TextBlock textBlock = block.FindChild(fieldName);
+            if (textBlock == null)
+                return false;
+
+            object obj = field.GetValue(owner);
+            if (obj == null)
             {
-                EntityType entityType = (EntityType)value;
-                result = entityType.Name;
+                obj = field.FieldType.InvokeMember("", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance, null, null, null);
+                field.SetValue(owner, obj);
             }
-            else
+            Type type = field.FieldType;
+            if (type == typeof(LogicEntityObject))
+                type = field.GetValue(owner).GetType();
+
+            while (type != null)
             {
-                bool flag2 = typeof(Entity).IsAssignableFrom(type);
-                if (flag2)
+                FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                for (int j = 0; j < fields.Length; j++)
                 {
-                    Entity entity = (Entity)value;
-                    result = entity.UIN.ToString();
+                    FieldInfo fieldInfo = fields[j];
+                    if (!IsFieldSerializable(fieldInfo, entitySerialize))
+                        continue;  
+
+                    bool loadFailure = !LoadFieldValue(entitySerialize, obj, fieldInfo, textBlock, errorString);
+                    if (loadFailure)
+                        return false;
                 }
-                else
-                {
-                    bool flag3 = typeof(Type) == type;
-                    if (flag3)
-                    {
-                        Type type2 = (Type)value;
-                        result = type2.FullName;
-                    }
-                    else
-                    {
-                        bool flag4 = SimpleTypesUtils.IsSimpleType(type);
-                        if (flag4)
-                        {
-                            result = value.ToString();
-                        }
-                        else
-                        {
-                            bool flag5 = errorString != null;
-                            if (flag5)
-                            {
-                                Log.Fatal("Entity System: Serialization for type \"{0}\" are not supported ({1}).", type.ToString(), errorString);
-                                return null;
-                            }
-                            result = null;
-                        }
-                    }
-                }
+                type = type.BaseType;
             }
-            return result;
-        }
+
+            if (obj.GetType().IsValueType)
+                field.SetValue(owner, obj);
+
+            return true;
+        } 
 
         public static List<object> GetFieldValue(object obj, FieldInfo fieldInfo)
         {
@@ -601,330 +522,268 @@ namespace Jx.EntitySystem
             return items;
         }
 
-        private static bool SaveCollectionFieldValue(bool flag, object obj, FieldInfo fieldInfo, TextBlock textBlock, object obj2, string text)
+        private static bool SaveCollectionFieldValue(
+            bool entitySerialize, object obj, FieldInfo fieldInfo, TextBlock textBlock, 
+            object defaultObj, string errorMessage)
         {
             object value = fieldInfo.GetValue(obj);
             bool isArray = fieldInfo.FieldType.IsArray;
 
             List<object> items = new List<object>();
+            #region 获得Collection中的元素 -> items
             if (isArray)
             {
-                PropertyInfo property = fieldInfo.FieldType.GetProperty("Length");
-                MethodInfo method = fieldInfo.FieldType.GetMethod("GetValue", new Type[]
+                PropertyInfo propertyLength = fieldInfo.FieldType.GetProperty("Length");
+                MethodInfo methodGetValue = fieldInfo.FieldType.GetMethod("GetValue", new Type[]
                 {
                     typeof(int)
                 });
-                int num = (int)property.GetValue(value, null); 
-                object[] array2 = new object[1];
-                for (int i = 0; i < num; i++)
+                int arrayLength = (int)propertyLength.GetValue(value, null); 
+                for (int i = 0; i < arrayLength; i++)
                 {
-                    array2[0] = i;
-                    object o = method.Invoke(value, array2);
+                    object o = methodGetValue.Invoke(value, new object[] { i });
                     items.Add(o);
                 }
             }
             else
             {
-                PropertyInfo property2 = fieldInfo.FieldType.GetProperty("Count");
-                PropertyInfo property3 = fieldInfo.FieldType.GetProperty("Item");
-                int num2 = (int)property2.GetValue(value, null);
-                object[] array3 = new object[1];
-                for (int j = 0; j < num2; j++)
+                PropertyInfo propertyCount = fieldInfo.FieldType.GetProperty("Count");
+                PropertyInfo propertyItem = fieldInfo.FieldType.GetProperty("Item");
+                int listCount = (int)propertyCount.GetValue(value, null);
+                for (int j = 0; j < listCount; j++)
                 {
-                    array3[0] = j;
-                    object o1 = property3.GetValue(value, array3);
+                    object o1 = propertyItem.GetValue(value, new object[] { j });
                     items.Add(o1);
                 }
             }
-            bool flag2 = !flag && obj is EntityType && obj2 != null;
-            bool result;
-            if (flag2)
-            {
-                bool isArray2 = fieldInfo.FieldType.IsArray;
-                bool flag3;
-                if (isArray2)
+            #endregion
+
+            bool entityTypeDefaultSerialize = !entitySerialize && obj is EntityType && defaultObj != null;
+
+            #region EntityType 如果是缺省值，就不保存
+            if (entityTypeDefaultSerialize)
+            {  
+                int itemsCount = 0;
+                if (isArray)
                 {
-                    PropertyInfo property4 = fieldInfo.FieldType.GetProperty("Length");
-                    int num3 = (int)property4.GetValue(obj2, null);
-                    flag3 = (num3 == 0);
+                    PropertyInfo propertyLength = fieldInfo.FieldType.GetProperty("Length");
+                    itemsCount = (int)propertyLength.GetValue(defaultObj, null); 
                 }
                 else
                 {
-                    PropertyInfo property5 = fieldInfo.FieldType.GetProperty("Count");
-                    int num4 = (int)property5.GetValue(obj2, null);
-                    flag3 = (num4 == 0);
-                }
-                bool flag4 = items.Count == 0 & flag3;
-                if (flag4)
-                {
-                    result = true;
-                    return result;
-                }
+                    PropertyInfo propertyCount = fieldInfo.FieldType.GetProperty("Count");
+                    itemsCount = (int)propertyCount.GetValue(defaultObj, null); 
+                } 
+                if (items.Count == 0 & itemsCount == 0)
+                    return true;
             }
-            bool isArray3 = fieldInfo.FieldType.IsArray;
-            Type type;
-            if (isArray3)
-            {
-                type = fieldInfo.FieldType.GetElementType();
-            }
+            #endregion
+
+            Type typeElement = typeof(object);
+            if (isArray)
+                typeElement = fieldInfo.FieldType.GetElementType();
             else
+                typeElement = fieldInfo.FieldType.GetGenericArguments()[0];
+            
+            string fieldSerializeName = GetFieldSerializeName(entitySerialize, fieldInfo);   
+            if (typeElement == typeof(string))
             {
-                type = fieldInfo.FieldType.GetGenericArguments()[0];
-            }
-            string text2 = EntityHelper.GetFieldSerializeName(flag, fieldInfo);
-            bool flag5 = type == typeof(string);
-            if (flag5)
-            {
-                TextBlock textBlock2 = textBlock.AddChild(text2); 
+                TextBlock stringsBlock = textBlock.AddChild(fieldSerializeName); 
                 for (int k = 0; k < items.Count; k++)
                 {
-                    object obj3 = items[k];
-                    TextBlock textBlock3 = textBlock2.AddChild("item");
-                    bool flag6 = obj3 != null;
-                    if (flag6)
-                    {
-                        textBlock3.SetAttribute("value", (string)obj3);
-                    }
+                    object item = items[k];
+                    TextBlock textBlock3 = stringsBlock.AddChild("item"); 
+                    if (item != null)
+                        textBlock3.SetAttribute("value", (string)item);
                     else
-                    {
-                        textBlock3.SetAttribute("_nullItem", true.ToString());
-                    }
+                        textBlock3.SetAttribute(NULL_ITEM, true.ToString());
                 }
-                result = true;
+                return true;
             }
-            else
+
+            bool isEntityType = typeof(EntityType).IsAssignableFrom(typeElement);
+            bool isEntity = typeof(Entity).IsAssignableFrom(typeElement);
+            bool simpleTypeSerializing = (SimpleTypesUtils.IsSimpleType(typeElement) | isEntityType | isEntity) || typeof(Type) == typeElement;
+            if (simpleTypeSerializing)
             {
-                bool flag7 = typeof(EntityType).IsAssignableFrom(type);
-                bool flag8 = typeof(Entity).IsAssignableFrom(type);
-                bool flag9 = (SimpleTypesUtils.IsSimpleType(type) | flag7 | flag8) || typeof(Type) == type;
-                if (flag9)
+                if (!entitySerialize & isEntity)
                 {
-                    bool flag10 = !flag & flag8;
-                    if (flag10)
-                    {
-                        Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", text);
-                        return false;
-                    }
-                    char value2 = ';';
-                    bool flag11 = type.IsPrimitive | flag8;
-                    if (flag11)
-                    {
-                        value2 = ' ';
-                    }
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (int l = 0; l < items.Count; l++)
-                    {
-                        object obj4 = items[l];
-                        bool flag12 = flag8 && obj4 != null;
-                        if (flag12)
-                        {
-                            Entity entity = (Entity)obj4;
-                            bool flag13 = !entity.AllowSaveHerit();
-                            if (flag13)
-                            {
-                                Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), text);
-                                return false;
-                            }
-                        }
-                        bool flag14 = l != 0;
-                        if (flag14)
-                        {
-                            stringBuilder.Append(value2);
-                        }
-                        bool flag15 = obj4 != null;
-                        if (flag15)
-                        {
-                            stringBuilder.Append(EntityHelper.GetSaveValueString(type, obj4, text + ": " + text2));
-                        }
-                        else
-                        {
-                            stringBuilder.Append("null");
-                        }
-                    }
-                    textBlock.SetAttribute(text2, stringBuilder.ToString());
-                    result = true;
+                    Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorMessage);
+                    return false;
                 }
-                else
+                char itemSeperator = typeElement.IsPrimitive | isEntity? ' ' :  ';';
+                
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int l = 0; l < items.Count; l++)
                 {
-                    TextBlock textBlock4 = textBlock.AddChild(text2);
-                    List<FieldInfo> list = EntityHelper.GetTypeSerializableFields(flag, type); 
-                    int m = 0;
-                    while (m < items.Count)
+                    object item = items[l]; 
+                    if (isEntity && item != null)
                     {
-                        object obj5 = items[m];
-                        TextBlock textBlock5 = textBlock4.AddChild("item");
-                        bool flag16 = obj5 != null;
-                        if (flag16)
+                        Entity entity = (Entity)item; 
+                        if (!entity.AllowSaveHerit())
                         {
-                            using (List<FieldInfo>.Enumerator enumerator = list.GetEnumerator())
-                            {
-                                while (enumerator.MoveNext())
-                                {
-                                    FieldInfo current = enumerator.Current;
-                                    object defaultValue = null;
-                                    DefaultValueAttribute[] array6 = (DefaultValueAttribute[])current.GetCustomAttributes(typeof(DefaultValueAttribute), true);
-                                    bool flag17 = array6.Length != 0;
-                                    if (flag17)
-                                    {
-                                        defaultValue = array6[0].Value;
-                                    }
-                                    bool flag18 = !EntityHelper.SaveFieldValue(flag, obj5, current, textBlock5, defaultValue, text);
-                                    if (flag18)
-                                    {
-                                        result = false;
-                                        return result;
-                                    }
-                                }
-                                goto IL_4BF;
-                            }
-                            goto IL_4BD;
-                        }
-                        goto IL_4BD;
-                        IL_4BF:
-                        m++;
-                        continue;
-                        IL_4BD:
-                        textBlock5.SetAttribute("_nullItem", true.ToString());
-                        goto IL_4BF;
-                    }
-                    result = true;
-                }
-            }
-            return result;
-        }
-        public static bool SaveFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, object defaultValue, string errorString)
-        {
-            object value = field.GetValue(owner);
-            bool flag = value == null;
-            bool result;
-            if (flag)
-            {
-                result = true;
-            }
-            else
-            {
-                string text = EntityHelper.GetFieldSerializeName(entitySerialize, field);
-                errorString += string.Format(", property: \"{0}\"", text);
-                bool IsList = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
-                bool isArray = field.FieldType.IsArray;
-                bool FieldIsCollection = IsList | isArray;
-                if (FieldIsCollection)
-                {
-                    bool flag4 = isArray && field.FieldType.GetArrayRank() != 1;
-                    if (flag4)
-                    {
-                        Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
-                        return false;
-                    }
-                    result = SaveCollectionFieldValue(entitySerialize, owner, field, block, defaultValue, errorString);
-                }
-                else
-                {
-                    bool flag5 = typeof(EntityType).IsAssignableFrom(field.FieldType);
-                    bool flag6 = typeof(Entity).IsAssignableFrom(field.FieldType);
-                    bool flag7 = (SimpleTypesUtils.IsSimpleType(field.FieldType) | flag5 | flag6) || typeof(Type) == field.FieldType;
-                    if (flag7)
-                    {
-                        bool flag8 = !entitySerialize & flag6;
-                        if (flag8)
-                        {
-                            Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                            Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), errorMessage);
                             return false;
                         }
-                        bool flag9 = flag6;
-                        if (flag9)
-                        {
-                            Entity entity = (Entity)value;
-                            bool flag10 = !entity.AllowSaveHerit();
-                            if (flag10)
-                            {
-                                Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), errorString);
-                                return false;
-                            }
-                        }
-                        string saveValueString = EntityHelper.GetSaveValueString(field.FieldType, value, errorString);
-                        string text2 = null;
-                        bool flag11 = defaultValue != null;
-                        if (flag11)
-                        {
-                            bool isEnum = field.FieldType.IsEnum;
-                            if (isEnum)
-                            {
-                                text2 = Enum.GetName(field.FieldType, defaultValue);
-                            }
-                            else
-                            {
-                                text2 = defaultValue.ToString();
-                            }
-                        }
-                        bool flag12 = (text2 != null && text2 != saveValueString) || (defaultValue == null && saveValueString != "");
-                        if (flag12)
-                        {
-                            block.SetAttribute(text, saveValueString);
-                        }
-                        result = true;
                     }
+
+                    if (l != 0)
+                        stringBuilder.Append(itemSeperator);
+                     
+                    if (item != null)
+                        stringBuilder.Append(ConvertToString(typeElement, item, errorMessage + ": " + fieldSerializeName));
                     else
-                    {
-                        TextBlock block2 = block.AddChild(text);
-                        Type type = field.FieldType;
-                        bool flag13 = field.FieldType == typeof(LogicEntityObject);
-                        if (flag13)
-                        {
-                            type = field.GetValue(owner).GetType();
-                        }
-                        while (type != null)
-                        {
-                            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            FieldInfo[] array = fields;
-                            int i = 0;
-                            while (i < array.Length)
-                            {
-                                FieldInfo fieldInfo = array[i];
-                                if (entitySerialize)
-                                {
-                                    Entity.FieldSerializeAttribute[] array2 = (Entity.FieldSerializeAttribute[])fieldInfo.GetCustomAttributes(typeof(Entity.FieldSerializeAttribute), true);
-                                    bool flag14 = array2.Length != 0;
-                                    if (flag14)
-                                    {
-                                        bool flag15 = EntitySystemWorld.Instance.IsEntitySerializable(array2[0].SupportedSerializationTypes);
-                                        if (flag15)
-                                        {
-                                            goto IL_2DA;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    bool flag16 = fieldInfo.GetCustomAttributes(typeof(EntityType.FieldSerializeAttribute), true).Length != 0;
-                                    if (flag16)
-                                    {
-                                        goto IL_2DA;
-                                    }
-                                }
-                                IL_2D1:
-                                i++;
-                                continue;
-                                IL_2DA:
-                                object defaultValue2 = null;
-                                DefaultValueAttribute[] array3 = (DefaultValueAttribute[])fieldInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
-                                bool flag17 = array3.Length != 0;
-                                if (flag17)
-                                {
-                                    defaultValue2 = array3[0].Value;
-                                }
-                                bool flag18 = !SaveFieldValue(entitySerialize, value, fieldInfo, block2, defaultValue2, errorString);
-                                if (flag18)
-                                    return false;
-                                goto IL_2D1;
-                            }
-                            type = type.BaseType;
-                        }
-                        result = true;
-                    }
+                        stringBuilder.Append("null");
+                }
+                textBlock.SetAttribute(fieldSerializeName, stringBuilder.ToString());
+                return true;
+            }
+
+            TextBlock textBlockField = textBlock.AddChild(fieldSerializeName);
+            List<FieldInfo> list = GetTypeSerializableFields(entitySerialize, typeElement);
+            for(int m = 0; m < items.Count; m ++) 
+            {
+                object item = items[m];
+
+                TextBlock textBlockItem = textBlockField.AddChild("item");
+                if ( item == null )
+                {
+                    textBlockItem.SetAttribute(NULL_ITEM, true.ToString());
+                    continue;
+                }
+                for(int k = 0; k < list.Count; k ++)
+                {
+                    FieldInfo elementField = list[k];
+                    bool _saveResult = SaveFieldValue(entitySerialize, item, elementField, textBlockItem, errorMessage);
+                    if (!_saveResult)
+                        return false;
                 }
             }
-            return result;
+            return true;
+        }
+
+        public static bool IsEntityFieldSerializable(FieldInfo fieldInfo)
+        {
+            if (fieldInfo == null)
+                return false;
+
+            Entity.FieldSerializeAttribute attr = fieldInfo.GetCustomAttribute<Entity.FieldSerializeAttribute>(true);
+            if (attr == null)
+                return false; 
+
+            bool typeSupported = EntitySystemWorld.Instance.IsEntityFieldSerializable(attr.SupportedSerializationTypes);
+            return typeSupported; 
+        }
+
+        public static bool IsFieldSerializable(FieldInfo fieldInfo, bool entitySerialize)
+        {
+            if (entitySerialize)
+            {
+                if (!IsEntityFieldSerializable(fieldInfo))
+                    return false;
+            }
+            else
+            {
+                EntityType.FieldSerializeAttribute attrFound = fieldInfo.GetCustomAttribute<EntityType.FieldSerializeAttribute>(true);
+                if (attrFound == null)
+                    return false; 
+            }
+            return true;
+        }
+
+        public static bool SaveFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, string errorString)
+        {
+            if (field == null)
+                return false;
+
+            object defaultValue = field.GetDefaultValue();
+            bool result = SaveFieldValue(entitySerialize, owner, field, block, defaultValue, errorString);
+            return result; 
+        }
+
+        public static bool SaveFieldValue(bool entitySerialize, object owner, FieldInfo field, TextBlock block, object defaultValue, string errorString)
+        {
+            if (field == null)
+                return false; 
+
+            object value = field.GetValue(owner);
+            if (value == null)
+                return true; 
+ 
+            string serializeName = GetFieldSerializeName(entitySerialize, field);
+            errorString += string.Format(", property: \"{0}\"", serializeName);
+
+            bool IsList = field.FieldType.IsGenericType && field.FieldType.Name == typeof(List<>).Name;
+            bool isArray = field.FieldType.IsArray;
+            bool FieldIsCollection = IsList | isArray;
+            if (FieldIsCollection)
+            { 
+                if (isArray && field.FieldType.GetArrayRank() != 1)
+                {
+                    Log.Fatal("Entity System: Serialization of arrays are supported only for one dimensions arrays ({0}).", errorString);
+                    return false;
+                }
+                bool saveResult = SaveCollectionFieldValue(entitySerialize, owner, field, block, defaultValue, errorString);
+                return saveResult;
+            }
+
+            bool isEntityType = typeof(EntityType).IsAssignableFrom(field.FieldType);
+            bool isEntity = typeof(Entity).IsAssignableFrom(field.FieldType);
+            bool simpleSerialization = (SimpleTypesUtils.IsSimpleType(field.FieldType) | isEntityType | isEntity) || typeof(Type) == field.FieldType;
+            if (simpleSerialization)
+            {
+                if (!entitySerialize & isEntity)
+                {
+                    Log.Fatal("Entity System: Serialization Entity classes in entity types is forbidden ({0}).", errorString);
+                    return false;
+                }
+
+                if (isEntity)
+                {
+                    Entity entity = (Entity)value;
+                    if (!entity.AllowSaveHerit())
+                    {
+                        Log.Fatal("Entity System: Serialization error. The reference to entity which does not allow serialization ({0}). Field to serialize: \"{1}\".", entity.ToString(), errorString);
+                        return false;
+                    }
+                }
+                string saveValueString = ConvertToString(field.FieldType, value, errorString);
+                string defaultSaveValueString = null;
+                if (defaultValue != null)
+                {
+                    bool isEnum = field.FieldType.IsEnum;
+                    if (isEnum)
+                        defaultSaveValueString = Enum.GetName(field.FieldType, defaultValue);
+                    else
+                        defaultSaveValueString = defaultValue.ToString();
+                }
+
+                bool shouldSave = (defaultSaveValueString != null && defaultSaveValueString != saveValueString) || (defaultValue == null && saveValueString != "");
+                if (shouldSave)
+                    block.SetAttribute(serializeName, saveValueString);
+                return true;
+            } 
+
+            TextBlock blockSerialize = block.AddChild(serializeName);
+            Type type = field.FieldType;
+            if (field.FieldType == typeof(LogicEntityObject))
+                type = field.GetValue(owner).GetType();
+
+            while (type != null)
+            {
+                FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                for(int m = 0; m < fields.Length; m ++)
+                {
+                    FieldInfo fieldInfo = fields[m];
+                    if (!IsFieldSerializable(fieldInfo, entitySerialize))
+                        continue;                   
+                    bool saveResult = SaveFieldValue(entitySerialize, value, fieldInfo, blockSerialize, errorString);
+                    if (!saveResult)
+                        return false;
+                } 
+                type = type.BaseType;
+            }
+            return true;
         }
     }
 }

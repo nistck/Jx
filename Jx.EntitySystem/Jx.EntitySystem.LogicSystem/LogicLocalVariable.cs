@@ -95,7 +95,7 @@ namespace Jx.EntitySystem.LogicSystem
 			if (textBlock.IsAttributeExist("value"))
 			{
 				string attribute2 = textBlock.GetAttribute("value");
-				EntityHelper.GetLoadStringValue(this.aAv, attribute2, null, out this.aAw);
+				EntityHelper.ConvertFromString(this.aAv, attribute2, null, out this.aAw);
 			}
 			return true;
 		}
@@ -119,7 +119,7 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 			if (this.aAw != null)
 			{
-				string saveValueString = EntityHelper.GetSaveValueString(this.aAv, this.aAw, null);
+				string saveValueString = EntityHelper.ConvertToString(this.aAv, this.aAw, null);
 				if (saveValueString != null)
 				{
 					textBlock.SetAttribute("value", saveValueString);

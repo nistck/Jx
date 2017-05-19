@@ -11,6 +11,7 @@ using Jx.FileSystem;
 using System.Reflection;
 
 using Jx.EntitySystem.LogicSystem;
+using Jx.Ext;
 
 namespace Jx.EntitySystem
 {
@@ -27,7 +28,7 @@ namespace Jx.EntitySystem
         /// <summary>
         /// Specifies that a field will be serialized. This class cannot be inherited.
         /// </summary>
-        [AttributeUsage(AttributeTargets.Field)]
+        [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
         public sealed class FieldSerializeAttribute : Attribute
         {
             private string propertyName;
@@ -196,7 +197,7 @@ namespace Jx.EntitySystem
         [FieldSerialize("name")]
         private string name = "";
 
-        internal List<Entity> zJ;
+        internal List<Entity> subscriptionsToDeletionEvent;
         private LinkedListNode<Entity> zj;
         private int subscribeToTickEventCount;
         internal int tickRound;
@@ -526,36 +527,36 @@ namespace Jx.EntitySystem
             if (entity == this)
                 Log.Fatal("Entity: SubscribeToDeletionEvent: entity == this.");
 
-            if (this.zJ == null)
-                this.zJ = new List<Entity>();
+            if (this.subscriptionsToDeletionEvent == null)
+                this.subscriptionsToDeletionEvent = new List<Entity>();
 
-            this.zJ.Add(entity);
-            if (entity.zJ == null)
-                entity.zJ = new List<Entity>();
+            this.subscriptionsToDeletionEvent.Add(entity);
+            if (entity.subscriptionsToDeletionEvent == null)
+                entity.subscriptionsToDeletionEvent = new List<Entity>();
 
-            entity.zJ.Add(this);
+            entity.subscriptionsToDeletionEvent.Add(this);
         }
 
         public void UnsubscribeToDeletionEvent(Entity entity)
         {
-            if (this.zJ != null)
+            if (this.subscriptionsToDeletionEvent != null)
             {
-                for (int i = this.zJ.Count - 1; i >= 0; i--)
+                for (int i = this.subscriptionsToDeletionEvent.Count - 1; i >= 0; i--)
                 {
-                    if (this.zJ[i] == entity)
+                    if (this.subscriptionsToDeletionEvent[i] == entity)
                     {
-                        this.zJ.RemoveAt(i);
+                        this.subscriptionsToDeletionEvent.RemoveAt(i);
                         break;
                     }
                 }
             }
-            if (entity.zJ != null)
+            if (entity.subscriptionsToDeletionEvent != null)
             {
-                for (int j = entity.zJ.Count - 1; j >= 0; j--)
+                for (int j = entity.subscriptionsToDeletionEvent.Count - 1; j >= 0; j--)
                 {
-                    if (entity.zJ[j] == this)
+                    if (entity.subscriptionsToDeletionEvent[j] == this)
                     {
-                        entity.zJ.RemoveAt(j);
+                        entity.subscriptionsToDeletionEvent.RemoveAt(j);
                         return;
                     }
                 }
@@ -728,29 +729,29 @@ namespace Jx.EntitySystem
 
             }
             IL_F5:
-            while (this.zJ != null && this.zJ.Count != 0)
+            while (this.subscriptionsToDeletionEvent != null && this.subscriptionsToDeletionEvent.Count != 0)
             {
-                for (int i = 0; i < this.zJ.Count; i++)
+                for (int i = 0; i < this.subscriptionsToDeletionEvent.Count; i++)
                 {
-                    int count = this.zJ.Count;
-                    if (this.zJ[i] != null)
+                    int count = this.subscriptionsToDeletionEvent.Count;
+                    if (this.subscriptionsToDeletionEvent[i] != null)
                     {
-                        this.zJ[i].DeleteSubscribedToDeletion(this);
+                        this.subscriptionsToDeletionEvent[i].DeleteSubscribedToDeletion(this);
                     }
-                    if (count != this.zJ.Count)
+                    if (count != this.subscriptionsToDeletionEvent.Count)
                     {
                         goto IL_F5;
                     }
                 }
-                while (this.zJ.Count != 0)
+                while (this.subscriptionsToDeletionEvent.Count != 0)
                 {
-                    if (this.zJ[0] == null)
+                    if (this.subscriptionsToDeletionEvent[0] == null)
                     {
-                        this.zJ.RemoveAt(0);
+                        this.subscriptionsToDeletionEvent.RemoveAt(0);
                     }
                     else
                     {
-                        this.UnsubscribeToDeletionEvent(this.zJ[0]);
+                        this.UnsubscribeToDeletionEvent(this.subscriptionsToDeletionEvent[0]);
                     }
                 }
                 break;
@@ -922,7 +923,7 @@ namespace Jx.EntitySystem
                 {
                     ' '
                 }, StringSplitOptions.RemoveEmptyEntries);
-                this.zJ = new List<Entity>(Math.Max(array.Length, 4));
+                this.subscriptionsToDeletionEvent = new List<Entity>(Math.Max(array.Length, 4));
                 string[] array2 = array;
                 for (int i = 0; i < array2.Length; i++)
                 {
@@ -930,7 +931,7 @@ namespace Jx.EntitySystem
                     Entity loadingEntityBySerializedUIN = Entities.Instance.GetLoadingEntityBySerializedUIN(uint.Parse(s));
                     if (loadingEntityBySerializedUIN != null)
                     {
-                        this.zJ.Add(loadingEntityBySerializedUIN);
+                        this.subscriptionsToDeletionEvent.Add(loadingEntityBySerializedUIN);
                     }
                 }
             }
@@ -1051,68 +1052,48 @@ namespace Jx.EntitySystem
             block.SetAttribute("uin", uin.ToString());
 
             if (!(this is LogicComponent))
-            {
                 block.SetAttribute("classPrompt", Type.ClassInfo.entityClassType.Name);
-            }
 
-            if (this.zJ != null && this.zJ.Count != 0)
+            if (subscriptionsToDeletionEvent != null && subscriptionsToDeletionEvent.Count != 0)
             {
-                StringBuilder stringBuilder = new StringBuilder();
-                foreach (Entity current in this.zJ)
-                {
-                    if (stringBuilder.Length != 0)
-                    {
-                        stringBuilder.Append(" ");
-                    }
-                    stringBuilder.Append(current.UIN.ToString());
-                }
-                block.SetAttribute("subscriptionsToDeletionEvent", stringBuilder.ToString());
+                string _subscriptionsToDeletionEvent = string.Join(" ", subscriptionsToDeletionEvent.Select(_x => _x.UIN)); 
+                block.SetAttribute("subscriptionsToDeletionEvent", _subscriptionsToDeletionEvent);
             }
 
-            string text = this.Type.Name;
+            string text = Type.Name;
             if (this.name != "")
-            {
                 text += string.Format(" ({0})", this.name);
-            }
+
             text = string.Format("Entity: \"{0}\"", text);
 
             for (EntityTypes.ClassInfo classInfo = Type.ClassInfo; classInfo != null; classInfo = classInfo.BaseClassInfo)
             {
                 foreach (EntityTypes.ClassInfo.EntitySerializableFieldItem current2 in classInfo.EntitySerializableFields)
                 {
-                    //if (EntitySystemWorld.Instance.isEntitySerializable(current2.SupportedSerializationTypes))
+                    //if (EntitySystemWorld.Instance.IsEntityFieldSerializable(current2.SupportedSerializationTypes))
                     {
-                        object defaultValue = null;
-                        DefaultValueAttribute[] array = (DefaultValueAttribute[])current2.Field.GetCustomAttributes(typeof(DefaultValueAttribute), true);
-                        if (array.Length != 0)
-                        {
-                            defaultValue = array[0].Value;
-                        }
-                        if (!EntityHelper.SaveFieldValue(true, this, current2.Field, block, defaultValue, text))
-                        {
+                        if (!EntityHelper.SaveFieldValue(true, this, current2.Field, block, text))
                             return;
-                        }
                     }
                 }
             }
             if (logicClass != null)
-            {
                 block.SetAttribute("logicClass", logicClass.UIN.ToString());
-            }
+            
             if (extendedProperties != null)
             {
                 TextBlock textBlock = block.AddChild("extendedProperties");
                 textBlock.SetAttribute("class", this.extendedProperties.GetType().Name);
                 extendedProperties.OnSave(textBlock);
             }
+
             if (logicObject != null)
             {
-                TextBlock textBlock2 = block.FindChild("logicObject");
-                if (textBlock2 == null)
-                {
-                    textBlock2 = block.AddChild("logicObject");
-                }
-                logicObject.OnSave(textBlock2);
+                TextBlock logicObjectBlock = block.FindChild("logicObject");
+                if (logicObjectBlock == null)
+                    logicObjectBlock = block.AddChild("logicObject");
+                
+                logicObject.OnSave(logicObjectBlock);
                 return;
             }
         }
@@ -1124,8 +1105,8 @@ namespace Jx.EntitySystem
             {
                 if (current.AllowSave)
                 {
-                    TextBlock textBlock2 = textBlock.AddChild("entity");
-                    current.Save(textBlock2);
+                    TextBlock entityBlock = textBlock.AddChild("entity");
+                    current.Save(entityBlock);
                 }
             }
         }
