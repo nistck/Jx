@@ -11,82 +11,53 @@ namespace Jx.Ext
     public class UndoObjectsPropertyChangeAction : UndoSystem.Action
     {
         public class Item
-        {
-            private object eX;
-            private PropertyInfo ex;
+        { 
             private object eY;
-            public object Obj
-            {
-                get
-                {
-                    return this.eX;
-                }
-                set
-                {
-                    this.eX = value;
-                }
-            }
-            public PropertyInfo Property
-            {
-                get
-                {
-                    return this.ex;
-                }
-                set
-                {
-                    this.ex = value;
-                }
-            }
-            public object RestoreValue
-            {
-                get
-                {
-                    return this.eY;
-                }
-                set
-                {
-                    this.eY = value;
-                }
-            }
+            public object Target { get; set; }
+            public PropertyInfo Property { get; set; }
+            public object RestoreValue { get; set; }
             public Item(object obj, PropertyInfo property, object restoreValue)
             {
-                this.eX = obj;
-                this.ex = property;
-                this.eY = restoreValue;
+                this.Target = obj;
+                this.Property = property;
+                this.RestoreValue = restoreValue;
             }
         }
-        private UndoObjectsPropertyChangeAction.Item[] eT;
-        public UndoObjectsPropertyChangeAction.Item[] Items
+
+        private readonly List<Item> items = new List<Item>();
+        public List<Item> Items
         {
-            get
-            {
-                return this.eT;
+            get {
+                List<Item> result = new List<Item>();
+                result.AddRange(items);
+                return result; 
             }
         }
-        public UndoObjectsPropertyChangeAction(UndoObjectsPropertyChangeAction.Item[] items)
+        public UndoObjectsPropertyChangeAction(params Item[] items)
         {
-            this.eT = items;
+            if (items != null)
+                this.items.AddRange(items.ToList());
         }
         protected internal override void DoUndo()
         {
-            for (int i = 0; i < this.eT.Length; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                UndoObjectsPropertyChangeAction.Item item = this.eT[i];
-                object value = item.Property.GetValue(item.Obj, null);
-                item.Property.SetValue(item.Obj, item.RestoreValue, null);
+                Item item = items[i];
+                object value = item.Property.GetValue(item.Target, null);
+                item.Property.SetValue(item.Target, item.RestoreValue, null);
                 item.RestoreValue = value;
             }
         }
         protected internal override void DoRedo()
         {
-            this.DoUndo();
+            DoUndo();
         }
         protected internal override void Destroy()
         {
         }
         public override string ToString()
         {
-            return string.Format("Property Value: Items: {0}", this.eT.Length);
+            return string.Format("Property Value: Items: {0}", items.Count);
         }
     }
 

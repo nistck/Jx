@@ -173,13 +173,10 @@ namespace JxDesign
  
         public bool Load(string p)
         {
-#if _MAP_WORLD_
-            XLog.debug("MapWorld.Load, loading {0}", p); 
-#endif
             bool result;
             using (new CursorKeeper(Cursors.WaitCursor))
             {
-                if (!resetWorld())
+                if (!ResetWorld())
                     return false;
 
                 if (!MapSystemWorld.MapLoad(p))
@@ -195,18 +192,11 @@ namespace JxDesign
                 MainForm.Instance.NotifyUpdate();   // Load
                 Modified = false;
             }
-
-#if _MAP_WORLD_
-            XLog.debug("MapWorld.Load, result = {0}", result); 
-#endif
             return result;
         }
 
-        private bool resetWorld()
+        private bool ResetWorld()
         {
-#if _MAP_WORLD_
-            XLog.debug("MapWorld.resetWorld.."); 
-#endif
             DestroyWorld();
             WorldType defaultWorldType = EntitySystemWorld.Instance.DefaultWorldType;
             if (!EntitySystemWorld.Instance.WorldCreate(WorldSimulationTypes.Editor, defaultWorldType))
@@ -223,7 +213,7 @@ namespace JxDesign
             if (!cfg.State)
                 return false;
 
-            if (!resetWorld())
+            if (!ResetWorld())
                 return false;
 
             if (string.IsNullOrEmpty(MapTypeName))
@@ -342,9 +332,6 @@ namespace JxDesign
             if (saveFileDialog.ShowDialog() != DialogResult.OK)
                 result = saveFileDialog.FileName;
 
-#if _MAP_WORLD_
-            XLog.debug("MapWorld.ChooseSavePath => {0}", result); 
-#endif
             return null;
         }
 

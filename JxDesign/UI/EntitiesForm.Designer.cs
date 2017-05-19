@@ -104,6 +104,7 @@
             this.tsbRefresh.Name = "tsbRefresh";
             this.tsbRefresh.Size = new System.Drawing.Size(23, 22);
             this.tsbRefresh.Text = "刷新视图";
+            this.tsbRefresh.Click += new System.EventHandler(this.tsbRefresh_Click);
             // 
             // toolStripSeparator2
             // 

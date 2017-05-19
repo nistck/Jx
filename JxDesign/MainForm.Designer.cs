@@ -47,12 +47,15 @@
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tsbNew = new System.Windows.Forms.ToolStripButton();
             this.tsbOpen = new System.Windows.Forms.ToolStripButton();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
             this.tsbSaveAs = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tsbUndo = new System.Windows.Forms.ToolStripButton();
+            this.tsbRedo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -84,33 +87,33 @@
             // tsmiNew
             // 
             this.tsmiNew.Name = "tsmiNew";
-            this.tsmiNew.Size = new System.Drawing.Size(152, 22);
+            this.tsmiNew.Size = new System.Drawing.Size(128, 22);
             this.tsmiNew.Text = "新 建(&N)";
             this.tsmiNew.Click += new System.EventHandler(this.tsmiNew_Click);
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(152, 22);
+            this.tsmiSave.Size = new System.Drawing.Size(128, 22);
             this.tsmiSave.Text = "保 存(&S)";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // tsmiSaveAs
             // 
             this.tsmiSaveAs.Name = "tsmiSaveAs";
-            this.tsmiSaveAs.Size = new System.Drawing.Size(152, 22);
+            this.tsmiSaveAs.Size = new System.Drawing.Size(128, 22);
             this.tsmiSaveAs.Text = "另存为(&A)";
             this.tsmiSaveAs.Click += new System.EventHandler(this.tsmiSaveAs_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(125, 6);
             // 
             // tsmiExit
             // 
             this.tsmiExit.Name = "tsmiExit";
-            this.tsmiExit.Size = new System.Drawing.Size(152, 22);
+            this.tsmiExit.Size = new System.Drawing.Size(128, 22);
             this.tsmiExit.Text = "退 出(&E)";
             // 
             // addonsToolStripMenuItem
@@ -126,7 +129,10 @@
             this.tsbOpen,
             this.tsbSave,
             this.tsbSaveAs,
-            this.toolStripSeparator1});
+            this.toolStripSeparator1,
+            this.tsbUndo,
+            this.tsbRedo,
+            this.toolStripSeparator2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1154, 25);
@@ -157,7 +163,7 @@
             // tsmiOpen
             // 
             this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(152, 22);
+            this.tsmiOpen.Size = new System.Drawing.Size(128, 22);
             this.tsmiOpen.Text = "打 开(&O)";
             this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
             // 
@@ -177,6 +183,18 @@
             this.IL16.Images.SetKeyName(9, "refresh");
             this.IL16.Images.SetKeyName(10, "save");
             this.IL16.Images.SetKeyName(11, "saveAs");
+            this.IL16.Images.SetKeyName(12, "redo");
+            this.IL16.Images.SetKeyName(13, "undo");
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // tsbNew
             // 
@@ -218,15 +236,30 @@
             this.tsbSaveAs.Text = "另存为";
             this.tsbSaveAs.Click += new System.EventHandler(this.tsmiSaveAs_Click);
             // 
-            // toolStripSeparator1
+            // tsbUndo
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.tsbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbUndo.Image = ((System.Drawing.Image)(resources.GetObject("tsbUndo.Image")));
+            this.tsbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbUndo.Name = "tsbUndo";
+            this.tsbUndo.Size = new System.Drawing.Size(23, 22);
+            this.tsbUndo.Text = "撤销";
+            this.tsbUndo.Click += new System.EventHandler(this.tsbUndo_Click);
             // 
-            // timer1
+            // tsbRedo
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.tsbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbRedo.Image = ((System.Drawing.Image)(resources.GetObject("tsbRedo.Image")));
+            this.tsbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbRedo.Name = "tsbRedo";
+            this.tsbRedo.Size = new System.Drawing.Size(23, 22);
+            this.tsbRedo.Text = "重做";
+            this.tsbRedo.Click += new System.EventHandler(this.tsbRedo_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -277,6 +310,9 @@
         private System.Windows.Forms.ToolStripButton tsbSaveAs;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripButton tsbUndo;
+        private System.Windows.Forms.ToolStripButton tsbRedo;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 

@@ -84,6 +84,13 @@ namespace Jx.MapSystem
                 return layer;
             }
 
+            public void Create(Layer layer)
+            {
+                if (layer == null)
+                    return;
+                children.Add(layer);
+            }
+
             public bool Remove()
             {
                 if (Parent == null)
@@ -98,6 +105,7 @@ namespace Jx.MapSystem
                         if( entity.EditorLayer == p )
                             entity.EditorLayer = null;
                     }
+                    Parent = null;
                 }
                 return result;
             }

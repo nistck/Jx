@@ -11,8 +11,10 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Jx;
+using Jx.Ext;
 using Jx.UI;
 using Jx.MapSystem;
+using JxDesign.Actions;
 
 namespace JxDesign.UI
 {
@@ -45,7 +47,7 @@ namespace JxDesign.UI
             BuildLayerNode();
         }
 
-        private TreeNode CreateLayerNode(Map.Layer layer, TreeNode parent = null)
+        public TreeNode CreateLayerNode(Map.Layer layer, TreeNode parent = null)
         {
             if (layer == null)
                 return null;
@@ -175,6 +177,11 @@ namespace JxDesign.UI
                 treeViewEntities.SelectedNode = nodeNew;
                 nodeNew.EnsureVisible();
                 nodeNew.BeginEdit();
+
+                /*
+                LayerNodeAction layerNodeAction = new LayerNodeAction(nodeNew);
+                UndoSystem.Instance.CommitAction(layerNodeAction);
+                //*/
             }
             MapWorld.Instance.Modified = true;
         }
@@ -249,6 +256,11 @@ namespace JxDesign.UI
                 e.CancelEdit = true;
                 e.Node.BeginEdit();
             }
+        }
+
+        private void tsbRefresh_Click(object sender, EventArgs e)
+        {
+            UpdateData();
         }
     }
 }

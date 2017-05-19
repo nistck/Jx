@@ -43,6 +43,7 @@
     <Compile Include="DefaultMap.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapGeneralObject.cs" />
+    <Compile Include="MapObject.cs" />
     <Compile Include="MapSystemWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

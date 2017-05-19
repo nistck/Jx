@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\LayerNodeAction.cs" />
     <Compile Include="MapWorld.cs" />
     <Compile Include="NewConfig.cs" />
     <Compile Include="UI\AddonManager.cs" />
@@ -69,6 +70,12 @@
     </Compile>
     <Compile Include="UI\ContentForm.Designer.cs">
       <DependentUpon>ContentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\EntityAddTagDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EntityAddTagDialog.Designer.cs">
+      <DependentUpon>EntityAddTagDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\EntityTypesForm.cs">
       <SubType>Form</SubType>
@@ -98,6 +105,9 @@
     </Compile>
     <EmbeddedResource Include="UI\ContentForm.resx">
       <DependentUpon>ContentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\EntityAddTagDialog.resx">
+      <DependentUpon>EntityAddTagDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\EntityTypesForm.resx">
       <DependentUpon>EntityTypesForm.cs</DependentUpon>
@@ -157,6 +167,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Redo_16.png" />
+    <Content Include="Resources\Undo_16.png" />
     <None Include="Resources\find_10.png" />
     <Content Include="Resources\edit_16.png" />
     <Content Include="Resources\exit_16.png" />

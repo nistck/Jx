@@ -16,318 +16,165 @@ namespace Jx.Ext
             protected internal abstract void DoRedo();
             protected internal abstract void Destroy();
         }
-        public delegate void ActionDelegate(UndoSystem.Action action);
-        private static UndoSystem dT;
-        private int dt;
-        private List<UndoSystem.Action> dU = new List<UndoSystem.Action>();
-        private List<UndoSystem.Action> du = new List<UndoSystem.Action>();
-        private EventHandler dV;
-        private EventHandler dv;
-        private UndoSystem.ActionDelegate dW;
-        private UndoSystem.ActionDelegate dw;
-        private UndoSystem.ActionDelegate dX;
-        public event EventHandler ChangeActionLists
-        {
-            add
-            {
-                EventHandler eventHandler = this.dV;
-                EventHandler eventHandler2;
-                do
-                {
-                    eventHandler2 = eventHandler;
-                    EventHandler value2 = (EventHandler)Delegate.Combine(eventHandler2, value);
-                    eventHandler = Interlocked.CompareExchange<EventHandler>(ref this.dV, value2, eventHandler2);
-                }
-                while (eventHandler != eventHandler2);
-            }
-            remove
-            {
-                EventHandler eventHandler = this.dV;
-                EventHandler eventHandler2;
-                do
-                {
-                    eventHandler2 = eventHandler;
-                    EventHandler value2 = (EventHandler)Delegate.Remove(eventHandler2, value);
-                    eventHandler = Interlocked.CompareExchange<EventHandler>(ref this.dV, value2, eventHandler2);
-                }
-                while (eventHandler != eventHandler2);
-            }
-        }
-        public event EventHandler ClearEvent
-        {
-            add
-            {
-                EventHandler eventHandler = this.dv;
-                EventHandler eventHandler2;
-                do
-                {
-                    eventHandler2 = eventHandler;
-                    EventHandler value2 = (EventHandler)Delegate.Combine(eventHandler2, value);
-                    eventHandler = Interlocked.CompareExchange<EventHandler>(ref this.dv, value2, eventHandler2);
-                }
-                while (eventHandler != eventHandler2);
-            }
-            remove
-            {
-                EventHandler eventHandler = this.dv;
-                EventHandler eventHandler2;
-                do
-                {
-                    eventHandler2 = eventHandler;
-                    EventHandler value2 = (EventHandler)Delegate.Remove(eventHandler2, value);
-                    eventHandler = Interlocked.CompareExchange<EventHandler>(ref this.dv, value2, eventHandler2);
-                }
-                while (eventHandler != eventHandler2);
-            }
-        }
-        public event UndoSystem.ActionDelegate ActionUndo
-        {
-            add
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dW;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Combine(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dW, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-            remove
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dW;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Remove(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dW, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-        }
-        public event UndoSystem.ActionDelegate ActionRedo
-        {
-            add
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dw;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Combine(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dw, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-            remove
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dw;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Remove(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dw, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-        }
-        public event UndoSystem.ActionDelegate ActionDestroy
-        {
-            add
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dX;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Combine(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dX, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-            remove
-            {
-                UndoSystem.ActionDelegate actionDelegate = this.dX;
-                UndoSystem.ActionDelegate actionDelegate2;
-                do
-                {
-                    actionDelegate2 = actionDelegate;
-                    UndoSystem.ActionDelegate value2 = (UndoSystem.ActionDelegate)Delegate.Remove(actionDelegate2, value);
-                    actionDelegate = Interlocked.CompareExchange<UndoSystem.ActionDelegate>(ref this.dX, value2, actionDelegate2);
-                }
-                while (actionDelegate != actionDelegate2);
-            }
-        }
+        public delegate void ActionDelegate(Action action);
+        private static UndoSystem instance;
+        private int maxLevel;
+        private List<Action> redoActions = new List<Action>();
+        private List<Action> undoActions = new List<Action>();  
+
+        public event EventHandler ChangeActionLists;
+        public event EventHandler ClearEvent;
+        public event ActionDelegate ActionUndo;
+        public event ActionDelegate ActionRedo;
+        public event ActionDelegate ActionDestroy;
+
         public static UndoSystem Instance
         {
-            get
-            {
-                return UndoSystem.dT;
-            }
+            get { return instance; }
         }
+
         public static void Init(int maxLevel)
         {
-            Trace.Assert(UndoSystem.dT == null);
-            UndoSystem.dT = new UndoSystem(maxLevel);
+            Trace.Assert(instance == null);
+            instance = new UndoSystem(maxLevel);
         }
         public static void Shutdown()
         {
-            if (UndoSystem.dT != null)
+            if (instance != null)
             {
-                UndoSystem.dT.Clear();
-                UndoSystem.dT = null;
+                instance.Clear();
+                instance = null;
             }
         }
-        internal UndoSystem(int num)
+
+        internal UndoSystem(int maxLevel)
         {
-            this.dt = num;
+            this.maxLevel = maxLevel;
         }
+
         public void Clear()
         {
-            bool flag = this.du.Count != 0 || this.dU.Count != 0;
-            foreach (UndoSystem.Action current in this.dU)
+            bool flag = undoActions.Count != 0 || this.redoActions.Count != 0;
+            foreach (Action current in redoActions)
             {
                 current.Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(current);
-                }
+                if (ActionDestroy != null)
+                    ActionDestroy(current);
             }
-            this.dU.Clear();
-            foreach (UndoSystem.Action current2 in this.du)
+            redoActions.Clear();
+            foreach (Action current2 in this.undoActions)
             {
                 current2.Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(current2);
-                }
+                if (ActionDestroy != null)
+                    ActionDestroy(current2);
             }
-            this.du.Clear();
-            if (flag && this.dV != null)
-            {
-                this.dV(this, EventArgs.Empty);
-            }
-            if (this.dv != null)
-            {
-                this.dv(this, EventArgs.Empty);
-            }
+            undoActions.Clear();
+            if (flag && this.ChangeActionLists != null)
+                ChangeActionLists(this, EventArgs.Empty);
+            if (ClearEvent != null)
+                ClearEvent(this, EventArgs.Empty);
         }
-        public void CommitAction(UndoSystem.Action action)
+
+        public void CommitAction(Action action)
         {
-            foreach (UndoSystem.Action current in this.dU)
+            foreach (Action current in redoActions)
             {
                 current.Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(current);
-                }
+                if (ActionDestroy != null)
+                    ActionDestroy(current);
             }
-            this.dU.Clear();
-            if (this.du.Count + 1 >= this.dt)
+            redoActions.Clear();
+            if (undoActions.Count + 1 >= this.maxLevel)
             {
-                this.du[0].Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(this.du[0]);
-                }
-                this.du.RemoveAt(0);
+                undoActions[0].Destroy();
+                if (ActionDestroy != null)
+                    ActionDestroy(undoActions[0]);
+                undoActions.RemoveAt(0);
             }
-            this.du.Add(action);
-            if (this.dV != null)
-            {
-                this.dV(this, EventArgs.Empty);
-            }
+            undoActions.Add(action);
+            if (ChangeActionLists != null)
+                ChangeActionLists(this, EventArgs.Empty);
         }
-        public UndoSystem.Action GetTopUndoAction()
+
+        public Action GetTopUndoAction()
         {
-            if (this.du.Count == 0)
-            {
+            if (undoActions.Count == 0)
                 return null;
-            }
-            return this.du[this.du.Count - 1];
+            return undoActions[this.undoActions.Count - 1];
         }
-        public UndoSystem.Action GetTopRedoAction()
+
+        public Action GetTopRedoAction()
         {
-            if (this.dU.Count == 0)
-            {
+            if (redoActions.Count == 0)
                 return null;
-            }
-            return this.dU[this.dU.Count - 1];
+            
+            return redoActions[redoActions.Count - 1];
         }
+
         public void DoUndo()
         {
-            if (this.du.Count == 0)
-            {
+            if (undoActions.Count == 0)
                 return;
-            }
-            UndoSystem.Action action = this.du[this.du.Count - 1];
-            this.du.RemoveAt(this.du.Count - 1);
+
+            Action action = undoActions[undoActions.Count - 1];
+            this.undoActions.RemoveAt(undoActions.Count - 1);
             action.DoUndo();
-            if (this.dW != null)
+            if (ActionUndo != null)
+                ActionUndo(action);
+
+            if (redoActions.Count + 1 >= maxLevel)
             {
-                this.dW(action);
+                redoActions[0].Destroy();
+                if (ActionDestroy != null)
+                    ActionDestroy(redoActions[0]);
+                
+                redoActions.RemoveAt(0);
             }
-            if (this.dU.Count + 1 >= this.dt)
-            {
-                this.dU[0].Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(this.dU[0]);
-                }
-                this.dU.RemoveAt(0);
-            }
-            this.dU.Add(action);
-            if (this.dV != null)
-            {
-                this.dV(this, EventArgs.Empty);
-            }
+            redoActions.Add(action);
+            if (ChangeActionLists != null)
+                ChangeActionLists(this, EventArgs.Empty);
         }
+
         public void DoRedo()
         {
-            if (this.dU.Count == 0)
+            if (redoActions.Count == 0)
             {
                 return;
             }
-            UndoSystem.Action action = this.dU[this.dU.Count - 1];
-            this.dU.RemoveAt(this.dU.Count - 1);
+            Action action = redoActions[redoActions.Count - 1];
+            this.redoActions.RemoveAt(redoActions.Count - 1);
             action.DoRedo();
-            if (this.dw != null)
+            if (ActionRedo != null)
+                ActionRedo(action);
+
+            if (undoActions.Count + 1 >= maxLevel)
             {
-                this.dw(action);
+                this.undoActions[0].Destroy();
+                if (ActionDestroy != null)
+                    ActionDestroy(undoActions[0]);
+                
+                undoActions.RemoveAt(0);
             }
-            if (this.du.Count + 1 >= this.dt)
-            {
-                this.du[0].Destroy();
-                if (this.dX != null)
-                {
-                    this.dX(this.du[0]);
-                }
-                this.du.RemoveAt(0);
-            }
-            this.du.Add(action);
-            if (this.dV != null)
-            {
-                this.dV(this, EventArgs.Empty);
-            }
+            undoActions.Add(action);
+            if (ChangeActionLists != null)
+                ChangeActionLists(this, EventArgs.Empty);
         }
+
         public string[] DumpDebugToLines()
         {
             List<string> list = new List<string>();
             list.Add("UndoSystem");
             list.Add("");
             list.Add("Undo actions:");
-            for (int i = 0; i < this.du.Count; i++)
+            for (int i = 0; i < this.undoActions.Count; i++)
             {
-                list.Add(this.du[i].ToString());
+                list.Add(this.undoActions[i].ToString());
             }
             list.Add("");
             list.Add("Redo actions:");
-            for (int j = this.dU.Count - 1; j >= 0; j--)
+            for (int j = this.redoActions.Count - 1; j >= 0; j--)
             {
-                list.Add(this.dU[j].ToString());
+                list.Add(this.redoActions[j].ToString());
             }
             return list.ToArray();
         }
