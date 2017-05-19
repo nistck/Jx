@@ -750,7 +750,7 @@ namespace Jx.EntitySystem
             for (int j = 0; j < entityFields.Length; j++)
             {
                 FieldInfo fieldInfo = entityFields[j];
-                if (fieldInfo.DeclaringType != typeEntityType)
+                if (fieldInfo.DeclaringType == typeEntityType)
                     continue;
 
                 Entity.FieldSerializeAttribute fieldSerializeAttribute = null;

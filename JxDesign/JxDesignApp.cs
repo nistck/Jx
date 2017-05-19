@@ -82,7 +82,7 @@ namespace JxDesign
 
         protected override void OnShutdown()
         {
-            base.OnShutdown();
+            base.OnShutdown(); 
             LongOperationNotifier.Shutdown();
         }
 

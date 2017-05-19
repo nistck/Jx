@@ -191,7 +191,7 @@ namespace Jx.EntitySystem
 				{
 					if (LogicSystemManager.Instance != current || entity.Children.Count <= 1)
 					{
-						this.CompleteEntityDelete(current);
+						CompleteEntityDelete(current);
 						goto IL_00;
 					}
 				}
@@ -205,7 +205,7 @@ namespace Jx.EntitySystem
 				entity.parent.OnRemoveChild(entity);
 				entity.parent = null;
 			}
-			this.TryDeleteEntity(entity);
+			TryDeleteEntity(entity);
 		}
 
 		public void CompressUINs()

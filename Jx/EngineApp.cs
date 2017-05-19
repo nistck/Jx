@@ -78,6 +78,11 @@ namespace Jx
             return result;
         }
 
+        public void Destroy()
+        {
+            OnDestroy();
+        }
+
         public void Run()
         {
 
@@ -86,6 +91,11 @@ namespace Jx
         protected virtual bool OnCreate()
         {
             return true;
+        }
+
+        protected virtual void OnDestroy()
+        {
+
         }
 
         protected virtual void OnShutdown()

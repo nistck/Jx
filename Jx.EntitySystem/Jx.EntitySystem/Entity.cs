@@ -197,6 +197,10 @@ namespace Jx.EntitySystem
         [FieldSerialize("name")]
         private string name = "";
 
+        [FieldSerialize]
+        private string editorLayer = null;
+
+
         internal List<Entity> subscriptionsToDeletionEvent;
         private LinkedListNode<Entity> zj;
         private int subscribeToTickEventCount;
@@ -231,6 +235,7 @@ namespace Jx.EntitySystem
 
         [LogicSystemBrowsable(true)]
         public event DeleteSubscribedToDeletionEventDelegate DeleteSubscribedToDeletionEvent;
+
 
         [LocalizedDescription("The type of this object.", "Entity")]
         public EntityType Type
@@ -284,6 +289,14 @@ namespace Jx.EntitySystem
             {
                 return this.isSetForDeletion;
             }
+        }
+
+        [Browsable(false)]
+        [LogicSystemBrowsable(false)]
+        public string EditorLayer
+        {
+            get { return editorLayer; }
+            set { this.editorLayer = value; }
         }
 
         [LogicSystemBrowsable(true), LocalizedDescription("The name of the object. The name of the object is always unique on the map. The name can be empty, when the property AllowEmptyName of the object type is enabled.", "Entity")]

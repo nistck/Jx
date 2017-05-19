@@ -11,7 +11,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-using Jx; 
+using Jx;
+using Jx.UI;
 using Jx.UI.Forms;
 using JxDesign.UI;
 using Jx.FileSystem;
@@ -39,6 +40,8 @@ namespace JxDesign
 
         private FileSystemWatcher fileSystemWatcher = null;
         private bool watchFileSystem = false;
+
+        private ImageCache imageCache;
 
         public MainForm()
         {
@@ -151,10 +154,21 @@ namespace JxDesign
             else if (persistString == typeof(EntityTypesForm).ToString())
                 return entityTypesForm;
             return null;
-        }
+        } 
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            imageCache = new ImageCache(IL16);
+            tsmiNew.Image = imageCache["new"];
+            tsmiOpen.Image = imageCache["open"];
+            tsmiSave.Image = imageCache["save"];
+            tsmiSaveAs.Image = imageCache["saveAs"];
+            tsmiExit.Image = imageCache["exit"];
+            tsbNew.Image = imageCache["new"];
+            tsbOpen.Image = imageCache["open"];
+            tsbSave.Image = imageCache["save"];
+            tsbSaveAs.Image = imageCache["saveAs"];
+
             Bootstrap();
 
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
@@ -227,9 +241,7 @@ namespace JxDesign
         {
             get { return this.dockPanel; }
         }
-
-        public bool MapModified { get; set; }
-
+ 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveLayoutConfig(SaveLayoutFlag);
@@ -262,14 +274,16 @@ namespace JxDesign
         {
             string title = !MapWorld.MapLoaded
                         ? APP_NAME
-                        : string.Format("{0} - {1}{2}", APP_NAME, Map.Instance.VirtualFileName, MapModified ? "*" : "");
+                        : string.Format("{0} - {1}{2}", APP_NAME, Map.Instance.VirtualFileName, MapWorld.Instance.Modified ? "*" : "");
             this.Text = title;
         }
 
-        public void NotifyUpdate()
+        public void NotifyUpdate(bool entitiesNeedUpdate = true)
         {
             UpdateWindowTitle();
-            EntitiesForm.UpdateData();
+
+            if(entitiesNeedUpdate)
+                EntitiesForm.UpdateData();
         }
 
         private void tsmiNew_Click(object sender, EventArgs e)
@@ -288,6 +302,19 @@ namespace JxDesign
         private void tsmiSaveAs_Click(object sender, EventArgs e)
         {
             MapWorld.Instance.SaveAs();
+        }
+
+        private void tsmiOpen_Click(object sender, EventArgs e)
+        {
+            MapWorld.Instance.Load();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            tsbSave.Enabled = Map.Instance != null && MapWorld.Instance.Modified;
+            tsbSaveAs.Enabled = Map.Instance != null;
+            tsmiSave.Enabled = Map.Instance != null && MapWorld.Instance.Modified;
+            tsmiSaveAs.Enabled = Map.Instance != null;
         }
     }
 }

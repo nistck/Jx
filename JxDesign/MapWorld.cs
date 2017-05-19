@@ -18,6 +18,8 @@ namespace JxDesign
 {
     public class MapWorld
     {
+        public const string MAP_FILTER = "Map files (*.map)|*.map|All files (*.*)|*.*";
+
         private static MapWorld instance = null; 
         private static List<string> recentlyLoadedMap = new List<string>();
 
@@ -152,11 +154,21 @@ namespace JxDesign
             EntityWorld.Instance.ClearEntitySelection(true, true);
             UndoSystem.Instance.Clear();
  
-            this.CloseLogicEditor();
+            CloseLogicEditor();
             MapSystemWorld.MapDestroy();
             EntitySystemWorld.Instance.WorldDestroy();
 
-            MainForm.Instance.NotifyUpdate();
+            MainForm.Instance.NotifyUpdate();   // DestroyWorld
+        }
+
+        public bool Load()
+        {
+            string p = ChooseOpenPath();
+            if (string.IsNullOrEmpty(p))
+                return false;
+
+            bool result = Load(p);
+            return result;
         }
  
         public bool Load(string p)
@@ -180,7 +192,7 @@ namespace JxDesign
                     UpdateRecentlyLoadedMapIntoMenu();
                     result = true;
                 }
-                MainForm.Instance.NotifyUpdate(); 
+                MainForm.Instance.NotifyUpdate();   // Load
                 Modified = false;
             }
 
@@ -204,7 +216,7 @@ namespace JxDesign
             }
             return true;
         }
-
+        
         public bool CreateNew()
         {
             NewConfig cfg = AskForNewMapConfig();
@@ -273,7 +285,7 @@ namespace JxDesign
                 Map.Instance.EditorCameraDirection = new SphereDir(1.961945f, -0.4550026f);
             }
             //*/
-            MainForm.Instance.NotifyUpdate();
+            MainForm.Instance.NotifyUpdate();   // CreateNew
 
             Directory.CreateDirectory(VirtualFileSystem.GetRealPathByVirtual(cfg.MapDirectory));
             string text = Path.Combine(cfg.MapDirectory, "Map.map");
@@ -297,11 +309,25 @@ namespace JxDesign
             return Save(null);
         }
 
+        public string ChooseOpenPath()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.FileName = ""; 
+            ofd.Filter = ToolsLocalization.Translate("Various", MAP_FILTER);
+            ofd.InitialDirectory = VirtualFileSystem.GetRealPathByVirtual("Maps");
+            if (ofd.ShowDialog() == DialogResult.OK)
+                return ofd.FileName;
+            return null;
+        }
+
         public string ChooseSavePath()
         {
+            if (Map.Instance == null)
+                return null; 
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = "Map.map";
-            saveFileDialog.Filter = ToolsLocalization.Translate("Various", "Map files (*.map)|*.map|All files (*.*)|*.*");
+            saveFileDialog.Filter = ToolsLocalization.Translate("Various", MAP_FILTER);
             if (string.IsNullOrEmpty(Map.Instance.VirtualFileName))
             {
                 saveFileDialog.InitialDirectory = VirtualFileSystem.GetRealPathByVirtual("Maps");
@@ -364,7 +390,7 @@ namespace JxDesign
                     Modified = false;
                     result = true;
                 }
-                MainForm.Instance.NotifyUpdate();
+                MainForm.Instance.NotifyUpdate(false);   // Save
             }
             return result;
         }

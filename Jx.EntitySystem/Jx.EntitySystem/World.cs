@@ -11,6 +11,17 @@ using Jx.FileSystem;
 
 namespace Jx.EntitySystem
 {
+    [AllowToCreateTypeBasedOnThisClass(false)]
+    public class WorldType : EntityType
+    {
+        public WorldType()
+        {
+            base.NetworkType = EntityNetworkTypes.Synchronized;
+            base.AllowEmptyName = true;
+            base.CreatableInMapEditor = false;
+        }
+    }
+
     public class World : Entity
     {
         private static World instance;
@@ -32,7 +43,7 @@ namespace Jx.EntitySystem
         {
             get
             {
-                return World.instance;
+                return instance;
             }
         }
 
@@ -47,11 +58,11 @@ namespace Jx.EntitySystem
 
         public World()
         {
-            if (World.instance != null)
+            if (instance != null)
             {
                 Log.Fatal("\"World\" already created.");
             }
-            World.instance = this;
+            instance = this;
         }
 
         protected override bool OnLoad(TextBlock block)
@@ -74,7 +85,7 @@ namespace Jx.EntitySystem
 
         protected internal override void OnDestroy()
         {
-            World.instance = null;
+            instance = null;
             base.OnDestroy();
         }
 

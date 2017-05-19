@@ -1,3 +1,12 @@
 type = DefaultMap
 uin = 2
 classPrompt = DefaultMap
+dateCreated = "2017-05-19 16:32:02"
+name = DefaultMap_0
+tags
+{
+}
+editorLayers
+{
+	name = Root
+}

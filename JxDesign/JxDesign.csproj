@@ -158,9 +158,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\find_10.png" />
+    <Content Include="Resources\edit_16.png" />
+    <Content Include="Resources\exit_16.png" />
     <Content Include="Resources\file_16.png" />
+    <Content Include="Resources\folder_edit_16.png" />
     <Content Include="Resources\folder_16.png" />
+    <Content Include="Resources\folder_new_16.png" />
+    <Content Include="Resources\folder_delete_16.png" />
+    <Content Include="Resources\new_16.png" />
+    <Content Include="Resources\open_16.png" />
     <Content Include="Resources\refresh_16.png" />
+    <Content Include="Resources\saveAs_16.png" />
+    <Content Include="Resources\save_16.png" />
     <Content Include="Resources\Splash.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -31,13 +31,13 @@ namespace Jx.EntitySystem
             if (entityOrEntityType)
             {
                 Entity.FieldSerializeAttribute attr = fieldInfo.GetCustomAttribute<Entity.FieldSerializeAttribute>(true);
-                if (attr != null)
+                if (attr != null && !string.IsNullOrEmpty(attr.PropertyName))
                     result = attr.PropertyName;
             }
             else
             {
                 EntityType.FieldSerializeAttribute attr = fieldInfo.GetCustomAttribute<EntityType.FieldSerializeAttribute>(true);
-                if (attr != null)
+                if (attr != null && !string.IsNullOrEmpty(attr.PropertyName))
                     result = attr.PropertyName;
             }
             return result;

@@ -81,9 +81,7 @@ namespace JxDesign
             UndoSystem.Instance.CommitAction(action);
             //*/
 
-
-            MainForm.Instance.MapModified = true;
-            
+            MapWorld.Instance.Modified = true;
         }
         public override void RefreshPropertiesForm()
         {
@@ -92,7 +90,7 @@ namespace JxDesign
         }
         public override void SetMapModified()
         {
-            MainForm.Instance.MapModified = true;
+            MapWorld.Instance.Modified = true;
         }
         public override object SendCustomMessage(Entity sender, string message, object data)
         {
