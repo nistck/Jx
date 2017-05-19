@@ -219,14 +219,12 @@ namespace Jx.UI.Forms
                 this.extendedFunctionalityDescriptor.Dispose();
                 this.extendedFunctionalityDescriptor = null;
             }
+
             if (objects != null)
-            {
                 this.jxPropertyGrid.SelectedObjects = objects;
-            }
             else
-            {
                 this.jxPropertyGrid.SelectedObject = null;
-            }
+            
             if (updateExtendedFunctionalityDescriptor)
             {
                 this.SplitView.Panel2.Controls.Clear();
@@ -257,7 +255,7 @@ namespace Jx.UI.Forms
 
         public void SelectObjects(params object[] objects)
         {
-            this.SelectObjects(objects, true);
+            SelectObjects(objects, true);
         }
 
         public ExtendedFunctionalityDescriptor CreateExtendedFunctionalityDescriptor(Type extendedFunctionalityDescriptorType, object owner)

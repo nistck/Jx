@@ -191,6 +191,9 @@ namespace JxDesign
                 consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
             }
 
+            InitializeEntityTypesForm();
+            InitializeContentForm();
+            InitializeEntitiesForm();
             InitializePropertiesForm();
 
             #region Splash Screen
@@ -254,6 +257,9 @@ namespace JxDesign
         {
             SaveLayoutConfig(SaveLayoutFlag);
 
+            DestroyEntityTypesForm();
+            DestroyContentForm();
+            DestroyEntitiesForm();
             DestroyPropertiesForm();
             EngineApp.Shutdown();
         }
@@ -611,6 +617,98 @@ namespace JxDesign
                 gridItem2 = gridItem2.Parent;
             }
         }
+        #endregion
+
+        #region Entity Types Form
+        private void InitializeEntityTypesForm()
+        {
+            EntityTypesForm.SelectedItemChange += EntityTypesForm_SelectedItemChange;            
+        } 
+
+        private void DestroyEntityTypesForm()
+        {
+            EntityTypesForm.SelectedItemChange -= EntityTypesForm_SelectedItemChange;
+        }
+
+        private EntityType EntityTypeSelected { get; set; }
+
+        private void EntityTypesForm_SelectedItemChange(EntityTypesForm sender)
+        {            
+            Tuple<EntityTypesForm.ItemTypes, object> item = sender.SelectedItem;
+            string label = ""; 
+            if( item.Item1 == EntityTypesForm.ItemTypes.Entity )
+            {
+                EntityTypeSelected = item.Item2 as EntityType;
+                label = string.Format("点击创建 实体: {0}", item.Item2);
+            }
+            else
+            {
+                label = string.Format("路径: {1}", item.Item2);
+            }
+            contentForm.SetContentLabel(label);
+        }
+        #endregion
+
+        #region Content Form
+        private void InitializeContentForm()
+        {
+            contentForm.CanvasMouseDown += ContentForm_CanvasMouseDown;
+        }
+
+        private void DestroyContentForm()
+        {
+            contentForm.CanvasMouseDown -= ContentForm_CanvasMouseDown;
+        } 
+
+        private void ContentForm_CanvasMouseDown(object sender, EventArgs e)
+        {
+            if(EntityTypeSelected != null)
+            {
+                EntityType entityType = EntityTypeSelected;
+                EntityTypeSelected = null;
+                Log.Info("创建实体类: {0}", entityType);
+
+                Entity entity = EntityWorld.Instance.CreateEntity(entityType);
+                TreeNode parentNode = EntitiesForm.GetCurrentNodeLayer();
+                EntitiesForm.CreateEntityNode(entity, parentNode);
+
+                contentForm.SetContentLabel("实体创建: {0}", entity);
+            }
+        }
+        #endregion
+
+        #region Entities Form
+        private void InitializeEntitiesForm()
+        {
+            EntitiesForm.NodeSelectChanged += EntitiesForm_NodeSelectChanged;
+        }
+
+        private void DestroyEntitiesForm()
+        {
+            EntitiesForm.NodeSelectChanged -= EntitiesForm_NodeSelectChanged;
+        }
+
+        private void EntitiesForm_NodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        {
+            PropertiesForm.ReadOnly = true;
+            if ( nodeNew == null )
+            {
+                PropertiesForm.SelectObject(null);
+                PropertiesForm.RefreshProperties();
+                return; 
+            }
+
+            Entity entity = nodeNew.Tag as Entity;
+            if( entity != null )
+            {
+                EntityCustomTypeDescriptor customTypeDescriptor = new EntityCustomTypeDescriptor(entity);
+                PropertiesForm.SelectObjects(customTypeDescriptor);
+                PropertiesForm.RefreshProperties();
+                return;
+            }
+        }
+
+
         #endregion
 
         private void tsbUndo_Click(object sender, EventArgs e)

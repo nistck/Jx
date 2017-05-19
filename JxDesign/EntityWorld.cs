@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Jx;
 using Jx.EntitySystem;
+using Jx.MapSystem;
 
 namespace JxDesign
 {
@@ -43,6 +44,17 @@ namespace JxDesign
         public Entity CreatingEntity
         {
             get { return creatingEntity; }
+        }
+
+        public Entity CreateEntity(EntityType entityType)
+        {
+            if (Map.Instance == null)
+                return null; 
+            creatingEntity = Entities.Instance.Create(entityType, Map.Instance);
+            creatingEntity.PostCreate();
+
+            MapWorld.Instance.Modified = true;
+            return creatingEntity;
         }
 
         public List<Entity> SelectedEntities

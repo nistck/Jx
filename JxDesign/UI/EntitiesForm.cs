@@ -14,15 +14,21 @@ using Jx;
 using Jx.Ext;
 using Jx.UI;
 using Jx.MapSystem;
+using Jx.EntitySystem;
 using JxDesign.Actions;
 
 namespace JxDesign.UI
 {
+    public delegate void NodeSelectChangedHandler(TreeNode nodeNew, TreeNode nodeOld);
     public partial class EntitiesForm : DockContent
     {
         private ImageCache imageCache = null;
+        private ImageCache tvImageCache = null;
 
         private TreeNode rootLayerNode = null;
+
+        private TreeNode currentMouseNode = null;
+        public event NodeSelectChangedHandler NodeSelectChanged;
 
         public EntitiesForm()
         {
@@ -32,12 +38,14 @@ namespace JxDesign.UI
         private void EntitiesForm_Load(object sender, EventArgs e)
         {
             imageCache = new ImageCache(IL16);
+            tvImageCache = new ImageCache(ILtreeView);
+
             tsbRefresh.Image = imageCache["refresh"];
             tsmiCreateLayer.Image = imageCache["layer_new"];
             tsmiDeleteLayer.Image = imageCache["layer_delete"];
             tsmiEditLayer.Image = imageCache["layer_edit"]; 
 
-            treeViewEntities.ImageList = ILtreeView;
+            treeViewEntities.ImageList = ILtreeView; 
         }
 
         public void UpdateData()
@@ -47,7 +55,41 @@ namespace JxDesign.UI
             BuildLayerNode();
         }
 
-        public TreeNode CreateLayerNode(Map.Layer layer, TreeNode parent = null)
+        private void OnNodeSelectChanged(TreeNode nodeNew)
+        {
+            if (currentMouseNode == null && nodeNew == null)
+                return;
+
+            TreeNode nodeOld = currentMouseNode;
+            currentMouseNode = nodeNew;
+
+            bool b1 = nodeOld != null && nodeNew == null;
+            bool b2 = nodeOld == null && nodeNew != null;
+            bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew); 
+
+            bool changed = b1 || b2 || b3;
+            if (changed && NodeSelectChanged != null)
+                NodeSelectChanged(nodeNew, nodeOld);
+        }
+
+        public TreeNode CreateEntityNode(Entity entity, TreeNode parent = null, bool selected = true)
+        {
+            if (entity == null)
+                return null;
+
+            int index = tvImageCache.Index("entity");
+            TreeNode node = new TreeNode(entity.Name ?? "-", index, index);
+            node.Tag = entity;
+            if (parent != null)
+                parent.Nodes.Add(node);
+            else
+                treeViewEntities.Nodes.Add(node);
+            if (selected)
+                treeViewEntities.SelectedNode = node;
+            return node;
+        }
+
+        public TreeNode CreateLayerNode(Map.Layer layer, TreeNode parent = null, bool selected = true)
         {
             if (layer == null)
                 return null;
@@ -59,6 +101,8 @@ namespace JxDesign.UI
                 parent.Nodes.Add(layerNode);
             else
                 treeViewEntities.Nodes.Add(layerNode);
+            if (selected)
+                treeViewEntities.SelectedNode = layerNode;
             return layerNode;
         }
 
@@ -135,7 +179,7 @@ namespace JxDesign.UI
         /// 获得当前选中节点所在的Map.Layer， 如果当前选中节点本身是一个Map.Layer，则返回当前选中节点
         /// </summary>
         /// <returns></returns>
-        private TreeNode GetCurrentNodeLayer()
+        public TreeNode GetCurrentNodeLayer()
         {
             if (treeViewEntities.SelectedNode == null)
                 return null;
@@ -176,6 +220,7 @@ namespace JxDesign.UI
             {
                 treeViewEntities.SelectedNode = nodeNew;
                 nodeNew.EnsureVisible();
+                treeViewEntities.LabelEdit = true;
                 nodeNew.BeginEdit();
 
                 /*
@@ -226,6 +271,7 @@ namespace JxDesign.UI
 
         private void treeViewEntities_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
+            treeViewEntities.LabelEdit = false;
             if (e.Label == null)
                 return;
 
@@ -262,5 +308,11 @@ namespace JxDesign.UI
         {
             UpdateData();
         }
+
+        private void treeViewEntities_MouseDown(object sender, MouseEventArgs e)
+        {
+            TreeNode node = treeViewEntities.GetNodeAt(new Point(e.X, e.Y));
+            OnNodeSelectChanged(node);
+        } 
     }
 }

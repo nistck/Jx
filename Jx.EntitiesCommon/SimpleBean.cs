@@ -46,14 +46,42 @@ namespace Jx.EntitiesCommon
 
     public class SimpleBean : Entity
     {
+        public enum MethodType
+        {
+            Get, 
+            Post
+        }
+
         private SimpleBeanType _type = null; 
         public new SimpleBeanType Type { get { return _type; } }
+
+        [FieldSerialize]
+        private int beanId;
+        [FieldSerialize]
+        private MethodType method = MethodType.Get;
 
         protected override bool OnLoad(TextBlock block)
         { 
             return base.OnLoad(block);
         }
 
-        
+        [JxName("Bean Id")]
+        public int BeanId
+        {
+            get { return beanId; }
+            set { beanId = value; }
+        }
+
+        public MethodType Method
+        {
+            get { return method; }
+            set { this.method = value; }
+        }
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            BeanId = Type.Id;
+        }
     }
 }

@@ -33,16 +33,16 @@
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.XTS = new System.Windows.Forms.ToolStrip();
-            this.IL16_treeView = new System.Windows.Forms.ImageList(this.components);
-            this.IL16 = new System.Windows.Forms.ImageList(this.components);
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbRefresh = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageObjects = new System.Windows.Forms.TabPage();
+            this.treeViewObjects = new System.Windows.Forms.TreeView();
             this.tabPage3dModel = new System.Windows.Forms.TabPage();
             this.treeView3dModel = new System.Windows.Forms.TreeView();
-            this.treeViewObjects = new System.Windows.Forms.TreeView();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.IL16_treeView = new System.Windows.Forms.ImageList(this.components);
+            this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.XTS.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -83,21 +83,10 @@
             this.XTS.TabIndex = 1;
             this.XTS.Text = "toolStrip1";
             // 
-            // IL16_treeView
+            // toolStripSeparator2
             // 
-            this.IL16_treeView.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16_treeView.ImageStream")));
-            this.IL16_treeView.TransparentColor = System.Drawing.Color.Transparent;
-            this.IL16_treeView.Images.SetKeyName(0, "folder");
-            this.IL16_treeView.Images.SetKeyName(1, "file");
-            this.IL16_treeView.Images.SetKeyName(2, "file_");
-            // 
-            // IL16
-            // 
-            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
-            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
-            this.IL16.Images.SetKeyName(0, "file");
-            this.IL16.Images.SetKeyName(1, "folder");
-            this.IL16.Images.SetKeyName(2, "refresh");
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbRefresh
             // 
@@ -108,6 +97,11 @@
             this.tsbRefresh.Size = new System.Drawing.Size(23, 22);
             this.tsbRefresh.Text = "刷新";
             this.tsbRefresh.Click += new System.EventHandler(this.tsbRefresh_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // tabControl
             // 
@@ -133,6 +127,16 @@
             this.tabPageObjects.Text = "Objects";
             this.tabPageObjects.UseVisualStyleBackColor = true;
             // 
+            // treeViewObjects
+            // 
+            this.treeViewObjects.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewObjects.HideSelection = false;
+            this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
+            this.treeViewObjects.Name = "treeViewObjects";
+            this.treeViewObjects.Size = new System.Drawing.Size(376, 480);
+            this.treeViewObjects.TabIndex = 0;
+            // 
             // tabPage3dModel
             // 
             this.tabPage3dModel.Controls.Add(this.treeView3dModel);
@@ -153,24 +157,21 @@
             this.treeView3dModel.Size = new System.Drawing.Size(376, 480);
             this.treeView3dModel.TabIndex = 0;
             // 
-            // treeViewObjects
+            // IL16_treeView
             // 
-            this.treeViewObjects.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
-            this.treeViewObjects.Name = "treeViewObjects";
-            this.treeViewObjects.Size = new System.Drawing.Size(376, 480);
-            this.treeViewObjects.TabIndex = 0;
+            this.IL16_treeView.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16_treeView.ImageStream")));
+            this.IL16_treeView.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16_treeView.Images.SetKeyName(0, "folder");
+            this.IL16_treeView.Images.SetKeyName(1, "file");
+            this.IL16_treeView.Images.SetKeyName(2, "file_");
             // 
-            // toolStripSeparator1
+            // IL16
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
+            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16.Images.SetKeyName(0, "file");
+            this.IL16.Images.SetKeyName(1, "folder");
+            this.IL16.Images.SetKeyName(2, "refresh");
             // 
             // EntityTypesForm
             // 

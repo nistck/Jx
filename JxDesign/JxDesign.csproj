@@ -167,6 +167,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\entity_16.png" />
     <Content Include="Resources\Redo_16.png" />
     <Content Include="Resources\Undo_16.png" />
     <None Include="Resources\find_10.png" />

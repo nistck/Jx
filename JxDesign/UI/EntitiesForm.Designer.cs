@@ -50,14 +50,15 @@
             // treeViewEntities
             // 
             this.treeViewEntities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewEntities.HideSelection = false;
             this.treeViewEntities.ItemHeight = 16;
-            this.treeViewEntities.LabelEdit = true;
             this.treeViewEntities.Location = new System.Drawing.Point(3, 28);
             this.treeViewEntities.Name = "treeViewEntities";
             this.treeViewEntities.Size = new System.Drawing.Size(338, 512);
             this.treeViewEntities.TabIndex = 0;
             this.treeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeViewEntities_AfterLabelEdit);
             this.treeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewEntities_AfterSelect);
+            this.treeViewEntities.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeViewEntities_MouseDown);
             // 
             // tableLayoutPanel1
             // 
@@ -161,6 +162,7 @@
             this.ILtreeView.TransparentColor = System.Drawing.Color.Transparent;
             this.ILtreeView.Images.SetKeyName(0, "folder");
             this.ILtreeView.Images.SetKeyName(1, "file");
+            this.ILtreeView.Images.SetKeyName(2, "entity");
             // 
             // timer1
             // 
