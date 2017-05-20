@@ -61,10 +61,6 @@
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
-      <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
-      <Name>Jx.IO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
       <Name>Jx</Name>

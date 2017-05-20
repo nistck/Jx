@@ -145,10 +145,6 @@
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jx.IO\Jx.IO.csproj">
-      <Project>{1796ed22-d12f-4de2-89d8-047b2a82bc8e}</Project>
-      <Name>Jx.IO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
       <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
       <Name>Jx.MapSystem</Name>
