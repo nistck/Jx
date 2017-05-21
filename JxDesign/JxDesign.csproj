@@ -89,6 +89,12 @@
     <Compile Include="UI\EntitiesForm.Designer.cs">
       <DependentUpon>EntitiesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\NewMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\NewMapForm.Designer.cs">
+      <DependentUpon>NewMapForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="XUI.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -114,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\EntitiesForm.resx">
       <DependentUpon>EntitiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\NewMapForm.resx">
+      <DependentUpon>NewMapForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

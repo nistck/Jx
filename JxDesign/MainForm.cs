@@ -690,7 +690,7 @@ namespace JxDesign
 
         private void EntitiesForm_NodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
         {
-            PropertiesForm.ReadOnly = true;
+            PropertiesForm.ReadOnly = false;
             if ( nodeNew == null )
             {
                 PropertiesForm.SelectObject(null);

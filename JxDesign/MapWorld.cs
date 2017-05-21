@@ -14,6 +14,8 @@ using Jx.MapSystem;
 using Jx.Ext;
 using Jx.Editors;
 
+using JxDesign.UI;
+
 namespace JxDesign
 {
     public class MapWorld
@@ -125,27 +127,13 @@ namespace JxDesign
             NewConfig result = new NewConfig(); 
             result.State = false;
 
-
-            result.MapDirectory = @"Map\Dx";
-            result.State = true;
-
-            /*
-            dZ dZ = new dZ();
-            if (dZ.ShowDialog() == DialogResult.OK)
+            NewMapForm f = new NewMapForm();
+            if (f.ShowDialog() == DialogResult.OK)
             {
-                result.MapName = dZ.MapName;
-                result.CreateObjects = dZ.CreateObjects;
-                result.HeightmapTerrain = dZ.HeightmapTerrain;
-                result.Sun = dZ.Sun;
-                result.SkyBox = dZ.SkyBox;
-                result.Fog = dZ.Fog;
-                result.MapCompositorManager = dZ.MapCompositorManager;
-                result.SpawnPoint = dZ.SpawnPoint;
 
+                result.MapDirectory = @"Map\Dx";
                 result.State = true;
-            }
-            //*/
-
+            } 
             return result;
         }
 
