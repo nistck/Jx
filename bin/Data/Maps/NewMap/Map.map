@@ -9,6 +9,46 @@ tags
 editorLayers
 {
 	name = Root
+	layer
+	{
+		name = New Layer_0
+		layer
+		{
+			name = New Layer_0
+			layer
+			{
+				name = New Layer_0
+			}
+			layer
+			{
+				name = New Layer_1
+			}
+		}
+	}
+	layer
+	{
+		name = New Layer_1
+		layer
+		{
+			name = New Layer_0
+			layer
+			{
+				name = New Layer_0
+			}
+		}
+	}
+	layer
+	{
+		name = New Layer_2
+		layer
+		{
+			name = New Layer_0
+		}
+	}
+	layer
+	{
+		name = New Layer_3
+	}
 }
 entity
 {

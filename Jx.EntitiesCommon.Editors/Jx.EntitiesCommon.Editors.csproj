@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\CompositeNodeType_ChildNodeItemCollectionEditor.cs" />
+    <Compile Include="EditorLayerEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,14 @@
     <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
+      <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
+      <Name>Jx.MapSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
+      <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>
+      <Name>Jx.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>

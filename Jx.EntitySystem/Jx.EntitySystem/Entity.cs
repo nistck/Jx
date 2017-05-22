@@ -291,13 +291,6 @@ namespace Jx.EntitySystem
             }
         }
 
-        [Browsable(false)]
-        [LogicSystemBrowsable(false)]
-        public string EditorLayer
-        {
-            get { return editorLayer; }
-            set { this.editorLayer = value; }
-        }
 
         [LogicSystemBrowsable(true), LocalizedDescription("The name of the object. The name of the object is always unique on the map. The name can be empty, when the property AllowEmptyName of the object type is enabled.", "Entity")]
         public string Name

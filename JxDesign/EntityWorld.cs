@@ -59,7 +59,10 @@ namespace JxDesign
 
         public List<Entity> SelectedEntities
         {
-            get { return null; }
+            get {
+                List<Entity> result = new List<Entity>(); 
+                return result;
+            }
         }
 
         public void ResetBeforeMapSave()

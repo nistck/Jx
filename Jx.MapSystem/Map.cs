@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 
 using Jx.EntitySystem;
 using Jx.FileSystem;
+using System.Globalization;
 
 namespace Jx.MapSystem
 {
@@ -19,6 +22,7 @@ namespace Jx.MapSystem
     {
         public static string WorldFileName { get; internal set; }
 
+        [TypeConverter(typeof(LayerTypeConverter))]
         public class Layer
         {
             private bool visible = true;
@@ -56,12 +60,21 @@ namespace Jx.MapSystem
                         
             public Layer Parent { get; private set; }
 
+            public int Indent
+            {
+                get {
+                    if (Parent != null)
+                        return Parent.Indent + 1;
+                    return 0;
+                }
+            }
+
             public string Path
             {
                 get {
                     if( Parent != null )
                     {
-                        string r0 = string.Format(@"{0}\{1}", Parent.Path, Name);
+                        string r0 = string.Format(@"{0}{1}{2}", Parent.Path, System.IO.Path.DirectorySeparatorChar, Name);
                         return r0;
                     }
                     return Name;
@@ -74,6 +87,21 @@ namespace Jx.MapSystem
                     List<Layer> result = new List<Layer>();
                     result.AddRange(children);
                     return result;
+                }
+            }
+
+            public List<Layer> ChildrenDescent
+            {
+                get {
+                    List<Layer> result = new List<Layer>();
+
+                    foreach(Layer child in children)
+                    {
+                        result.Add(child);
+                        result.AddRange(child.ChildrenDescent);
+                    }
+
+                    return result; 
                 }
             }
 
@@ -100,7 +128,8 @@ namespace Jx.MapSystem
                 bool result = Parent.RemoveChild(this);
                 if( result )
                 {
-                    foreach(Entity entity in Entities.Instance.EntitiesCollection)
+                    var q = Entities.Instance.EntitiesCollection.OfType<MapObject>();
+                    foreach(MapObject entity in q)
                     {
                         if( entity.EditorLayer == p )
                             entity.EditorLayer = null;
@@ -108,6 +137,13 @@ namespace Jx.MapSystem
                     Parent = null;
                 }
                 return result;
+            }
+
+            public Layer FindChild(string name)
+            {
+                if (name == null)
+                    return null; 
+                return children.Where(_c => _c.Name == name).FirstOrDefault();
             }
 
             public bool HasChild(string name, Layer excludeLayer = null)
@@ -146,6 +182,7 @@ namespace Jx.MapSystem
                     block.SetAttribute("allowSelect", AllowSelect.ToString());
                 if (!AllowEdit)
                     block.SetAttribute("allowEdit", AllowEdit.ToString());
+
                 foreach(Layer child in children)
                 {
                     TextBlock childBlock = block.AddChild("layer");
@@ -166,13 +203,84 @@ namespace Jx.MapSystem
                     this.AllowSelect = bool.Parse(block.GetAttribute("allowSelect"));
                 if (block.IsAttributeExist("allowEdit"))
                     this.AllowEdit = bool.Parse(block.GetAttribute("allowEdit"));
+
                 foreach(TextBlock child in block.Children)
                 {
                     Layer layer = new Layer(this);
                     if (!layer.OnLoad(child))
-                        return false; 
+                        return false;
+                    children.Add(layer);
                 }
                 return true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                Layer layer = obj as Layer;
+                if (layer == null || layer.Path == null || Path == null)
+                    return false;
+
+                return layer.Path == Path;
+            }
+
+            public override int GetHashCode()
+            {
+                return Path == null ? 0 : Path.GetHashCode(); 
+            }
+
+            public override string ToString()
+            {
+                return Path;
+            }
+        }
+
+        public class LayerTypeConverter : TypeConverter
+        {
+            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+            {
+                if (sourceType == typeof(string))
+                    return true; 
+                return base.CanConvertFrom(context, sourceType);
+            }
+
+            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+            {
+                if (value == null || Instance == null )
+                    return null;
+
+                string valueString = Convert.ToString(value);
+                if (string.IsNullOrEmpty(valueString))
+                    return Instance.RootLayer;
+
+                string[] dirs = valueString.Split(Path.AltDirectorySeparatorChar);
+                Layer layer = Instance.RootLayer;
+
+                for(int i = 1; i < dirs.Length; i ++)
+                {
+                    layer = layer.FindChild(dirs[i]);
+                    if (layer == null)
+                        return Instance.RootLayer;
+                }
+                return layer;
+            }
+
+            public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+            {
+                if (destinationType == typeof(string))
+                    return true; 
+                return base.CanConvertTo(context, destinationType);
+            }
+
+            public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+            {
+                if( destinationType == typeof(string) )
+                {
+                    Layer layer = value as Layer;
+                    layer = layer ?? Instance.RootLayer;
+                    return layer.Path;
+                }
+
+                return base.ConvertTo(context, culture, value, destinationType);
             }
         }
 

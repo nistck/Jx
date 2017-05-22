@@ -24,6 +24,8 @@ namespace JxDesign.UI
         private ImageCache imageCache = null;
         private ImageCache tvImageCache = null;
 
+        private TreeNode rootNode = null;
+
         private TreeNode rootLayerNode = null;
         private readonly Dictionary<string, TreeNode> layerPathDic = new Dictionary<string, TreeNode>();
 
@@ -51,10 +53,17 @@ namespace JxDesign.UI
         public void UpdateData()
         {
             treeViewEntities.Nodes.Clear();
-
             layerPathDic.Clear();
-            BuildLayerNode();
+            rootNode = null;
+            rootLayerNode = null;
 
+            // Root is Map
+            if (Map.Instance == null)
+                return;
+
+            rootNode = CreateEntityNode(Map.Instance, null, false);
+
+            BuildLayerNode(); 
             LoadEntities();
 
             if( rootLayerNode != null )
@@ -74,9 +83,14 @@ namespace JxDesign.UI
                 Entity entity = entities[0];
                 entities.RemoveAt(0);
 
-                string layerPath = entity.EditorLayer;
+                string layerPath = null;
+                if( entity is MapObject )
+                {
+                    MapObject mapObject = entity as MapObject;
+                    layerPath = mapObject.EditorLayer;
+                }
 
-                TreeNode layerNode = rootLayerNode;
+                TreeNode layerNode = rootNode;
                 if (!string.IsNullOrEmpty(layerPath) && layerPathDic.ContainsKey(layerPath))
                     layerNode = layerPathDic[layerPath];
 
@@ -145,11 +159,10 @@ namespace JxDesign.UI
         {
             if (Map.Instance == null)
                 return;
-
-            if (layer == null && treeViewEntities.Nodes.Count > 0)
-                return;
-
+ 
             layer = layer ?? Map.Instance.RootLayer;
+            parent = parent ?? rootNode; 
+
             TreeNode node = CreateLayerNode(layer, parent);
             if (layer == Map.Instance.RootLayer)
                 rootLayerNode = node;
@@ -320,16 +333,26 @@ namespace JxDesign.UI
 
             if (e.Label.Length > 0)
             {
-                if (layer.Parent != null && layer.Parent.HasChild(e.Label, layer))
+                if (e.Label.IndexOf("\\") > -1)
                 {
-                    e.CancelEdit = true; 
-                    string infoMessage = string.Format("Layer 【{0}】 已存在", e.Label);
+                    string infoMessage = string.Format("不允许包含字符【\\】");
+                    e.CancelEdit = true;
                     MessageBox.Show(infoMessage, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Node.EndEdit(true);
                 }
                 else
                 {
-                    e.Node.EndEdit(false);
+                    if (layer.Parent != null && layer.Parent.HasChild(e.Label, layer))
+                    {
+                        e.CancelEdit = true;
+                        string infoMessage = string.Format("Layer 【{0}】 已存在", e.Label);
+                        MessageBox.Show(infoMessage, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        e.Node.EndEdit(true);
+                    }
+                    else
+                    {
+                        e.Node.EndEdit(false);
+                    }
                 }
             }
             else

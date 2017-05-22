@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 using Jx.EntitySystem;
 using Jx.FileSystem;
+using Jx.MapSystem;
 
 namespace Jx.EntitiesCommon
 {
     [JxName("简单Bean")]
-    public class SimpleBeanType : EntityType
+    public class SimpleBeanType : MapObjectType
     {
         [FieldSerialize]
         private int id;
@@ -45,7 +46,7 @@ namespace Jx.EntitiesCommon
     }
 
  
-    public class SimpleBean : Entity
+    public class SimpleBean : MapObject
     {
         public enum MethodType
         {
