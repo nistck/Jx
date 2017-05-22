@@ -110,6 +110,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\FCTB\VisualMarker.cs" />
+    <Compile Include="Controls\GlassButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\GlassButton.designer.cs">
+      <DependentUpon>GlassButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\KRBTabControl\CaptionColorChooser.cs">
       <SubType>Component</SubType>
     </Compile>

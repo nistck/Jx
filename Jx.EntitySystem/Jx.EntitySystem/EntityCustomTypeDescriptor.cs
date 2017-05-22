@@ -47,7 +47,7 @@ namespace Jx.EntitySystem
 							string category = string.Format(format, propertyInfo.DeclaringType.Name);
 							list.Add(new CategoryAttribute(category));
 						}
-						this.propertyDescriptorCollection.Add(new EntityPropertyDescriptor(this.entity, propertyInfo, list.ToArray()));
+						propertyDescriptorCollection.Add(new EntityPropertyDescriptor(entity, propertyInfo, list.ToArray()));
 					}
 				}
 			}
