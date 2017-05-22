@@ -306,7 +306,7 @@ namespace Jx.EntitySystem
 			this.aAf = null;
 			foreach (EntityTextBlock current in this.aAF)
 			{
-				if (!current.entity.A(current.textBlock))
+				if (!current.entity.LoadEntityFromBlock(current.textBlock))
 				{
 					this.aAF = null;
 					return false;
@@ -314,8 +314,8 @@ namespace Jx.EntitySystem
 				if (loadedEntities != null)
 					loadedEntities.Add(current.entity);
 			}
-			this.Internal_ResetUINOffset();
-			this.PostCreateInitLoadedEntities();
+			Internal_ResetUINOffset();
+			PostCreateInitLoadedEntities();
 			this.aAF = null;
 			return true;
 		}
@@ -552,9 +552,10 @@ namespace Jx.EntitySystem
 		public bool LoadEntitesFromSceneFileBlock(TextBlock block, Entity parent, out List<Entity> loadedEntities)
 		{
 			loadedEntities = new List<Entity>();
-			this.Internal_InitUINOffset();
-			return this.Internal_LoadEntityTreeFromTextBlock(parent, block, false, loadedEntities);
+			Internal_InitUINOffset();
+			return Internal_LoadEntityTreeFromTextBlock(parent, block, false, loadedEntities); // Entities
 		}
+
 		public void WriteEntitiesToSceneFileBlock(TextBlock block, IList<Entity> entities)
 		{
 			foreach (Entity current in entities)

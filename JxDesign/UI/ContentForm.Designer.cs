@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.XSS = new System.Windows.Forms.StatusStrip();
             this.ContentLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.Canvas = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.XSS.SuspendLayout();
             this.SuspendLayout();
@@ -77,6 +79,14 @@
             this.Canvas.Size = new System.Drawing.Size(681, 391);
             this.Canvas.TabIndex = 1;
             this.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseDown);
+            this.Canvas.MouseEnter += new System.EventHandler(this.Canvas_MouseEnter);
+            this.Canvas.MouseLeave += new System.EventHandler(this.Canvas_MouseLeave);
+            this.Canvas.MouseHover += new System.EventHandler(this.Canvas_MouseHover);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // ContentForm
             // 
@@ -105,5 +115,6 @@
         private System.Windows.Forms.StatusStrip XSS;
         private System.Windows.Forms.ToolStripStatusLabel ContentLabel;
         private System.Windows.Forms.Panel Canvas;
+        private System.Windows.Forms.Timer timer1;
     }
 }

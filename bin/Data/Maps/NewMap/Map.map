@@ -1,7 +1,7 @@
 type = DefaultMap
 uin = 2
 classPrompt = DefaultMap
-dateCreated = "2017-05-22 14:59:11"
+dateCreated = "2017-05-22 15:17:45"
 name = DefaultMap_0
 tags
 {
@@ -9,4 +9,40 @@ tags
 editorLayers
 {
 	name = Root
+}
+entity
+{
+	type = ddd
+	uin = 3
+	classPrompt = SimpleBean
+	beanId = 19817
+	method = Get
+	name = ddd_0
+	tags
+	{
+	}
+}
+entity
+{
+	type = ddd
+	uin = 4
+	classPrompt = SimpleBean
+	beanId = 1981
+	method = Post
+	name = ddd_1
+	tags
+	{
+	}
+}
+entity
+{
+	type = Ax
+	uin = 5
+	classPrompt = SimpleBean
+	beanId = 1981333
+	method = Get
+	name = Ax_0
+	tags
+	{
+	}
 }

@@ -348,7 +348,9 @@ namespace JxDesign
             tsmiEntityTypesWindow.Checked = EntityTypesForm.Visible;
             tsmiContentWindow.Checked = contentForm.Visible;
             tsmiPropertiesWindow.Checked = propertiesForm.Visible;
-            tsmiConsoleWindow.Checked = consoleForm.Visible; 
+            tsmiConsoleWindow.Checked = consoleForm.Visible;
+
+            UpdateTypeSelectionLabel();
         }
 
         #region 属性窗口
@@ -641,28 +643,89 @@ namespace JxDesign
         #region Entity Types Form
         private void InitializeEntityTypesForm()
         {
-            EntityTypesForm.SelectedItemChange += EntityTypesForm_SelectedItemChange;            
+            EntityTypesForm.SelectedItemChange += EntityTypesForm_SelectedItemChange;
+            EntityTypesForm.ObjectNodeSelectChanged += EntityTypesForm_ObjectNodeSelectChanged;
+            EntityTypesForm.ModelNodeSelectChanged += EntityTypesForm_ModelNodeSelectChanged;
         } 
+
 
         private void DestroyEntityTypesForm()
         {
             EntityTypesForm.SelectedItemChange -= EntityTypesForm_SelectedItemChange;
+            EntityTypesForm.ObjectNodeSelectChanged -= EntityTypesForm_ObjectNodeSelectChanged;
+            EntityTypesForm.ModelNodeSelectChanged -= EntityTypesForm_ModelNodeSelectChanged;
         }
 
-        private EntityType EntityTypeSelected { get; set; }
+        private static readonly Tuple<EntityTypeSelectItemType, object> NULL_SELECTION = new Tuple<EntityTypeSelectItemType, object>(EntityTypeSelectItemType.Null, null);
+        private Tuple<EntityTypeSelectItemType, object> typeSelected = NULL_SELECTION;
+        public Tuple<EntityTypeSelectItemType, object> TypeSelected
+        {
+            get { return typeSelected; }
+            set { typeSelected = value ?? NULL_SELECTION; }
+        }
+        public EntityType EntityTypeSelected { get; private set; }
+
+        private void UpdateEntityTypeSelected()
+        {
+            Tuple<EntityTypeSelectItemType, object> item = EntityTypesForm.SelectedItem;
+            TypeSelected = item;
+
+            EntityTypeSelected = null;
+            if (item.Item1 == EntityTypeSelectItemType.Entity)
+                EntityTypeSelected = item.Item2 as EntityType;
+        }
+
+        internal void ClearEntityTypeSelected()
+        {
+            EntityTypeSelected = null;
+            TypeSelected = NULL_SELECTION;
+            EntityTypesForm.ClearSelection();
+        }
+
+        private void OnEntityTypesNodeSelectionChanged()
+        {
+            UpdateEntityTypeSelected();
+            UpdateTypeSelectionLabel();
+        }
 
         private void EntityTypesForm_SelectedItemChange(EntityTypesForm sender)
-        {            
-            Tuple<EntityTypesForm.ItemTypes, object> item = sender.SelectedItem;
-            string label = ""; 
-            if( item.Item1 == EntityTypesForm.ItemTypes.Entity )
+        {
+ 
+        }
+
+        private void EntityTypesForm_ModelNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        {
+            OnEntityTypesNodeSelectionChanged();
+        }
+
+        private void EntityTypesForm_ObjectNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        {
+            OnEntityTypesNodeSelectionChanged();
+        }
+
+        private void UpdateTypeSelectionLabel()
+        {
+            string label = "";
+            if( !MapWorld.MapLoaded )
             {
-                EntityTypeSelected = item.Item2 as EntityType;
-                label = string.Format("点击创建 实体: {0}", item.Item2);
+                contentForm.SetContentLabel("地图未加载");
+                return; 
+            }
+
+            if( TypeSelected == null)
+                return;
+
+            if (TypeSelected.Item1 == EntityTypeSelectItemType.Entity)
+            {
+                label = string.Format("点击创建 实体: {0}", EntityTypeSelected);
+            }
+            else if( TypeSelected.Item1 == EntityTypeSelectItemType.Mesh )
+            {
+                label = string.Format("路径: {0}", TypeSelected.Item2);
             }
             else
             {
-                label = string.Format("路径: {1}", item.Item2);
+                label = string.Format("-", TypeSelected.Item2);
             }
             contentForm.SetContentLabel(label);
         }
@@ -684,12 +747,12 @@ namespace JxDesign
             if(EntityTypeSelected != null)
             {
                 EntityType entityType = EntityTypeSelected;
-                EntityTypeSelected = null;
+                ClearEntityTypeSelected();
                 Log.Info("创建实体类: {0}", entityType);
 
                 Entity entity = EntityWorld.Instance.CreateEntity(entityType);
                 TreeNode parentNode = EntitiesForm.GetCurrentNodeLayer();
-                EntitiesForm.CreateEntityNode(entity, parentNode);
+                EntitiesForm.CreateEntityNode(entity, parentNode); 
 
                 contentForm.SetContentLabel("实体创建: {0}", entity);
             }

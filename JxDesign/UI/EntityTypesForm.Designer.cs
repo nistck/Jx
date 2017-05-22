@@ -115,6 +115,7 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(384, 512);
             this.tabControl.TabIndex = 2;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPageObjects
             // 
@@ -136,6 +137,7 @@
             this.treeViewObjects.Name = "treeViewObjects";
             this.treeViewObjects.Size = new System.Drawing.Size(376, 480);
             this.treeViewObjects.TabIndex = 0;
+            this.treeViewObjects.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeViewObjects_MouseDown);
             // 
             // tabPage3dModel
             // 
@@ -156,6 +158,7 @@
             this.treeView3dModel.Name = "treeView3dModel";
             this.treeView3dModel.Size = new System.Drawing.Size(376, 480);
             this.treeView3dModel.TabIndex = 0;
+            this.treeView3dModel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView3dModel_MouseDown);
             // 
             // IL16_treeView
             // 

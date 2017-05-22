@@ -974,11 +974,13 @@ namespace Jx.EntitySystem
             }
             return true;
         }
-        internal bool A(TextBlock block)
+
+        internal bool LoadEntityFromBlock(TextBlock block)
         {
             LongOperationNotifier.Notify("Entity: Load: " + this.ToString());
             return this.OnLoad(block);
         }
+
         protected internal virtual void OnPreLoadChildEntity(EntityType childType, TextBlock childBlock, ref bool needLoad)
         {
             if (EntitySystemWorld.Instance.IsDedicatedServer() && childType.NetworkType == EntityNetworkTypes.ClientOnly)

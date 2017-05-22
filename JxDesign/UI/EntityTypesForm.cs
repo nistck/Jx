@@ -28,12 +28,6 @@ namespace JxDesign.UI
 
     public partial class EntityTypesForm : DockContent
     {
-        public enum ItemTypes
-        {
-            Null,
-            Entity,
-            Mesh
-        }
 
         private class TreeNodeComparer : IComparer
         {
@@ -72,10 +66,13 @@ namespace JxDesign.UI
         public event SelectedItemChangeDelegate SelectedItemChange;
 
         private bool objectTreeModified = false; 
-        private TreeNode currentObjectsNode;
+        private TreeNode currentObjectsNode; 
+        public event TreeNodeSelectChangedHandler ObjectNodeSelectChanged; 
 
         private bool meshTreeModified = false;
         private TreeNode current3dModelNode;
+        public event TreeNodeSelectChangedHandler ModelNodeSelectChanged;
+
 
         private bool Blq = false;
         private bool BlR = false;
@@ -89,16 +86,16 @@ namespace JxDesign.UI
 
 
         [Browsable(false)]
-        public Tuple<ItemTypes, object> SelectedItem
+        public Tuple<EntityTypeSelectItemType, object> SelectedItem
         {
             get
             {
                 if (tabControl.SelectedTab == this.tabPageObjects)
                 {
-                    EntityType entityType = this.GetCurrentEntityType();
+                    EntityType entityType = GetCurrentEntityType();
                     if (entityType != null)
                     {
-                        return new Tuple<ItemTypes, object>(ItemTypes.Entity, entityType);
+                        return new Tuple<EntityTypeSelectItemType, object>(EntityTypeSelectItemType.Entity, entityType);
                     }
                 }
                 if (this.tabControl.SelectedTab == this.tabPage3dModel)
@@ -106,13 +103,13 @@ namespace JxDesign.UI
                     TreeNode selectedNode = this.treeView3dModel.SelectedNode;
                     if (selectedNode != null && selectedNode.Tag != null && selectedNode.Tag is string)
                     {
-                        return new Tuple<ItemTypes, object>(ItemTypes.Mesh, (string)selectedNode.Tag);
+                        return new Tuple<EntityTypeSelectItemType, object>(EntityTypeSelectItemType.Mesh, (string)selectedNode.Tag);
                     }
                 }
-                return new Tuple<ItemTypes, object>(ItemTypes.Null, null);
+                return new Tuple<EntityTypeSelectItemType, object>(EntityTypeSelectItemType.Null, null);
             }
-        } 
-
+        }
+ 
         private void UpdateTreeViewObjects()
         {
             Blr.Clear();
@@ -621,11 +618,9 @@ namespace JxDesign.UI
 
         private EntityType GetCurrentEntityType()
         {
-            TreeNode selectedNode = this.treeViewObjects.SelectedNode;
+            TreeNode selectedNode = treeViewObjects.SelectedNode;
             if (selectedNode == null)
-            {
                 return null;
-            }
             return selectedNode.Tag as EntityType;
         }
  
@@ -679,5 +674,82 @@ namespace JxDesign.UI
         {
             UpdateTrees();
         }
+
+        private void treeViewObjects_MouseDown(object sender, MouseEventArgs e)
+        {
+            TreeNode node = treeViewObjects.GetNodeAt(new Point(e.X, e.Y));
+            SetObjectNodeSelected(node);
+        }
+
+        private void OnObjectsNodeSelectChanged(TreeNode nodeNew)
+        {
+            if (currentObjectsNode == null && nodeNew == null)
+                return;
+
+            TreeNode nodeOld = currentObjectsNode;
+            currentObjectsNode = nodeNew;
+
+            bool b1 = nodeOld != null && nodeNew == null;
+            bool b2 = nodeOld == null && nodeNew != null;
+            bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew);
+
+            bool changed = b1 || b2 || b3;
+            if (changed && ObjectNodeSelectChanged != null)
+                ObjectNodeSelectChanged(nodeNew, nodeOld);
+        }
+
+        private void SetObjectNodeSelected(TreeNode node)
+        {
+            treeViewObjects.SelectedNode = node;
+            OnObjectsNodeSelectChanged(node);
+        }
+
+        private void treeView3dModel_MouseDown(object sender, MouseEventArgs e)
+        {
+            TreeNode node = treeView3dModel.GetNodeAt(new Point(e.X, e.Y));
+            SetModelNodeSelected(node);
+        }
+
+        private void OnModelNodeSelectChanged(TreeNode nodeNew)
+        {
+            if (current3dModelNode == null && nodeNew == null)
+                return;
+
+            TreeNode nodeOld = current3dModelNode;
+            current3dModelNode = nodeNew;
+
+            bool b1 = nodeOld != null && nodeNew == null;
+            bool b2 = nodeOld == null && nodeNew != null;
+            bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew);
+
+            bool changed = b1 || b2 || b3;
+            if (changed && ModelNodeSelectChanged != null)
+                ModelNodeSelectChanged(nodeNew, nodeOld);
+        }
+
+        private void SetModelNodeSelected(TreeNode node)
+        {
+            treeView3dModel.SelectedNode = node;
+            OnModelNodeSelectChanged(node);
+        }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if( tabControl.SelectedTab == this.tabPageObjects )
+            {
+                SetModelNodeSelected(null);
+            }
+            else if( tabControl.SelectedTab == this.tabPage3dModel )
+            {
+                SetObjectNodeSelected(null);
+            }
+        }
+    }
+
+    public enum EntityTypeSelectItemType
+    {
+        Null,
+        Entity,
+        Mesh
     }
 }

@@ -37,8 +37,42 @@ namespace JxDesign.UI
 
         private void Canvas_MouseDown(object sender, MouseEventArgs e)
         {
+            if (!MapWorld.MapLoaded)
+                return;
+
             if (CanvasMouseDown != null)
                 CanvasMouseDown(sender, e);
+        }
+
+        private bool AnySelected
+        {
+            get {
+                if (!MapWorld.MapLoaded)
+                    return false; 
+
+                Tuple<EntityTypeSelectItemType, object>  t = MainForm.Instance.TypeSelected;
+                return t != null && t.Item1 != EntityTypeSelectItemType.Null;
+            }
+        }
+ 
+        private void Canvas_MouseEnter(object sender, EventArgs e)
+        {
+ 
+        }
+
+        private void Canvas_MouseLeave(object sender, EventArgs e)
+        {
+ 
+        }
+
+        private void Canvas_MouseHover(object sender, EventArgs e)
+        {
+ 
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.Cursor = AnySelected ? Cursors.Hand : Cursors.Default;
         }
     }
 }

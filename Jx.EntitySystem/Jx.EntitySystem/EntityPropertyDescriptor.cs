@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -16,6 +17,7 @@ namespace Jx.EntitySystem
 				return entity.GetType();
 			}
 		}
+
 		public override Type PropertyType
 		{
 			get
@@ -23,6 +25,7 @@ namespace Jx.EntitySystem
 				return propertyInfo.PropertyType;
 			}
 		}
+
 		public override bool IsReadOnly
 		{
 			get
@@ -30,6 +33,7 @@ namespace Jx.EntitySystem
 				return !propertyInfo.CanWrite;
 			}
 		}
+
 		public Entity Entity
 		{
 			get
@@ -37,11 +41,13 @@ namespace Jx.EntitySystem
 				return this.entity;
 			}
 		}
+
 		public EntityPropertyDescriptor(Entity entity, PropertyInfo property, Attribute[] attrs) : base(property.Name, attrs)
 		{
 			this.entity = entity;
 			this.propertyInfo = property;
 		}
+
 		public override object GetValue(object component)
 		{
 			return this.propertyInfo.GetValue(this.entity, null);
@@ -50,6 +56,7 @@ namespace Jx.EntitySystem
 		{
 			this.propertyInfo.SetValue(this.entity, value, null);
 		}
+
 		public override bool CanResetValue(object component)
 		{
 			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
@@ -63,18 +70,64 @@ namespace Jx.EntitySystem
 				this.SetValue(component, array[0].Value);
 			}
 		}
+
 		public override bool ShouldSerializeValue(object component)
 		{
 			DefaultValueAttribute[] array = (DefaultValueAttribute[])this.propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), true);
 			return array.Length == 0 || !object.Equals(array[0].Value, this.GetValue(component));
 		}
+
 		public object GetWrappedOwner()
 		{
 			return this.entity;
 		}
+
 		public PropertyInfo GetWrappedProperty()
 		{
 			return this.propertyInfo;
 		}
-	}
+
+        public override string DisplayName
+        {
+            get
+            {
+                if (propertyInfo != null)
+                {
+                    JxNameAttribute attrFound = propertyInfo.GetCustomAttribute<JxNameAttribute>();
+                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
+                        return attrFound.Name; 
+                }
+
+                return base.DisplayName;
+            }
+        }
+
+        public override string Category
+        {
+            get
+            {                
+                List<Type> types = new List<Type>();
+                if (propertyInfo != null)
+                    types.Add(propertyInfo.DeclaringType);
+                if (Entity != null && Entity.Type != null)
+                    types.Add(Entity.Type.GetType());
+
+                string categoryInfo = null;
+                while( types.Count > 0 )
+                {
+                    Type type = types[0];
+                    types.RemoveAt(0);
+
+                    JxNameAttribute attrFound = propertyInfo.DeclaringType.GetCustomAttribute<JxNameAttribute>();
+                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
+                    {
+                        categoryInfo = string.Format("{0} ({1})", attrFound.Name, base.Category);
+                        return categoryInfo;
+                    }
+                }
+                 
+                return base.Category;
+            }
+        }
+    }
 }

@@ -36,7 +36,7 @@ namespace Jx.EntitySystem
 				for (int i = 0; i < properties.Length; i++)
 				{
 					PropertyInfo propertyInfo = properties[i];
-                    bool propertyIgnore = propertyInfo.Name == "Type" || propertyInfo.DeclaringType == typeof(Entity);
+                    bool propertyIgnore = propertyInfo.Name == "Type" && propertyInfo.DeclaringType != typeof(Entity);
 					if (!propertyIgnore)
 					{
                         List<Attribute> list = propertyInfo.GetCustomAttributes(true).OfType<Attribute>().ToList();

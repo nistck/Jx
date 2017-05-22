@@ -44,6 +44,7 @@ namespace Jx.EntitiesCommon
 
     }
 
+ 
     public class SimpleBean : Entity
     {
         public enum MethodType

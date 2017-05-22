@@ -132,6 +132,7 @@
     <Compile Include="Controls\KRBTabControl\SelectedIndexChangingEventArgs.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Delegators.cs" />
     <Compile Include="Editors\BasePropertyEditor.cs" />
     <Compile Include="Controls\JxTextBox.cs">
       <SubType>Component</SubType>

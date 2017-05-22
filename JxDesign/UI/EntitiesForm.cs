@@ -18,17 +18,17 @@ using Jx.EntitySystem;
 using JxDesign.Actions;
 
 namespace JxDesign.UI
-{
-    public delegate void NodeSelectChangedHandler(TreeNode nodeNew, TreeNode nodeOld);
+{ 
     public partial class EntitiesForm : DockContent
     {
         private ImageCache imageCache = null;
         private ImageCache tvImageCache = null;
 
         private TreeNode rootLayerNode = null;
+        private readonly Dictionary<string, TreeNode> layerPathDic = new Dictionary<string, TreeNode>();
 
         private TreeNode currentMouseNode = null;
-        public event NodeSelectChangedHandler NodeSelectChanged;
+        public event TreeNodeSelectChangedHandler NodeSelectChanged;
 
         public EntitiesForm()
         {
@@ -52,10 +52,39 @@ namespace JxDesign.UI
         {
             treeViewEntities.Nodes.Clear();
 
+            layerPathDic.Clear();
             BuildLayerNode();
+
+            LoadEntities();
+
+            if( rootLayerNode != null )
+                rootLayerNode.Expand();
+            SetNodeSelected(rootLayerNode);
         }
 
-        private void OnNodeSelectChanged(TreeNode nodeNew)
+        private void LoadEntities()
+        {
+            List<Entity> entities = new List<Entity>();
+            if (Map.Instance == null)
+                return;
+
+            entities.AddRange(Map.Instance.Children);
+            while( entities.Count > 0 )
+            {
+                Entity entity = entities[0];
+                entities.RemoveAt(0);
+
+                string layerPath = entity.EditorLayer;
+
+                TreeNode layerNode = rootLayerNode;
+                if (!string.IsNullOrEmpty(layerPath) && layerPathDic.ContainsKey(layerPath))
+                    layerNode = layerPathDic[layerPath];
+
+                CreateEntityNode(entity, layerNode, false);
+            }
+        }                
+
+        internal void OnNodeSelectChanged(TreeNode nodeNew)
         {
             if (currentMouseNode == null && nodeNew == null)
                 return;
@@ -72,6 +101,12 @@ namespace JxDesign.UI
                 NodeSelectChanged(nodeNew, nodeOld);
         }
 
+        private void SetNodeSelected(TreeNode node)
+        {
+            treeViewEntities.SelectedNode = node;
+            OnNodeSelectChanged(node);
+        }
+
         public TreeNode CreateEntityNode(Entity entity, TreeNode parent = null, bool selected = true)
         {
             if (entity == null)
@@ -85,7 +120,7 @@ namespace JxDesign.UI
             else
                 treeViewEntities.Nodes.Add(node);
             if (selected)
-                treeViewEntities.SelectedNode = node;
+                SetNodeSelected(node);
             return node;
         }
 
@@ -312,7 +347,7 @@ namespace JxDesign.UI
         private void treeViewEntities_MouseDown(object sender, MouseEventArgs e)
         {
             TreeNode node = treeViewEntities.GetNodeAt(new Point(e.X, e.Y));
-            OnNodeSelectChanged(node);
+            SetNodeSelected(node);
         } 
     }
 }

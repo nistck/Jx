@@ -288,7 +288,7 @@ namespace Jx.MapSystem
             map.virtualFileName = virtualFileName;
             if (!Entities.Instance.Internal_LoadEntityTreeFromTextBlock(map, textBlock, true, null))
             {
-                MapSystemWorld.MapDestroy();
+                MapDestroy();
                 return false;
             }
             //TODO
