@@ -172,7 +172,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\yes_16.png" />
+    <None Include="Resources\cancel_16.png" />
     <Content Include="Resources\entity_16.png" />
+    <None Include="Resources\folder_open.png" />
     <Content Include="Resources\Redo_16.png" />
     <Content Include="Resources\Undo_16.png" />
     <None Include="Resources\find_10.png" />

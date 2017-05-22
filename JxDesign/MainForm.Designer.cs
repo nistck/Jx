@@ -33,29 +33,36 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.addonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbNew = new System.Windows.Forms.ToolStripButton();
+            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbSaveAs = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbUndo = new System.Windows.Forms.ToolStripButton();
+            this.tsbRedo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.IL16 = new System.Windows.Forms.ImageList(this.components);
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEntityTypesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEntitiesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiContentWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPropertiesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOtherView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiConsoleWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.IL16 = new System.Windows.Forms.ImageList(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tsbNew = new System.Windows.Forms.ToolStripButton();
-            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.tsbSaveAs = new System.Windows.Forms.ToolStripButton();
-            this.tsbUndo = new System.Windows.Forms.ToolStripButton();
-            this.tsbRedo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -64,7 +71,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.addonsToolStripMenuItem});
+            this.addonsToolStripMenuItem,
+            this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1154, 25);
@@ -90,6 +98,13 @@
             this.tsmiNew.Size = new System.Drawing.Size(128, 22);
             this.tsmiNew.Text = "新 建(&N)";
             this.tsmiNew.Click += new System.EventHandler(this.tsmiNew_Click);
+            // 
+            // tsmiOpen
+            // 
+            this.tsmiOpen.Name = "tsmiOpen";
+            this.tsmiOpen.Size = new System.Drawing.Size(128, 22);
+            this.tsmiOpen.Text = "打 开(&O)";
+            this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
             // 
             // tsmiSave
             // 
@@ -139,63 +154,6 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 688);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1154, 22);
-            this.statusStrip1.TabIndex = 3;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dockPanel.Location = new System.Drawing.Point(0, 50);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.ShowDocumentIcon = true;
-            this.dockPanel.Size = new System.Drawing.Size(1154, 638);
-            this.dockPanel.TabIndex = 4;
-            // 
-            // vsToolStripExtender1
-            // 
-            this.vsToolStripExtender1.DefaultRenderer = null;
-            // 
-            // tsmiOpen
-            // 
-            this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(128, 22);
-            this.tsmiOpen.Text = "打 开(&O)";
-            this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
-            // 
-            // IL16
-            // 
-            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
-            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
-            this.IL16.Images.SetKeyName(0, "edit");
-            this.IL16.Images.SetKeyName(1, "exit");
-            this.IL16.Images.SetKeyName(2, "file");
-            this.IL16.Images.SetKeyName(3, "folder");
-            this.IL16.Images.SetKeyName(4, "folder_delete");
-            this.IL16.Images.SetKeyName(5, "folder_edit");
-            this.IL16.Images.SetKeyName(6, "folder_new");
-            this.IL16.Images.SetKeyName(7, "new");
-            this.IL16.Images.SetKeyName(8, "open");
-            this.IL16.Images.SetKeyName(9, "refresh");
-            this.IL16.Images.SetKeyName(10, "save");
-            this.IL16.Images.SetKeyName(11, "saveAs");
-            this.IL16.Images.SetKeyName(12, "redo");
-            this.IL16.Images.SetKeyName(13, "undo");
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // tsbNew
             // 
             this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -236,6 +194,11 @@
             this.tsbSaveAs.Text = "另存为";
             this.tsbSaveAs.Click += new System.EventHandler(this.tsmiSaveAs_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // tsbUndo
             // 
             this.tsbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -260,6 +223,106 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Location = new System.Drawing.Point(0, 688);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1154, 22);
+            this.statusStrip1.TabIndex = 3;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // IL16
+            // 
+            this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
+            this.IL16.TransparentColor = System.Drawing.Color.Transparent;
+            this.IL16.Images.SetKeyName(0, "edit");
+            this.IL16.Images.SetKeyName(1, "exit");
+            this.IL16.Images.SetKeyName(2, "file");
+            this.IL16.Images.SetKeyName(3, "folder");
+            this.IL16.Images.SetKeyName(4, "folder_delete");
+            this.IL16.Images.SetKeyName(5, "folder_edit");
+            this.IL16.Images.SetKeyName(6, "folder_new");
+            this.IL16.Images.SetKeyName(7, "new");
+            this.IL16.Images.SetKeyName(8, "open");
+            this.IL16.Images.SetKeyName(9, "refresh");
+            this.IL16.Images.SetKeyName(10, "save");
+            this.IL16.Images.SetKeyName(11, "saveAs");
+            this.IL16.Images.SetKeyName(12, "redo");
+            this.IL16.Images.SetKeyName(13, "undo");
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiEntityTypesWindow,
+            this.tsmiEntitiesWindow,
+            this.tsmiContentWindow,
+            this.tsmiPropertiesWindow,
+            this.tsmiOtherView});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(64, 21);
+            this.viewToolStripMenuItem.Text = "视 图(&V)";
+            // 
+            // tsmiEntityTypesWindow
+            // 
+            this.tsmiEntityTypesWindow.Name = "tsmiEntityTypesWindow";
+            this.tsmiEntityTypesWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiEntityTypesWindow.Text = "实体类管理器";
+            this.tsmiEntityTypesWindow.Click += new System.EventHandler(this.tsmiEntityTypesWindow_Click);
+            // 
+            // tsmiEntitiesWindow
+            // 
+            this.tsmiEntitiesWindow.Name = "tsmiEntitiesWindow";
+            this.tsmiEntitiesWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiEntitiesWindow.Text = "实体管理器";
+            this.tsmiEntitiesWindow.Click += new System.EventHandler(this.tsmiEntitiesWindow_Click);
+            // 
+            // tsmiContentWindow
+            // 
+            this.tsmiContentWindow.Name = "tsmiContentWindow";
+            this.tsmiContentWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiContentWindow.Text = "内容编辑器";
+            this.tsmiContentWindow.Click += new System.EventHandler(this.tsmiContentWindow_Click);
+            // 
+            // tsmiPropertiesWindow
+            // 
+            this.tsmiPropertiesWindow.Name = "tsmiPropertiesWindow";
+            this.tsmiPropertiesWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiPropertiesWindow.Text = "属性编辑器";
+            this.tsmiPropertiesWindow.Click += new System.EventHandler(this.tsmiPropertiesWindow_Click);
+            // 
+            // tsmiOtherView
+            // 
+            this.tsmiOtherView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiConsoleWindow});
+            this.tsmiOtherView.Name = "tsmiOtherView";
+            this.tsmiOtherView.Size = new System.Drawing.Size(152, 22);
+            this.tsmiOtherView.Text = "其他";
+            // 
+            // tsmiConsoleWindow
+            // 
+            this.tsmiConsoleWindow.Name = "tsmiConsoleWindow";
+            this.tsmiConsoleWindow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiConsoleWindow.Text = "信息输出";
+            this.tsmiConsoleWindow.Click += new System.EventHandler(this.tsmiOutputWindow_Click);
+            // 
+            // dockPanel
+            // 
+            this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.Location = new System.Drawing.Point(0, 50);
+            this.dockPanel.Name = "dockPanel";
+            this.dockPanel.ShowDocumentIcon = true;
+            this.dockPanel.Size = new System.Drawing.Size(1154, 638);
+            this.dockPanel.TabIndex = 4;
+            // 
+            // vsToolStripExtender1
+            // 
+            this.vsToolStripExtender1.DefaultRenderer = null;
             // 
             // MainForm
             // 
@@ -313,6 +376,13 @@
         private System.Windows.Forms.ToolStripButton tsbUndo;
         private System.Windows.Forms.ToolStripButton tsbRedo;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEntityTypesWindow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEntitiesWindow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiContentWindow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPropertiesWindow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOtherView;
+        private System.Windows.Forms.ToolStripMenuItem tsmiConsoleWindow;
     }
 }
 

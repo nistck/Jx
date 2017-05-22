@@ -103,10 +103,10 @@ namespace Jx.UI.Controls.Wizards
 				if (this.style != value)
 				{
 					this.style = value;
-					// get the parent wizard control
-					if (this.Parent != null && this.Parent is Wizard)
+                    // get the parent wizard control
+                    Wizard parentWizard = ParentWizard;
+					if (parentWizard != null)
 					{
-						Wizard parentWizard = (Wizard)this.Parent;
 						// check if page is selected
 						if (parentWizard.SelectedPage == this)
 						{
@@ -190,6 +190,24 @@ namespace Jx.UI.Controls.Wizards
 		#endregion
 
 		#region Methods
+        private Wizard ParentWizard
+        {
+            get {
+                Wizard wizard = null;
+                Control c = this;
+                while(c != null && c.Parent != null)
+                {
+                    c = c.Parent;
+                    if( c is Wizard)
+                    {
+                        wizard = c as Wizard;
+                        break;
+                    }
+                }
+                return wizard;
+            }
+        }
+
 		/// <summary>
 		/// Provides custom drawing to the wizard page.
 		/// </summary>
@@ -217,6 +235,7 @@ namespace Jx.UI.Controls.Wizards
 			textFormat.Alignment = StringAlignment.Near;
 			textFormat.Trimming = StringTrimming.EllipsisCharacter;
 
+            Wizard parentWizard = ParentWizard;
 			switch (this.style)
 			{
 				case WizardPageStyle.Standard:
@@ -238,10 +257,9 @@ namespace Jx.UI.Controls.Wizards
 					Image headerImage = null;
 					Font headerFont = this.Font;
 					Font headerTitleFont = this.Font;
-					if (this.Parent != null && this.Parent is Wizard)
+					if (parentWizard != null )
 					{
-						// get content from parent wizard, if exists
-						Wizard parentWizard = (Wizard)this.Parent;
+						// get content from parent wizard, if exists 
 						headerImage = parentWizard.HeaderImage;
 						headerFont = parentWizard.HeaderFont;
 						headerTitleFont = parentWizard.HeaderTitleFont;
@@ -301,10 +319,9 @@ namespace Jx.UI.Controls.Wizards
 					Image welcomeImage = null;
 					Font welcomeFont = this.Font;
 					Font welcomeTitleFont = this.Font;
-					if (this.Parent != null && this.Parent is Wizard)
+					if (ParentWizard != null)
 					{
 						// get content from parent wizard, if exists
-						Wizard parentWizard = (Wizard)this.Parent;
 						welcomeImage = parentWizard.WelcomeImage;
 						welcomeFont = parentWizard.WelcomeFont;
 						welcomeTitleFont = parentWizard.WelcomeTitleFont;

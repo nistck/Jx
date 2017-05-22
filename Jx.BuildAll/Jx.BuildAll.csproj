@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0B3B91BF-01F0-44BE-8633-CB5CD92FDC11}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jx.BuildAll</RootNamespace>
+    <AssemblyName>Jx.BuildAll</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jx.Editors\Jx.Editors.csproj">
+      <Project>{762d1435-8784-448d-9486-3ce30787b6bb}</Project>
+      <Name>Jx.Editors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon.Editors\Jx.EntitiesCommon.Editors.csproj">
+      <Project>{1f7dc9a8-c522-4568-8811-9c1fc06150cd}</Project>
+      <Name>Jx.EntitiesCommon.Editors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon\Jx.EntitiesCommon.csproj">
+      <Project>{ba2442d4-cb7b-4032-b5f6-0bc2f8151115}</Project>
+      <Name>Jx.EntitiesCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
+      <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
+      <Name>Jx.EntitySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.Ext\Jx.Ext.csproj">
+      <Project>{72ef6bb2-1a13-4a0c-b6df-c2d90dcb165f}</Project>
+      <Name>Jx.Ext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
+      <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
+      <Name>Jx.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
+      <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
+      <Name>Jx.MapSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
+      <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>
+      <Name>Jx.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JxDesign.Addon\JxDesign.Addon.csproj">
+      <Project>{b891dea1-7e89-4cbd-ad73-a34b1fef9893}</Project>
+      <Name>JxDesign.Addon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JxDesign\JxDesign.csproj">
+      <Project>{b30ddf74-390d-479d-96c0-3e768c31ab4e}</Project>
+      <Name>JxDesign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JxMain\JxMain.csproj">
+      <Project>{28db28f0-bf6d-42b5-9ad9-657a09ccf8b0}</Project>
+      <Name>JxMain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JxRes.Addon\JxRes.Addon.csproj">
+      <Project>{bc75d6f5-293f-471d-8e01-3bced930987e}</Project>
+      <Name>JxRes.Addon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JxRes\JxRes.csproj">
+      <Project>{1b73d577-4c27-46c7-8f65-fe05f7721baa}</Project>
+      <Name>JxRes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx\Jx.csproj">
+      <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
+      <Name>Jx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\ThemeVS2015.csproj">
+      <Project>{007d4ac8-948f-4816-86ad-b9d1343672c1}</Project>
+      <Name>ThemeVS2015</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Support\DockPanelSuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

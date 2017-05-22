@@ -63,9 +63,7 @@ namespace Jx.UI.Controls.Wizards
 		/// <returns>An Integer value representing the index at which the value has been added.</returns>
 		public int Add(WizardPage value )  
 		{		
-			int result = List.Add( value );
-            if (value != null)
-                value.Parent = owner;
+			int result = List.Add( value ); 
 			return result;
 		}
 
@@ -111,9 +109,7 @@ namespace Jx.UI.Controls.Wizards
 		/// </summary>
 		/// <param name="value">A WizardPage object to remove. The value can be null.</param>
 		public void Remove(WizardPage value)
-		{
-            if (value != null)
-                value.Parent = null;
+		{ 
 			// remove the item
 			List.Remove(value);
 		}

@@ -129,11 +129,8 @@ namespace JxDesign
 
             NewMapForm f = new NewMapForm();
             if (f.ShowDialog() == DialogResult.OK)
-            {
-
-                result.MapDirectory = @"Map\Dx";
-                result.State = true;
-            } 
+                result = f.Config;
+             
             return result;
         }
 

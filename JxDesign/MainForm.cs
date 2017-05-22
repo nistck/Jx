@@ -96,18 +96,7 @@ namespace JxDesign
         public EntityTypesForm EntityTypesForm
         {
             get { return entityTypesForm; }
-        }
-
-
-        public void ShowPropertiesForm()
-        {
-
-        }
-
-        public void ShowMapEntitiesForm()
-        {
-
-        }
+        } 
 
         private string LayoutConfig
         {
@@ -184,11 +173,11 @@ namespace JxDesign
             serializeContext = new DeserializeDockContent(GetContentFromPersistString);
             if (!LoadLayoutConfig())
             {
-                entitiesForm.Show(dockPanel, DockState.DockLeft);
-                entityTypesForm.Show(dockPanel, DockState.DockLeft);
-                propertiesForm.Show(dockPanel, DockState.DockRight);
-                contentForm.Show(dockPanel, DockState.Document);
-                consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
+                ShowMapEntitiesForm();
+                ShowEntityTypesForm();
+                ShowPropertiesForm();
+                ShowContentForm();
+                ShowConsoleForm();
             }
 
             InitializeEntityTypesForm();
@@ -213,6 +202,29 @@ namespace JxDesign
             UpdateWindowTitle();
             Debug("准备就绪...");
         }
+
+        #region 视图
+        public void ShowConsoleForm()
+        {
+            consoleForm.Show(dockPanel, DockState.DockBottomAutoHide);
+        }
+        public void ShowContentForm()
+        {
+            contentForm.Show(dockPanel, DockState.Document);
+        }
+        public void ShowPropertiesForm()
+        {
+            propertiesForm.Show(dockPanel, DockState.DockRight);
+        }
+        public void ShowEntityTypesForm()
+        {
+            entityTypesForm.Show(dockPanel, DockState.DockLeft);
+        }
+        public void ShowMapEntitiesForm()
+        {
+            entitiesForm.Show(dockPanel, DockState.DockLeft);
+        }
+        #endregion
 
         public void Debug(string format, params object[] args)
         {
@@ -330,6 +342,12 @@ namespace JxDesign
             tsbSaveAs.Enabled = Map.Instance != null;
             tsmiSave.Enabled = Map.Instance != null && MapWorld.Instance.Modified;
             tsmiSaveAs.Enabled = Map.Instance != null;
+
+            tsmiEntitiesWindow.Checked = EntitiesForm.Visible;
+            tsmiEntityTypesWindow.Checked = EntityTypesForm.Visible;
+            tsmiContentWindow.Checked = contentForm.Visible;
+            tsmiPropertiesWindow.Checked = propertiesForm.Visible;
+            tsmiConsoleWindow.Checked = consoleForm.Visible; 
         }
 
         #region 属性窗口
@@ -719,6 +737,31 @@ namespace JxDesign
         private void tsbRedo_Click(object sender, EventArgs e)
         {
             UndoSystem.Instance.DoRedo();
+        }
+
+        private void tsmiEntityTypesWindow_Click(object sender, EventArgs e)
+        {
+            ShowEntityTypesForm();
+        }
+
+        private void tsmiEntitiesWindow_Click(object sender, EventArgs e)
+        {
+            ShowMapEntitiesForm();
+        }
+
+        private void tsmiContentWindow_Click(object sender, EventArgs e)
+        {
+            ShowContentForm();
+        }
+
+        private void tsmiPropertiesWindow_Click(object sender, EventArgs e)
+        {
+            ShowPropertiesForm();
+        }
+
+        private void tsmiOutputWindow_Click(object sender, EventArgs e)
+        {
+            ShowConsoleForm();
         }
     }
 }
