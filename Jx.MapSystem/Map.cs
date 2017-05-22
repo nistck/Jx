@@ -258,7 +258,7 @@ namespace Jx.MapSystem
                 return false;
 
             TextBlock editorLayersBlock = block.FindChild("editorLayers");
-            if (editorLayersBlock != null && !rootLayer.OnLoad(block))
+            if (editorLayersBlock != null && !rootLayer.OnLoad(editorLayersBlock))
                 return false;
 
             return true;

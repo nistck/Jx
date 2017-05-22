@@ -333,7 +333,8 @@ namespace JxDesign
 
         private void tsmiOpen_Click(object sender, EventArgs e)
         {
-            MapWorld.Instance.Load();
+            if( MapWorld.Instance.Load() )
+                NotifyUpdate();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

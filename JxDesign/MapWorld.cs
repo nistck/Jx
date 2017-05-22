@@ -164,7 +164,8 @@ namespace JxDesign
                 if (!ResetWorld())
                     return false;
 
-                if (!MapSystemWorld.MapLoad(p))
+                string p1 = VirtualFileSystem.GetVirtualPathByReal(p);
+                if (!MapSystemWorld.MapLoad(p1))
                 {
                     result = false;
                 }

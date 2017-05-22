@@ -432,8 +432,8 @@ namespace Jx.EntitySystem
                 {
                     string fieldValue = block.GetAttribute(fieldName);
                     object value;
-                    bool convertFailure = !ConvertFromString(field.FieldType, fieldValue, errorString, out value);
-                    if (convertFailure)
+                    bool convertResult = ConvertFromString(field.FieldType, fieldValue, errorString, out value);
+                    if (!convertResult)
                         return false;
                     field.SetValue(owner, value);
                 }
@@ -442,7 +442,7 @@ namespace Jx.EntitySystem
 
             TextBlock textBlock = block.FindChild(fieldName);
             if (textBlock == null)
-                return false;
+                return true;
 
             object obj = field.GetValue(owner);
             if (obj == null)
