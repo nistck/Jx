@@ -52,6 +52,7 @@ editorLayers
 }
 entity
 {
+	editorLayer = "Root\\New Layer_0\\New Layer_0\\New Layer_1"
 	type = ddd
 	uin = 3
 	classPrompt = SimpleBean
@@ -64,6 +65,7 @@ entity
 }
 entity
 {
+	editorLayer = "Root\\New Layer_3"
 	type = ddd
 	uin = 4
 	classPrompt = SimpleBean
@@ -76,6 +78,7 @@ entity
 }
 entity
 {
+	editorLayer = "Root\\New Layer_0\\New Layer_0"
 	type = Ax
 	uin = 5
 	classPrompt = SimpleBean

@@ -18,15 +18,15 @@ namespace JxDesign.Actions
             if( layerNode != null )
             {
                 this.LayerParentNode = layerNode.Parent;
-                this.Layer = layerNode.Tag as Map.Layer;
+                this.Layer = layerNode.Tag as Map.EditorLayer;
                 this.ParentLayer = Layer == null ? null : Layer.Parent;
             }
         }
 
         private TreeNode LayerNode { get; set; }
         private TreeNode LayerParentNode { get; set; }
-        private Map.Layer Layer { get; set; }
-        private Map.Layer ParentLayer { get; set; }
+        private Map.EditorLayer Layer { get; set; }
+        private Map.EditorLayer ParentLayer { get; set; }
 
         protected override void Destroy()
         {
@@ -44,7 +44,7 @@ namespace JxDesign.Actions
         {
             if( LayerNode != null )
             {
-                Map.Layer layer = LayerNode.Tag as Map.Layer;
+                Map.EditorLayer layer = LayerNode.Tag as Map.EditorLayer;
                 LayerNode.Remove(); 
                 layer.Remove();
             }

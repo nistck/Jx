@@ -411,17 +411,15 @@ namespace JxDesign
                                 }
                             }
                             if (obj3 is MapObject)
-                            {
-                                PropertyInfo property5 = obj3.GetType().GetProperty("EditorLayer");
-                                if (property5 == property)
+                            {                                
+                                PropertyInfo propertyEditorLayer = obj3.GetType().GetProperty("EditorLayer");
+                                if (propertyEditorLayer == property)
                                 {
                                     foreach (Entity current in EntityWorld.Instance.SelectedEntities)
                                     {
                                         MapObject mapObject2 = current as MapObject;
                                         if (mapObject2 != null)
-                                        {
-                                            throw new Exception("this.MapEntitiesForm.UpdateEntityLayer(mapObject2);");
-                                        }
+                                            EntitiesForm.UpdateMapObjectLayer(mapObject2);
                                     }
                                 }
                             }

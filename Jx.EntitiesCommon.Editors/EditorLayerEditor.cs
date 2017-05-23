@@ -28,8 +28,8 @@ namespace Jx.EntitiesCommon.Editors
 
         protected override object EndEdit(Control editControl, ITypeDescriptorContext context, object value)
         {
-            Map.Layer layer = layersListBox.SelectedItem as Map.Layer;
-            return layer == null? null : layer.Path;
+            LayerBean layerBean = layersListBox.SelectedItem as LayerBean;
+            return layerBean == null? null : layerBean.Layer;
 
         }
 
@@ -40,11 +40,11 @@ namespace Jx.EntitiesCommon.Editors
 
             if (Map.Instance != null)
             {
-                List<Map.Layer> layers = new List<Map.Layer>();
-                layers.Add(Map.Instance.RootLayer);
-                layers.AddRange(Map.Instance.RootLayer.ChildrenDescent);
+                List<Map.EditorLayer> layers = new List<Map.EditorLayer>();
+                layers.Add(Map.Instance.RootEditorLayer);
+                layers.AddRange(Map.Instance.RootEditorLayer.ChildrenDescent);
 
-                layers.Any(_layer => {
+                layers.Select(_layer => new LayerBean(_layer)).Any(_layer => {
                     layersListBox.Items.Add(_layer);
                     return false;
                 });
@@ -56,14 +56,15 @@ namespace Jx.EntitiesCommon.Editors
         }
     }
 
+    [TypeConverter(typeof(LayerBeanTypeConverter))]
     public class LayerBean
     {
-        public LayerBean(Map.Layer layer)
+        public LayerBean(Map.EditorLayer layer)
         {
             this.Layer = layer; 
         }
 
-        public Map.Layer Layer { get; private set; }
+        public Map.EditorLayer Layer { get; private set; }
 
         public override string ToString()
         {
@@ -80,12 +81,12 @@ namespace Jx.EntitiesCommon.Editors
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            return base.CanConvertFrom(context, sourceType);
+            return false;
         }
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            return base.ConvertFrom(context, culture, value);
+            return value;
         }
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)

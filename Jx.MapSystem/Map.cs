@@ -22,20 +22,20 @@ namespace Jx.MapSystem
     {
         public static string WorldFileName { get; internal set; }
 
-        [TypeConverter(typeof(LayerTypeConverter))]
-        public class Layer
+        [TypeConverter(typeof(EditorLayerTypeConverter))]
+        public class EditorLayer
         {
             private bool visible = true;
             private bool allowSelect = true;
             private bool allowEdit = true;
-            private readonly List<Layer> children = new List<Layer>(); 
+            private readonly List<EditorLayer> children = new List<EditorLayer>(); 
 
-            public Layer(Layer parent)
+            public EditorLayer(EditorLayer parent)
             {
                 this.Parent = parent; 
             }
 
-            public Layer(string name, Layer parent)
+            public EditorLayer(string name, EditorLayer parent)
             {
                 this.Name = name;
                 this.Parent = parent;
@@ -58,7 +58,7 @@ namespace Jx.MapSystem
                 set { this.allowEdit = value; }
             }
                         
-            public Layer Parent { get; private set; }
+            public EditorLayer Parent { get; private set; }
 
             public int Indent
             {
@@ -81,21 +81,21 @@ namespace Jx.MapSystem
                 }
             }
 
-            public List<Layer> Children
+            public List<EditorLayer> Children
             {
                 get {
-                    List<Layer> result = new List<Layer>();
+                    List<EditorLayer> result = new List<EditorLayer>();
                     result.AddRange(children);
                     return result;
                 }
             }
 
-            public List<Layer> ChildrenDescent
+            public List<EditorLayer> ChildrenDescent
             {
                 get {
-                    List<Layer> result = new List<Layer>();
+                    List<EditorLayer> result = new List<EditorLayer>();
 
-                    foreach(Layer child in children)
+                    foreach(EditorLayer child in children)
                     {
                         result.Add(child);
                         result.AddRange(child.ChildrenDescent);
@@ -105,14 +105,14 @@ namespace Jx.MapSystem
                 }
             }
 
-            public Layer Create(string name = "New Layer_")
+            public EditorLayer Create(string name = "New Layer_")
             {
-                Layer layer = new Layer(name, this);
+                EditorLayer layer = new EditorLayer(name, this);
                 children.Add(layer);
                 return layer;
             }
 
-            public void Create(Layer layer)
+            public void Create(EditorLayer layer)
             {
                 if (layer == null)
                     return;
@@ -131,7 +131,9 @@ namespace Jx.MapSystem
                     var q = Entities.Instance.EntitiesCollection.OfType<MapObject>();
                     foreach(MapObject entity in q)
                     {
-                        if( entity.EditorLayer == p )
+                        if (entity.EditorLayer == null)
+                            continue;
+                        if( entity.EditorLayer.Path == p )
                             entity.EditorLayer = null;
                     }
                     Parent = null;
@@ -139,19 +141,40 @@ namespace Jx.MapSystem
                 return result;
             }
 
-            public Layer FindChild(string name)
+            public EditorLayer Find(string p)
+            {
+                if (p == null)
+                    return null;
+
+                string[] ps = p.Split('\\');
+                EditorLayer editorLayer = Instance.RootEditorLayer;
+                for(int i = 1; i < ps.Length && editorLayer != null; i ++)
+                {
+                    string psi = ps[i];
+                    EditorLayer layer = editorLayer.FindChild(psi);
+                    if (layer == null)
+                    {
+                        editorLayer = null;
+                        break;
+                    }
+                    editorLayer = layer;
+                }
+                return editorLayer;
+            }
+
+            public EditorLayer FindChild(string name)
             {
                 if (name == null)
                     return null; 
                 return children.Where(_c => _c.Name == name).FirstOrDefault();
             }
 
-            public bool HasChild(string name, Layer excludeLayer = null)
+            public bool HasChild(string name, EditorLayer excludeLayer = null)
             {
                 if (string.IsNullOrEmpty(name))
                     return false; 
 
-                foreach(Layer layer in children)
+                foreach(EditorLayer layer in children)
                 {
                     if (excludeLayer != null && excludeLayer == layer)
                         continue; 
@@ -161,7 +184,7 @@ namespace Jx.MapSystem
                 return false;
             }
 
-            private bool RemoveChild(Layer layerChild)
+            private bool RemoveChild(EditorLayer layerChild)
             {
                 if (layerChild == null || !children.Contains(layerChild))
                     return false;
@@ -183,7 +206,7 @@ namespace Jx.MapSystem
                 if (!AllowEdit)
                     block.SetAttribute("allowEdit", AllowEdit.ToString());
 
-                foreach(Layer child in children)
+                foreach(EditorLayer child in children)
                 {
                     TextBlock childBlock = block.AddChild("layer");
                     child.OnSave(childBlock);
@@ -206,7 +229,7 @@ namespace Jx.MapSystem
 
                 foreach(TextBlock child in block.Children)
                 {
-                    Layer layer = new Layer(this);
+                    EditorLayer layer = new EditorLayer(this);
                     if (!layer.OnLoad(child))
                         return false;
                     children.Add(layer);
@@ -216,7 +239,7 @@ namespace Jx.MapSystem
 
             public override bool Equals(object obj)
             {
-                Layer layer = obj as Layer;
+                EditorLayer layer = obj as EditorLayer;
                 if (layer == null || layer.Path == null || Path == null)
                     return false;
 
@@ -234,13 +257,11 @@ namespace Jx.MapSystem
             }
         }
 
-        public class LayerTypeConverter : TypeConverter
+        public class EditorLayerTypeConverter : TypeConverter
         {
             public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
             {
-                if (sourceType == typeof(string))
-                    return true; 
-                return base.CanConvertFrom(context, sourceType);
+                return false;
             }
 
             public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
@@ -250,18 +271,18 @@ namespace Jx.MapSystem
 
                 string valueString = Convert.ToString(value);
                 if (string.IsNullOrEmpty(valueString))
-                    return Instance.RootLayer;
+                    return Instance.RootEditorLayer;
 
                 string[] dirs = valueString.Split(Path.AltDirectorySeparatorChar);
-                Layer layer = Instance.RootLayer;
+                EditorLayer layer = Instance.RootEditorLayer;
 
                 for(int i = 1; i < dirs.Length; i ++)
                 {
                     layer = layer.FindChild(dirs[i]);
                     if (layer == null)
-                        return Instance.RootLayer;
+                        return Instance.RootEditorLayer;
                 }
-                return layer;
+                return layer; 
             }
 
             public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
@@ -275,9 +296,8 @@ namespace Jx.MapSystem
             {
                 if( destinationType == typeof(string) )
                 {
-                    Layer layer = value as Layer;
-                    layer = layer ?? Instance.RootLayer;
-                    return layer.Path;
+                    EditorLayer layer = value as EditorLayer; 
+                    return layer == null? "" : layer.Path;
                 }
 
                 return base.ConvertTo(context, culture, value, destinationType);
@@ -305,8 +325,8 @@ namespace Jx.MapSystem
         internal string virtualFileName;
 
         private EditorData editorData = new EditorData();
-        private readonly Layer rootLayer = new Layer("Root", null);
-        private Layer layerSelected = null;
+        private readonly EditorLayer rootEditorLayer = new EditorLayer("Root", null);
+        private EditorLayer layerSelected = null;
 
         public Map ()
         {
@@ -316,12 +336,12 @@ namespace Jx.MapSystem
             instance = this; 
         }
 
-        public Layer RootLayer
+        public EditorLayer RootEditorLayer
         {
-            get { return rootLayer; }
+            get { return rootEditorLayer; }
         }
 
-        public Layer LayerSelected
+        public EditorLayer LayerSelected
         {
             get { return layerSelected; }
             set {
@@ -361,13 +381,22 @@ namespace Jx.MapSystem
         }
 
         protected override bool OnLoad(TextBlock block)
-        {
+        { 
             if (!base.OnLoad(block))
                 return false;
 
             TextBlock editorLayersBlock = block.FindChild("editorLayers");
-            if (editorLayersBlock != null && !rootLayer.OnLoad(editorLayersBlock))
-                return false;
+            if (editorLayersBlock != null && rootEditorLayer.OnLoad(editorLayersBlock))
+            {
+                if (Instance.RootEditorLayer != null)
+                {
+                    Instance.Children.OfType<MapObject>().Any(_mo =>
+                    {
+                        _mo.EditorLayer = Instance.RootEditorLayer.Find(_mo._editorLayerLast);
+                        return false;
+                    });
+                }
+            }
 
             return true;
         }
@@ -377,7 +406,7 @@ namespace Jx.MapSystem
             base.OnSave(block);
 
             TextBlock editorLayersBlock = block.AddChild("editorLayers");
-            rootLayer.OnSave(editorLayersBlock);
+            rootEditorLayer.OnSave(editorLayersBlock);
         }
     }
 }

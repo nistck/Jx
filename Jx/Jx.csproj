@@ -52,6 +52,7 @@
     <Compile Include="FunctionalityArea.cs" />
     <Compile Include="JxObject.cs" />
     <Compile Include="JxNameAttribute.cs" />
+    <Compile Include="JxPropertyEditSelectOnlyAttribute.cs" />
     <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogicSystemBrowsableAttribute.cs" />

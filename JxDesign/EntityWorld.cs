@@ -32,6 +32,7 @@ namespace JxDesign
 
         private FunctionalityArea functionalityArea;
         private Entity creatingEntity = null;
+        private readonly List<Entity> entitiesSelected = new List<Entity>();
 
         private EntityWorld() { }
 
@@ -60,8 +61,26 @@ namespace JxDesign
         public List<Entity> SelectedEntities
         {
             get {
-                List<Entity> result = new List<Entity>(); 
+                List<Entity> result = new List<Entity>();
+                result.AddRange(entitiesSelected);
                 return result;
+            }
+        }
+
+        public void SetEntitySelected(Entity entity, bool selected)
+        {
+            if (entity == null)
+                return; 
+
+            if( selected )
+            {
+                if (!entitiesSelected.Contains(entity))
+                    entitiesSelected.Add(entity);
+            }
+            else
+            {
+                if (entitiesSelected.Contains(entity))
+                    entitiesSelected.Remove(entity);
             }
         }
 
@@ -72,7 +91,7 @@ namespace JxDesign
 
         public void ClearEntitySelection(bool f1, bool f2)
         {
-
+            entitiesSelected.Clear();
         }
     }
 }

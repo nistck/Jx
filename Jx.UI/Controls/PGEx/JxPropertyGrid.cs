@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 
 using System.Drawing.Design;
 using System.Globalization;
@@ -83,8 +84,9 @@ namespace Jx.UI.Controls.PGEx
 			if (internalToolStrip != null)
 			{
 				ApplyToolStripRenderMode(bDrawFlatToolbar);
-			} 
+			}  
         }
+ 
 
         [Description("ÁÐ¿í²Î¿¼Öµ")]
         public double LabelRatio

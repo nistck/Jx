@@ -83,23 +83,74 @@ namespace JxDesign.UI
                 Entity entity = entities[0];
                 entities.RemoveAt(0);
 
-                string layerPath = null;
+                Map.EditorLayer editorLayer = null;
                 if( entity is MapObject )
                 {
                     MapObject mapObject = entity as MapObject;
-                    layerPath = mapObject.EditorLayer;
+                    editorLayer = mapObject.EditorLayer;
                 }
 
-                TreeNode layerNode = rootNode;
-                if (!string.IsNullOrEmpty(layerPath) && layerPathDic.ContainsKey(layerPath))
-                    layerNode = layerPathDic[layerPath];
-
+                TreeNode layerNode = FindNodeByTag(editorLayer);
+                layerNode = layerNode ?? rootNode;
                 CreateEntityNode(entity, layerNode, false);
             }
-        }                
+        }
+               
+
+        public void UpdateMapObjectLayer(MapObject target)
+        {
+            if (target == null)
+                return;
+
+            TreeNode objectNode = FindNodeByTag(target);
+            if (objectNode == null)
+                return;
+
+            TreeNode layerNode = FindNodeByTag(target.EditorLayer);
+            if( layerNode != null)
+            {
+                objectNode.Remove();
+                layerNode.Nodes.Add(objectNode);
+                ExpandTo(objectNode);
+            }
+        }
+
+        private void ExpandTo(TreeNode node)
+        {
+            if (node == null)
+                return;
+
+            List<TreeNode> nodes = new List<TreeNode>();
+            while (node != null && node != rootNode)
+            {
+                if (node.Parent == null)
+                    break;
+                nodes.Add(node.Parent);
+                node = node.Parent;
+            }
+
+            nodes.Reverse();
+            for (int i = 0; i < nodes.Count; i++)
+                nodes[i].Expand();
+        }
 
         internal void OnNodeSelectChanged(TreeNode nodeNew)
         {
+            if (EntityWorld.Instance != null)
+            {
+                if (currentMouseNode != null)
+                {
+                    Entity currentEntity = currentMouseNode.Tag as Entity;
+                    EntityWorld.Instance.SetEntitySelected(currentEntity, false);
+                }
+
+                if (nodeNew != null)
+                {
+                    Entity newEntity = nodeNew.Tag as Entity;
+                    EntityWorld.Instance.SetEntitySelected(newEntity, true);
+                }
+            }
+ 
             if (currentMouseNode == null && nodeNew == null)
                 return;
 
@@ -138,7 +189,7 @@ namespace JxDesign.UI
             return node;
         }
 
-        public TreeNode CreateLayerNode(Map.Layer layer, TreeNode parent = null, bool selected = true)
+        public TreeNode CreateLayerNode(Map.EditorLayer layer, TreeNode parent = null, bool selected = true)
         {
             if (layer == null)
                 return null;
@@ -155,25 +206,50 @@ namespace JxDesign.UI
             return layerNode;
         }
 
-        private void BuildLayerNode(Map.Layer layer = null, TreeNode parent = null)
+        private void BuildLayerNode(Map.EditorLayer layer = null, TreeNode parent = null)
         {
             if (Map.Instance == null)
                 return;
  
-            layer = layer ?? Map.Instance.RootLayer;
+            layer = layer ?? Map.Instance.RootEditorLayer;
+            if (layer == null)
+                return; 
             parent = parent ?? rootNode; 
 
             TreeNode node = CreateLayerNode(layer, parent);
-            if (layer == Map.Instance.RootLayer)
+            if (layer == Map.Instance.RootEditorLayer)
                 rootLayerNode = node;
             if (node == null)
-                return; 
+                return;
 
-            foreach(Map.Layer layerChild in layer.Children)
+            foreach(Map.EditorLayer layerChild in layer.Children)
                 BuildLayerNode(layerChild, node);
         }
+
+        private TreeNode FindNodeByTag(object tag)
+        {
+            if (tag == null)
+                return null;
+
+            List<TreeNode> nodes = new List<TreeNode>();
+            nodes.Add(rootNode);
+            
+            while(nodes.Count > 0 )
+            {
+                TreeNode tn = nodes[0];
+                nodes.RemoveAt(0);
+
+                if (tn.Tag == tag)
+                    return tn;
+
+                TreeNode[] tns = new TreeNode[tn.Nodes.Count];
+                tn.Nodes.CopyTo(tns, 0);
+                nodes.AddRange(tns.ToList());
+            }
+            return null;
+        }
         
-        private Map.Layer LayerSelected
+        private Map.EditorLayer LayerSelected
         {
             get {
                 if (Map.Instance == null)
@@ -191,7 +267,7 @@ namespace JxDesign.UI
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            tsmiDeleteLayer.Enabled = (LayerSelected != null) && (Map.Instance != null && Map.Instance.RootLayer != LayerSelected);
+            tsmiDeleteLayer.Enabled = (LayerSelected != null) && (Map.Instance != null && Map.Instance.RootEditorLayer != LayerSelected);
             tsmiEditLayer.Enabled = IsLayerSelected;
         }
 
@@ -204,7 +280,7 @@ namespace JxDesign.UI
             {
                 if (treeViewEntities.SelectedNode == null)
                     return null;
-                Map.Layer layer = treeViewEntities.SelectedNode.Tag as Map.Layer;
+                Map.EditorLayer layer = treeViewEntities.SelectedNode.Tag as Map.EditorLayer;
                 LayerSelected = layer;
                 return layer == null ? null : treeViewEntities.SelectedNode;
             }
@@ -235,7 +311,7 @@ namespace JxDesign.UI
             TreeNode node = treeViewEntities.SelectedNode;
             while(node != null )
             {
-                Map.Layer layer = node.Tag as Map.Layer;
+                Map.EditorLayer layer = node.Tag as Map.EditorLayer;
                 if (layer != null)
                     return node;
                 node = node.Parent;
@@ -251,7 +327,7 @@ namespace JxDesign.UI
                 Log.Info("找不到当前选中节点所在的Layer");
                 return;
             }
-            Map.Layer nodeLayer = layerNode.Tag as Map.Layer;
+            Map.EditorLayer nodeLayer = layerNode.Tag as Map.EditorLayer;
             List<string> names = nodeLayer.Children.Select(_layer => _layer.Name).ToList();
             int index = 0;
             string nameNew = "New Layer"; 
@@ -262,7 +338,7 @@ namespace JxDesign.UI
                     break;
             } while (true);
 
-            Map.Layer layerNew = nodeLayer.Create(nameNew);
+            Map.EditorLayer layerNew = nodeLayer.Create(nameNew);
             TreeNode nodeNew = CreateLayerNode(layerNew, layerNode);
             if (nodeNew != null)
             {
@@ -288,8 +364,8 @@ namespace JxDesign.UI
                 return; 
             }
 
-            Map.Layer layer = node.Tag as Map.Layer;
-            if (Map.Instance != null && layer == Map.Instance.RootLayer)
+            Map.EditorLayer layer = node.Tag as Map.EditorLayer;
+            if (Map.Instance != null && layer == Map.Instance.RootEditorLayer)
             {
                 tsmiDeleteLayer.Enabled = false;
                 return;
@@ -323,7 +399,7 @@ namespace JxDesign.UI
             if (e.Label == null)
                 return;
 
-            Map.Layer layer = e.Node.Tag as Map.Layer;
+            Map.EditorLayer layer = e.Node.Tag as Map.EditorLayer;
             if (layer == null)
             {
                 e.CancelEdit = true;
