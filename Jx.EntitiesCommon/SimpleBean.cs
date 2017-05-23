@@ -45,7 +45,7 @@ namespace Jx.EntitiesCommon
 
     }
 
- 
+    [JxName("简单Bean")]
     public class SimpleBean : MapObject
     {
         public enum MethodType

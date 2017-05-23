@@ -15,7 +15,17 @@ namespace Jx.MapSystem
     [ManualTypeCreate]
     public class MapType : MapGeneralObjectType
     {
- 
+        public MapType()
+        {
+            base.CreatableInMapEditor = false;
+        }
+
+        [Browsable(false)]
+        public new bool CreatableInMapEditor
+        {
+            get { return base.CreatableInMapEditor; }
+            set { }
+        }
     }
 
     public class Map : MapGeneralObject

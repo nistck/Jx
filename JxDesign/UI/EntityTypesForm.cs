@@ -162,8 +162,7 @@ namespace JxDesign.UI
             {
                 TreeNode objectNode = treeViewObjects.Nodes[0];
                 objectNode.EnsureVisible();
-                objectNode.Expand();
-
+                objectNode.Expand(); 
                 treeViewObjects.TopNode = objectNode;
             }
         }
@@ -517,19 +516,26 @@ namespace JxDesign.UI
                 }
             }
         }
+
+        private int GetNodeIconByExt(string ext)
+        {
+            ResourceType rt = ResourceTypeManager.Instance.GetByExtension(ext);
+            if (rt == null)
+                return 1;
+
+            return 1;
+        }
+
         private void InsertEntityType(EntityType entityType)
         {
             string entityDirectory = "";
             if (!string.IsNullOrEmpty(entityType.FilePath))
-            {
-                entityDirectory = Path.GetDirectoryName(entityType.FilePath);
-            }
+                entityDirectory = Path.GetDirectoryName(entityType.FilePath); 
+
+
             if (entityDirectory != "")
             {
-                TreeNode treeNode = Find3dModelByPath(entityDirectory);
-                if (treeNode == null)
-                    treeNode = FindObjectByPath(entityDirectory);
-
+                TreeNode treeNode = FindObjectByPath(entityDirectory);  
                 TreeNode treeNode2 = new TreeNode(entityType.FullName, 1, 1);
                 treeNode.Nodes.Add(treeNode2);
                 treeNode2.Tag = entityType;

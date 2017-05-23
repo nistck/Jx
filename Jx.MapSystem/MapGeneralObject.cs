@@ -11,17 +11,7 @@ namespace Jx.MapSystem
 {
     public class MapGeneralObjectType : EntityType
     {
-        public MapGeneralObjectType()
-        {
-            base.CreatableInMapEditor = false; 
-        }
 
-        [Browsable(false)]
-        public new bool CreatableInMapEditor
-        {
-            get { return base.CreatableInMapEditor; }
-            set { }
-        }
     }
 
     public class MapGeneralObject : Entity
