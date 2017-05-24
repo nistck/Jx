@@ -35,6 +35,8 @@
             this.aTP = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.ILCache16 = new System.Windows.Forms.ImageList(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ResourcesView
@@ -44,10 +46,11 @@
             this.ResourcesView.ImageIndex = 0;
             this.ResourcesView.ImageList = this.IL16;
             this.ResourcesView.LabelEdit = true;
-            this.ResourcesView.Location = new System.Drawing.Point(0, 0);
+            this.ResourcesView.Location = new System.Drawing.Point(2, 2);
+            this.ResourcesView.Margin = new System.Windows.Forms.Padding(2);
             this.ResourcesView.Name = "ResourcesView";
             this.ResourcesView.SelectedImageIndex = 0;
-            this.ResourcesView.Size = new System.Drawing.Size(263, 387);
+            this.ResourcesView.Size = new System.Drawing.Size(259, 363);
             this.ResourcesView.TabIndex = 0;
             this.ResourcesView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnBeforeNodeLabelEdit);
             this.ResourcesView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnAfterNodeLabelEdit);
@@ -110,17 +113,32 @@
             this.ILCache16.Images.SetKeyName(25, "edit");
             this.ILCache16.Images.SetKeyName(26, "closed");
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.ResourcesView, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(263, 387);
+            this.tableLayoutPanel1.TabIndex = 1;
+            // 
             // ResourcesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(263, 387);
-            this.Controls.Add(this.ResourcesView);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.HideOnClose = true;
             this.Name = "ResourcesForm";
             this.Text = "资源管理器";
             this.Load += new System.EventHandler(this.ResourcesForm_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -132,5 +150,6 @@
         private System.Windows.Forms.ImageList IL16;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ImageList ILCache16;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

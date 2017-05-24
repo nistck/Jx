@@ -17,6 +17,11 @@ namespace JxRes.UI
             InitializeComponent();
         }
 
+        public Jx.Drawing.Base.DrawingPanel Canvas
+        {
+            get { return drawingPanel; }
+        }
+
         private void MainViewForm_Load(object sender, EventArgs e)
         {
 

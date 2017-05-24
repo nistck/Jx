@@ -229,9 +229,10 @@ namespace Jx.Drawing.Base
         /// <summary>
         /// Delete action.
         /// </summary>
-        virtual public void Delete()
+        virtual public void Delete(bool batch = false)
         {
-            History<ShapeCollection>.Memorize(_shapes);
+            if( !batch )  
+                History<ShapeCollection>.Memorize(_shapes);
 
             for (int i = 0; i < _shapes.Count; i++)
             {
@@ -240,6 +241,19 @@ namespace Jx.Drawing.Base
                     _shapes.Remove(_shapes[i]);
                     i = -1;
                 }
+            }
+
+            if(!batch)
+                Invalidate();
+        }
+
+        public void Clear()
+        {
+            History<ShapeCollection>.Memorize(_shapes);
+
+            for (int i = _shapes.Count - 1; i >= 0; i--)
+            {
+                _shapes.Remove(_shapes[i]);
             }
 
             Invalidate();

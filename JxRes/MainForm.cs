@@ -16,6 +16,13 @@ using Jx;
 using Jx.UI;
 using Jx.UI.Forms;
 using Jx.FileSystem;
+
+using Jx.Drawing;
+using Jx.Drawing.Base;
+using Jx.Drawing.Common;
+using Jx.Drawing.Utilities;
+
+using JxRes.Editors;
  
 
 namespace JxRes
@@ -152,11 +159,68 @@ namespace JxRes
             ConsoleForm.DefaultInstance.WriteLine(format, args);
         }
 
-        public void UpdateLastSelectedResourcePath(string resourcePath)
+        private DrawingPanel Canvas
         {
+            get { return contentForm.Canvas; }
+        }
+
+        private Text CreateCanvasText(string text, PointF pt)
+        {
+            Jx.Drawing.Base.Text textObj = new Jx.Drawing.Base.Text();
+            textObj.DisplayedText = text??"";
+            textObj.Location = pt;
+            textObj.Font = new Font("Courier New", 12, FontStyle.Regular);
+            Canvas.Shapes.Add(textObj);
+            return textObj;
+        }
+
+        public void UpdateLastSelectedResourcePath(string resourcePath, TreeNode node = null)
+        {
+            Canvas.Enabled = true;
+            Canvas.Shapes.Clear();
+
+            int X0 = 20;
+            int Y0 = 20;
+            int textLineHeight = 20;
+
+            ResourceObjectEditor objectEditor = JxResApp.Instance.ResourceObjectEditor;
+            if( objectEditor is EntityTypeResourceEditor )
+            {
+                EntityTypeResourceEditor entityTypeEditor = objectEditor as EntityTypeResourceEditor;
+
+                Jx.Drawing.Base.Text text = new Jx.Drawing.Base.Text();
+                text.DisplayedText = resourcePath;
+                text.Location = new PointF(10, 10); 
+                text.Font = new Font("Courier New", 10, FontStyle.Regular);
+                Canvas.Shapes.Add(text);
+
+            }
+            else
+            {
+                int x = X0, y = Y0; 
+                List<string> textMessages = new List<string>();
+                textMessages.Add(
+                        string.Format("路径: {0}", resourcePath)
+                    );
+                textMessages.Add(
+                        "Ok"
+                    );
+
+                for(int i = 0; i < textMessages.Count; i ++)
+                {
+                    PointF pt = new PointF(x, y);
+                    CreateCanvasText(textMessages[i], pt);
+
+                   y += textLineHeight;
+                }
+
+                Canvas.Enabled = false;
+            }
+
 #if DEBUG_RES
             Log.Info(">> Update Last Selected ResourcePath: {0}", resourcePath);
 #endif
+            Canvas.Invalidate();
         }
 
         private bool LoadLayoutConfig()

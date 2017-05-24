@@ -334,18 +334,18 @@ namespace JxRes.UI
                 }
             }
 
-            this.ResourcesRoot = new MyTreeNode("Data", false, false);
-            this.UpdateMultiSelectionList(ResourcesRoot);
-            this.ResourcesView.Nodes.Add(this.ResourcesRoot);
-            this.CreateTreeNodeForPath(ResourcesRoot, "");
+            ResourcesRoot = new MyTreeNode("Data", false, false);
+            UpdateMultiSelectionList(ResourcesRoot);
+            ResourcesView.Nodes.Add(this.ResourcesRoot);
+            CreateTreeNodeForPath(ResourcesRoot, "");
             nodesSizeDic.Clear();
             nodesLastWtDic.Clear();
-            this.ResourcesView.TreeViewNodeSorter = new TreeNodeComparer();
-            this.ResourcesView.Sort();
+            ResourcesView.TreeViewNodeSorter = new TreeNodeComparer();
+            ResourcesView.Sort();
             nodesSizeDic.Clear();
             nodesLastWtDic.Clear();
-            this.ResourcesRoot.Expand();
-            this.ResourcesView.EndUpdate();
+            ResourcesRoot.Expand();
+            ResourcesView.EndUpdate();
         }
 
         private MyTreeNode FindNodeByPath(string p)
@@ -444,18 +444,17 @@ namespace JxRes.UI
 
         public void UpdateAddResource(string fileName)
         {
-            if (this.FindNodeByPath(fileName) != null)
-            {
+            if (FindNodeByPath(fileName) != null)
                 return;
-            }
+            
             string directoryName = Path.GetDirectoryName(fileName);
-            ResourcesForm.MyTreeNode myTreeNode = this.FindNodeByPath(directoryName);
+            MyTreeNode myTreeNode = FindNodeByPath(directoryName);
             if (myTreeNode == null)
             {
                 Log.Warning("ResourcesForm: UpdateAddResource: parentNode == null.");
                 return;
             }
-            this.CreateTreeNodeForFile(myTreeNode, fileName);
+            CreateTreeNodeForFile(myTreeNode, fileName);
         }
 
         private void UpdateTreeNodeIcon(TreeNode treeNode)
@@ -563,21 +562,19 @@ namespace JxRes.UI
         private void A(bool flag)
         {
             if (this.multiSelectedList.Count == 0)
-            {
                 return;
-            }
-            foreach (ResourcesForm.MyTreeNode current in this.multiSelectedList)
+            
+            foreach (MyTreeNode current in this.multiSelectedList)
             {
                 if (current.Parent == null)
-                {
                     return;
-                }
             }
+
             List<string> list = new List<string>();
-            List<ResourcesForm.MyTreeNode> list2 = this.A(this.multiSelectedList);
-            foreach (ResourcesForm.MyTreeNode current2 in list2)
+            List<MyTreeNode> list2 = this.A(this.multiSelectedList);
+            foreach (MyTreeNode current2 in list2)
             {
-                string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(ResourcesForm.GetNodePath((TreeNode)current2));
+                string realPathByVirtual = VirtualFileSystem.GetRealPathByVirtual(GetNodePath(current2));
                 list.Add(realPathByVirtual);
             }
             foreach (string current3 in list)
@@ -591,11 +588,10 @@ namespace JxRes.UI
                 }
             }
             IDataObject dataObject = new DataObject(DataFormats.FileDrop, list.ToArray());
-            MemoryStream memoryStream = new MemoryStream();
-            Stream arg_127_0 = memoryStream;
+            MemoryStream memoryStream = new MemoryStream(); 
             byte[] array = new byte[4];
             array[0] = (flag ? (byte)2 : (byte)5);
-            arg_127_0.Write(array, 0, 4);
+            memoryStream.Write(array, 0, 4);
             memoryStream.SetLength(4L);
             dataObject.SetData(DATAOBJECT_KEY, memoryStream);
             Clipboard.SetDataObject(dataObject);
@@ -608,9 +604,7 @@ namespace JxRes.UI
             {
                 MyTreeNode px = (current.Tag == null) ? current : ((MyTreeNode)current.Parent);
                 if (treeNode == null)
-                {
                     treeNode = px;
-                }
                 else if (treeNode != px)
                 {
                     treeNode = null;
@@ -1486,7 +1480,7 @@ namespace JxRes.UI
                 if (MainForm.Instance != null)
                 {
                     string nodePath = GetNodePath(node);
-                    MainForm.Instance.UpdateLastSelectedResourcePath(nodePath); 
+                    MainForm.Instance.UpdateLastSelectedResourcePath(nodePath, node); 
                 }
             }
         }
@@ -1497,9 +1491,7 @@ namespace JxRes.UI
             foreach (MyTreeNode item in list)
             {
                 if (item != node)
-                {
                     item.SetMultiSelected(false, true);
-                }
             }
         }
 
@@ -1508,35 +1500,29 @@ namespace JxRes.UI
             if (JxResApp.Instance == null)
                 return;
 
-            if (this.firstRun)
+            if (firstRun)
             {
                 ResourcesView.Visible = true;
                 ResourcesView.Select();
             }
 
             if (ResourcesView.SelectedNode == null)
-            {
-                this.UpdateMultiSelectionList((MyTreeNode)null);
-            }
+                UpdateMultiSelectionList((MyTreeNode)null);
 
             ResourceObjectEditor resourceObjectEditor = JxResApp.Instance.ResourceObjectEditor;
             if (resourceObjectEditor != null)
             {
                 if (resourceObjectEditor.EditModeActive)
-                {
-                    this.UpdateMultiSelectionList((MyTreeNode)null);
-                }
+                    UpdateMultiSelectionList((MyTreeNode)null);
                 else
                 {
-                    ResourcesForm.MyTreeNode myTreeNode = (ResourcesForm.MyTreeNode)this.ResourcesView.SelectedNode;
+                    MyTreeNode myTreeNode = (MyTreeNode)ResourcesView.SelectedNode;
                     if (myTreeNode != null)
-                    {
                         myTreeNode.SetMultiSelected(true, true);
-                    }
                 }
             }
             HandleFileSystemEvents();
-            this.firstRun = false;
+            firstRun = false;
         }
 
         public void DoCreatedEvent(string realPath)
@@ -1811,19 +1797,20 @@ namespace JxRes.UI
             nodesLastWtDic.Clear();
         }
 
-        private void A(ResourcesForm.MyTreeNode myTreeNode, bool flag)
+        private void UpdateHideNode(MyTreeNode myTreeNode, bool flag)
         {
-            myTreeNode.HideNode = (this.IsHideResource(myTreeNode.Text) || flag);
+            myTreeNode.HideNode = (IsHideResource(myTreeNode.Text) || flag);
             foreach (TreeNode treeNode in myTreeNode.Nodes)
             {
-                this.A((ResourcesForm.MyTreeNode)treeNode, myTreeNode.HideNode);
+                UpdateHideNode((MyTreeNode)treeNode, myTreeNode.HideNode);
             }
         }
+
         public void UpdateHideNodes()
         {
-            foreach (TreeNode treeNode in this.ResourcesView.Nodes)
+            foreach (TreeNode treeNode in ResourcesView.Nodes)
             {
-                this.A((ResourcesForm.MyTreeNode)treeNode, false);
+                UpdateHideNode((MyTreeNode)treeNode, false);
             }
             this.ResourcesView.Invalidate();
         }
