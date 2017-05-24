@@ -75,7 +75,15 @@ namespace JxDesign
         }
 
         //-///////////////////////////////////////////////////////////////////
-        public bool Modified { get; set; }
+        private bool modified = false;
+        public bool Modified
+        {
+            get { return modified; }
+            set {
+                this.modified = value;
+                MainForm.Instance.NotifyUpdate(false);
+            }
+        }
         public string MapTypeName { get; private set; } 
 
         private void initConfig()

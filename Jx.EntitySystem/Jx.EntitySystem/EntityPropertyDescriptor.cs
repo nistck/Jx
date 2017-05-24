@@ -107,10 +107,16 @@ namespace Jx.EntitySystem
             get
             {                
                 List<Type> types = new List<Type>();
+
+                Type typeOwner = propertyInfo.DeclaringType;
                 if (propertyInfo != null)
-                    types.Add(propertyInfo.DeclaringType);
-                if (Entity != null && Entity.Type != null)
-                    types.Add(Entity.Type.GetType());
+                    types.Add(typeOwner);
+
+                if( Entity != null && Entity.Type != null )
+                {
+                    if (Entity.Type.ClassInfo.EntityClassType == typeOwner)
+                        types.Add(Entity.Type.GetType());
+                } 
 
                 string categoryInfo = null;
                 while( types.Count > 0 )
@@ -118,8 +124,8 @@ namespace Jx.EntitySystem
                     Type type = types[0];
                     types.RemoveAt(0);
 
-                    JxNameAttribute attrFound = propertyInfo.DeclaringType.GetCustomAttribute<JxNameAttribute>();
-                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
+                    JxNameAttribute attrFound = type.GetCustomAttribute<JxNameAttribute>();
+                    if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name) )
                     {
                         categoryInfo = string.Format("{0} ({1})", attrFound.Name, base.Category);
                         return categoryInfo;

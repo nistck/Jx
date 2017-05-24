@@ -378,6 +378,8 @@ namespace JxDesign.UI
                     treeViewEntities.SelectedNode = node.Parent;
                 node.Remove();
 
+                UpdateData();
+
                 MapWorld.Instance.Modified = true;
             }
         }
@@ -390,6 +392,7 @@ namespace JxDesign.UI
                 tsmiEditLayer.Enabled = false;
                 return;
             }
+            treeViewEntities.LabelEdit = true;
             node.BeginEdit();
         }
 

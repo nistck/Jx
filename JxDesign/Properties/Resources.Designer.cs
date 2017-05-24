@@ -73,6 +73,16 @@ namespace JxDesign.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap delete_16 {
+            get {
+                object obj = ResourceManager.GetObject("delete_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap folder_open_16 {
             get {
                 object obj = ResourceManager.GetObject("folder_open_16", resourceCulture);
@@ -86,6 +96,26 @@ namespace JxDesign.Properties {
         internal static System.Drawing.Bitmap help_10 {
             get {
                 object obj = ResourceManager.GetObject("help_10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap item_16 {
+            get {
+                object obj = ResourceManager.GetObject("item_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap new_16 {
+            get {
+                object obj = ResourceManager.GetObject("new_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

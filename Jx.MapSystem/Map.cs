@@ -335,7 +335,7 @@ namespace Jx.MapSystem
         internal string virtualFileName;
 
         private EditorData editorData = new EditorData();
-        private readonly EditorLayer rootEditorLayer = new EditorLayer("Root", null);
+        private readonly EditorLayer rootEditorLayer = new EditorLayer("Root Layer", null);
         private EditorLayer layerSelected = null;
 
         public Map ()

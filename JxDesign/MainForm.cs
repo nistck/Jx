@@ -387,7 +387,7 @@ namespace JxDesign
                 if (list.Count != 0 && gridItem.Tag != null)
                 {
                     object[] array = (object[])gridItem.Tag;
-                    List<UndoObjectsPropertyChangeAction.Item> list2 = new List<UndoObjectsPropertyChangeAction.Item>(list.Count);
+                    List<UndoObjectsPropertyChangeAction.Item> undoItems = new List<UndoObjectsPropertyChangeAction.Item>(list.Count);
                     for (int i = 0; i < list.Count; i++)
                     {
                         object obj3 = list[i];
@@ -398,7 +398,7 @@ namespace JxDesign
                             object value = property.GetValue(obj3, null);
                             if (!object.Equals(value, obj4))
                             {
-                                list2.Add(new UndoObjectsPropertyChangeAction.Item(obj3, property, obj4));
+                                undoItems.Add(new UndoObjectsPropertyChangeAction.Item(obj3, property, obj4));
                             }
                             if (obj3 is MapObject)
                             {
@@ -411,9 +411,11 @@ namespace JxDesign
                                 }
                             }
                             if (obj3 is MapObject)
-                            {                                
-                                PropertyInfo propertyEditorLayer = obj3.GetType().GetProperty("EditorLayer");
-                                if (propertyEditorLayer == property)
+                            {
+                                MapObject mapObject = obj3 as MapObject;
+                                string editorLayerName = ReflectionUtil.GetMemberName(() => mapObject.EditorLayer);
+                                PropertyInfo propertyEditorLayer = obj3.GetType().GetProperty(editorLayerName);
+                                if (propertyEditorLayer == property )
                                 {
                                     foreach (Entity current in EntityWorld.Instance.SelectedEntities)
                                     {
@@ -425,14 +427,13 @@ namespace JxDesign
                             }
                         }
                     }
-                    if (list2.Count != 0)
+                    if (undoItems.Count != 0)
                     {
-                        UndoObjectsPropertyChangeAction action = new UndoObjectsPropertyChangeAction(list2.ToArray());
+                        UndoObjectsPropertyChangeAction action = new UndoObjectsPropertyChangeAction(undoItems.ToArray());
                         UndoSystem.Instance.CommitAction(action);
                         MapWorld.Instance.Modified = true;
                     }
-                    this.a(gridItem);
-                    return;
+                    this.a(gridItem); 
                 }
             }
             else
@@ -450,69 +451,56 @@ namespace JxDesign
         {
             if (this.PropertiesForm.SelectedGridItem != null && this.PropertiesForm.SelectedGridItem.Label == "Tags")
             {
-                System.Collections.Generic.List<Entity> entities = EntityWorld.Instance.SelectedEntities;
+                List<Entity> entitiesSelected = EntityWorld.Instance.SelectedEntities;
+
+                var q = entitiesSelected.Select(_entity =>
+                {
+                    var _tags = _entity.Tags.Select(_tag => new Entity.TagInfo(_tag.Name, _tag.Value));
+                    return new UndoObjectsPropertyChangeAction.Item(_entity, typeof(Entity).GetProperty("Tags"), _tags);
+                });
+
                 contextMenuStrip.Items.Add(new ToolStripSeparator());
                 //*
-                string text = ToolsLocalization.Translate("Various", "Add Tag");
-                ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem(text, null, delegate (object s, System.EventArgs e2)
+                string textAddTag = ToolsLocalization.Translate("Various", "Add Tag");
+                ToolStripMenuItem tsmiAddTag = new ToolStripMenuItem(textAddTag, Properties.Resources.new_16, delegate (object s, EventArgs e2)
                 {
                     EntityAddTagDialog entityAddTagDialog = new EntityAddTagDialog();
                     if (entityAddTagDialog.ShowDialog() == DialogResult.OK)
                     {
-                        List<UndoObjectsPropertyChangeAction.Item> list = new List<UndoObjectsPropertyChangeAction.Item>();
-                        foreach (Entity current4 in entities)
-                        {
-                            List<Entity.TagInfo> list2 = new List<Entity.TagInfo>();
-                            foreach (Entity.TagInfo current5 in current4.Tags)
-                            {
-                                list2.Add(new Entity.TagInfo(current5.Name, current5.Value));
-                            }
-                            list.Add(new UndoObjectsPropertyChangeAction.Item(current4, typeof(Entity).GetProperty("Tags"), list2));
-                        }
-                        UndoSystem.Instance.CommitAction(new UndoObjectsPropertyChangeAction(list.ToArray()));
-                        foreach (Entity current6 in entities)
-                        {
-                            current6.SetTag(entityAddTagDialog.TagName, entityAddTagDialog.TagValue);
-                        }
+                        UndoSystem.Instance.CommitAction(new UndoObjectsPropertyChangeAction(q.ToArray()));
+                        foreach (Entity current in entitiesSelected)
+                            current.SetTag(entityAddTagDialog.TagName, entityAddTagDialog.TagValue);
+
+                        PropertiesForm.RefreshProperties();
                         MapWorld.Instance.Modified = true;
                     }
                 });
-                toolStripMenuItem.Enabled = true;
-                contextMenuStrip.Items.Add(toolStripMenuItem);
+                tsmiAddTag.Enabled = true;
+                contextMenuStrip.Items.Add(tsmiAddTag);
  
-                List<string> set = entities.SelectMany(_entity => _entity.Tags.Select(_tag => _tag.Name)).Distinct().ToList();
+                List<string> tagsSet = entitiesSelected.SelectMany(_entity => _entity.Tags.Select(_tag => _tag.Name)).Distinct().ToList();
                  
-                string text2 = ToolsLocalization.Translate("Various", "Remove Tag");
-                ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem(text2);
-                toolStripMenuItem2.Enabled = (set.Count != 0);
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                string textRemoveTag = ToolsLocalization.Translate("Various", "Remove Tag");
+                ToolStripMenuItem tsmiRemoveTag = new ToolStripMenuItem(textRemoveTag, Properties.Resources.delete_16);
+                tsmiRemoveTag.Enabled = (tagsSet.Count != 0);
+                contextMenuStrip.Items.Add(tsmiRemoveTag);
 
-                foreach (string current3 in set)
+                foreach (string tag in tagsSet)
                 {
-                    ToolStripMenuItem toolStripMenuItem3 = new ToolStripMenuItem(current3, null, delegate (object s, System.EventArgs e2)
+                    ToolStripMenuItem tsmiDeleteTag = new ToolStripMenuItem(tag, Properties.Resources.item_16, delegate (object s, EventArgs e2)
                     {
-                        string name = (string)((ToolStripMenuItem)s).Tag;
-                        System.Collections.Generic.List<UndoObjectsPropertyChangeAction.Item> list = new System.Collections.Generic.List<UndoObjectsPropertyChangeAction.Item>();
-                        foreach (Entity current4 in entities)
-                        {
-                            System.Collections.Generic.List<Entity.TagInfo> list2 = new System.Collections.Generic.List<Entity.TagInfo>();
-                            foreach (Entity.TagInfo current5 in current4.Tags)
-                            {
-                                list2.Add(new Entity.TagInfo(current5.Name, current5.Value));
-                            }
-                            list.Add(new UndoObjectsPropertyChangeAction.Item(current4, typeof(Entity).GetProperty("Tags"), list2));
-                        }
-                        UndoSystem.Instance.CommitAction(new UndoObjectsPropertyChangeAction(list.ToArray()));
-                        foreach (Entity current6 in entities)
-                        {
-                            current6.RemoveTag(name);
-                        }
+                        string name = (string)((ToolStripMenuItem)s).Tag; 
+                        UndoSystem.Instance.CommitAction(new UndoObjectsPropertyChangeAction(q.ToArray()));
+                        foreach (Entity current in entitiesSelected)
+                            current.RemoveTag(name);
+
+                        PropertiesForm.RefreshProperties();
                         MapWorld.Instance.Modified = true;
                     });
-                    toolStripMenuItem3.Tag = current3;
-                    contextMenuStrip.Items.Add(toolStripMenuItem2);
+                    tsmiDeleteTag.Tag = tag;
+                    contextMenuStrip.Items.Add(tsmiRemoveTag);
 
-                    toolStripMenuItem2.DropDownItems.Add(toolStripMenuItem3);
+                    tsmiRemoveTag.DropDownItems.Add(tsmiDeleteTag); 
                 }
             }
         }
@@ -613,10 +601,10 @@ namespace JxDesign
 
         private void a(GridItem gridItem)
         {
-            GridItem gridItem2 = gridItem;
-            while (gridItem2 != null && gridItem2.PropertyDescriptor != null)
+            GridItem current = gridItem;
+            while (current != null && current.PropertyDescriptor != null)
             {
-                System.Collections.Generic.List<object> list = this.A(gridItem2);
+                List<object> list = this.A(current);
                 if (list.Count != 0)
                 {
                     object[] array = new object[list.Count];
@@ -624,16 +612,16 @@ namespace JxDesign
                     {
                         if (list[i] != null)
                         {
-                            PropertyInfo property = list[i].GetType().GetProperty(gridItem2.PropertyDescriptor.Name, gridItem2.PropertyDescriptor.PropertyType);
+                            PropertyInfo property = list[i].GetType().GetProperty(current.PropertyDescriptor.Name, current.PropertyDescriptor.PropertyType);
                             if (property != null)
                             {
                                 array[i] = property.GetValue(list[i], null);
                             }
                         }
                     }
-                    gridItem2.Tag = array;
+                    current.Tag = array;
                 }
-                gridItem2 = gridItem2.Parent;
+                current = current.Parent;
             }
         }
         #endregion
@@ -768,13 +756,18 @@ namespace JxDesign
             EntitiesForm.NodeSelectChanged -= EntitiesForm_NodeSelectChanged;
         }
 
+        private void UpdatePropertiesView(params object[] objects)
+        {
+            PropertiesForm.SelectObjects(objects);
+            PropertiesForm.RefreshProperties();
+        }
+
         private void EntitiesForm_NodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
         {
             PropertiesForm.ReadOnly = false;
             if ( nodeNew == null )
             {
-                PropertiesForm.SelectObject(null);
-                PropertiesForm.RefreshProperties();
+                UpdatePropertiesView(null);
                 return; 
             }
 
@@ -782,10 +775,11 @@ namespace JxDesign
             if( entity != null )
             {
                 EntityCustomTypeDescriptor customTypeDescriptor = new EntityCustomTypeDescriptor(entity);
-                PropertiesForm.SelectObjects(customTypeDescriptor);
-                PropertiesForm.RefreshProperties();
+                UpdatePropertiesView(customTypeDescriptor);
                 return;
             }
+
+            UpdatePropertiesView();
         }
 
 

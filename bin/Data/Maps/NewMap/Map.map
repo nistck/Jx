@@ -19,22 +19,6 @@ editorLayers
 			{
 				name = New Layer_0
 			}
-			layer
-			{
-				name = New Layer_1
-			}
-		}
-	}
-	layer
-	{
-		name = New Layer_1
-		layer
-		{
-			name = New Layer_0
-			layer
-			{
-				name = New Layer_0
-			}
 		}
 	}
 	layer
@@ -52,13 +36,13 @@ editorLayers
 }
 entity
 {
-	editorLayer = "Root\\New Layer_0\\New Layer_0\\New Layer_1"
 	type = ddd
 	uin = 3
 	classPrompt = SimpleBean
 	beanId = 19817
 	method = Get
 	name = ddd_0
+	editorLayer = "Root\\New Layer_0\\New Layer_0\\New Layer_1"
 	tags
 	{
 	}
@@ -82,10 +66,14 @@ entity
 	type = Ax
 	uin = 5
 	classPrompt = SimpleBean
-	beanId = 1981333
+	beanId = 19813332
 	method = Get
 	name = Ax_0
 	tags
 	{
+		item
+		{
+			name = ddd
+		}
 	}
 }
