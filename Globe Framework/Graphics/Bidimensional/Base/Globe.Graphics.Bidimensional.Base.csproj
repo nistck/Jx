@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9C2454C9-DF94-4408-8E72-7E18E0921271}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Globe.Graphics.Bidimensional.Base</RootNamespace>
+    <AssemblyName>Globe.Graphics.Bidimensional.Base</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Globe.Graphics.Bidimensional.Base.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DrawingPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GroupEngine.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\Copy of Text.cs" />
+    <Compile Include="Shapes\Ellipse.cs" />
+    <Compile Include="Shapes\Ghosts\GhostCollection.cs" />
+    <Compile Include="Shapes\Ghosts\MultiSelectGhost.cs" />
+    <Compile Include="Shapes\Image.cs" />
+    <Compile Include="Shapes\Line.cs" />
+    <Compile Include="Shapes\Rectangle.cs" />
+    <Compile Include="Shapes\Text.cs" />
+    <Compile Include="Tools\DrawFreeLine.cs" />
+    <Compile Include="Tools\CopyPoint.cs" />
+    <Compile Include="Tools\Deform.cs" />
+    <Compile Include="Tools\Draw.cs" />
+    <Compile Include="Tools\DrawShape.cs" />
+    <Compile Include="Tools\DrawSloppedLine.cs" />
+    <Compile Include="Tools\Move.cs" />
+    <Compile Include="Tools\MultiSelect.cs" />
+    <Compile Include="Tools\Pointer.cs" />
+    <Compile Include="Tools\Resize.cs" />
+    <Compile Include="Tools\Rotate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Converters\Globe.Core.Converters.csproj">
+      <Project>{C7173FEB-5F8A-4E11-940B-35ECF4464D67}</Project>
+      <Name>Globe.Core.Converters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\Utilities\Globe.Core.Utilities.csproj">
+      <Project>{3A95AC8C-D917-4BA5-9546-2F54C4C7700A}</Project>
+      <Name>Globe.Core.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xml\Serialization\CSharp\Globe.Xml.Serialization.csproj">
+      <Project>{01D4D5C7-E640-4F86-AE67-7A1DFDA10DFC}</Project>
+      <Name>Globe.Xml.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Globe.Graphics.Bidimensional.Common.csproj">
+      <Project>{BFAD8C6E-695D-4774-9145-DB556E4C44B1}</Project>
+      <Name>Globe.Graphics.Bidimensional.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rotate.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

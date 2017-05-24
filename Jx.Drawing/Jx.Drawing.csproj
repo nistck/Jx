@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}</ProjectGuid>
+    <ProjectGuid>{091CCBBD-6591-47E0-B97F-3E0EF0E8A089}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jx.Drawing</RootNamespace>
@@ -43,94 +43,90 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Globe\Core\Converters\BitmapConverter.cs" />
-    <Compile Include="Globe\Core\Converters\ColorConverter.cs" />
-    <Compile Include="Globe\Core\Utilities\Clipboard.cs" />
-    <Compile Include="Globe\Core\Utilities\History.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\DrawingPanel.cs">
+    <Compile Include="Converters\BitmapConverter.cs" />
+    <Compile Include="Converters\ColorConverter.cs" />
+    <Compile Include="Serialization\XML\DataMember.cs" />
+    <Compile Include="Serialization\XML\SerializableData.cs" />
+    <Compile Include="Serialization\XML\SerializableDataComposer.cs" />
+    <Compile Include="Serialization\XML\SerializableDataController.cs" />
+    <Compile Include="Serialization\XML\SerializableDataDecomposer.cs" />
+    <Compile Include="Serialization\XML\Serializer.cs" />
+    <Compile Include="Serialization\XML\XmlClassSerializable.cs" />
+    <Compile Include="Serialization\XML\XmlFieldSerializable.cs" />
+    <Compile Include="Serialization\XML\XmlSerializable.cs" />
+    <Compile Include="Serialization\XML\XmlSerializationException.cs" />
+    <Compile Include="Serialization\XML\XmlSerializeReader.cs" />
+    <Compile Include="Serialization\XML\XmlSerializeWriter.cs" />
+    <Compile Include="Serialization\XML\_SerializableDataComposer.cs" />
+    <Compile Include="Utilities\Clipboard.cs" />
+    <Compile Include="Utilities\History.cs" />
+    <Compile Include="Base\DrawingPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Globe\Graphics\Bidimensional\Base\GroupEngine.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Resource.Designer.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Copy of Text.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ellipse.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ghosts\GhostCollection.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ghosts\MultiSelectGhost.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Image.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Line.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Rectangle.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Text.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\CopyPoint.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Deform.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Draw.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawFreeLine.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawShape.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawSloppedLine.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Move.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\MultiSelect.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Pointer.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Resize.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Rotate.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\Appearance.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\GhostAppearance.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\LineAppearance.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\PolygonAppearance.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Collections\ShapeCollection.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Collections\ShapeCollectionEx.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Appearance delegates.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Shape delegates.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Transformer delegates.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Enums\HitPositions.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Enums\Versors.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\GridManager.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IActions.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IDocument.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IShape.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Resource.Designer.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\CompositeShape.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\CustomShape.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\Ghosts\Ghost.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\Shape.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Tools\Select.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Tools\Tool.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Transformers\CompositeTransformer.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\Transformers\Transformer.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\AppearanceTypeConverter.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\GridManagerTypeConverter.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\PointFTypeConverter.cs" />
-    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\SizeFTypeConverter.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\DataMember.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\Resource.Designer.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableData.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataComposer.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataController.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataDecomposer.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\Serializer.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlClassSerializable.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlFieldSerializable.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializable.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializationException.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializeReader.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializeWriter.cs" />
-    <Compile Include="Globe\Xml\Serialization\CSharp\_SerializableDataComposer.cs" />
+    <Compile Include="Base\GroupEngine.cs" />
+    <Compile Include="Base\Shapes\Copy of Text.cs" />
+    <Compile Include="Base\Shapes\Ellipse.cs" />
+    <Compile Include="Base\Shapes\Ghosts\GhostCollection.cs" />
+    <Compile Include="Base\Shapes\Ghosts\MultiSelectGhost.cs" />
+    <Compile Include="Base\Shapes\Image.cs" />
+    <Compile Include="Base\Shapes\Line.cs" />
+    <Compile Include="Base\Shapes\Rectangle.cs" />
+    <Compile Include="Base\Shapes\Text.cs" />
+    <Compile Include="Base\Tools\CopyPoint.cs" />
+    <Compile Include="Base\Tools\Deform.cs" />
+    <Compile Include="Base\Tools\Draw.cs" />
+    <Compile Include="Base\Tools\DrawFreeLine.cs" />
+    <Compile Include="Base\Tools\DrawShape.cs" />
+    <Compile Include="Base\Tools\DrawSloppedLine.cs" />
+    <Compile Include="Base\Tools\Move.cs" />
+    <Compile Include="Base\Tools\MultiSelect.cs" />
+    <Compile Include="Base\Tools\Pointer.cs" />
+    <Compile Include="Base\Tools\Resize.cs" />
+    <Compile Include="Base\Tools\Rotate.cs" />
+    <Compile Include="Common\Appearances\Appearance.cs" />
+    <Compile Include="Common\Appearances\GhostAppearance.cs" />
+    <Compile Include="Common\Appearances\LineAppearance.cs" />
+    <Compile Include="Common\Appearances\PolygonAppearance.cs" />
+    <Compile Include="Common\Collections\ShapeCollection.cs" />
+    <Compile Include="Common\Collections\ShapeCollectionEx.cs" />
+    <Compile Include="Common\Delegates\Appearance delegates.cs" />
+    <Compile Include="Common\Delegates\Shape delegates.cs" />
+    <Compile Include="Common\Delegates\Transformer delegates.cs" />
+    <Compile Include="Common\Enums\HitPositions.cs" />
+    <Compile Include="Common\Enums\Versors.cs" />
+    <Compile Include="Common\GridManager.cs" />
+    <Compile Include="Common\Interfaces\IActions.cs" />
+    <Compile Include="Common\Interfaces\IDocument.cs" />
+    <Compile Include="Common\Interfaces\IShape.cs" />
+    <Compile Include="Common\Shapes\CompositeShape.cs" />
+    <Compile Include="Common\Shapes\CustomShape.cs" />
+    <Compile Include="Common\Shapes\Ghosts\Ghost.cs" />
+    <Compile Include="Common\Shapes\Shape.cs" />
+    <Compile Include="Common\Tools\Select.cs" />
+    <Compile Include="Common\Tools\Tool.cs" />
+    <Compile Include="Common\Transformers\CompositeTransformer.cs" />
+    <Compile Include="Common\Transformers\Transformer.cs" />
+    <Compile Include="Common\TypeConverters\AppearanceTypeConverter.cs" />
+    <Compile Include="Common\TypeConverters\GridManagerTypeConverter.cs" />
+    <Compile Include="Common\TypeConverters\PointFTypeConverter.cs" />
+    <Compile Include="Common\TypeConverters\SizeFTypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Globe\Graphics\Bidimensional\Base\Resources\Rotate.ico" />
-    <Content Include="Globe\Graphics\Bidimensional\Common\Globe.Graphics.Bidimensional.Common.csproj" />
-    <Content Include="Globe\Xml\Serialization\CSharp\Globe.Xml.Serialization.csproj" />
+    <Content Include="Resources\Rotate.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Globe\Xml\Serialization\CSharp\Class Diagram.cd" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Globe\Graphics\Bidimensional\Base\Resource.resx" />
-    <EmbeddedResource Include="Globe\Graphics\Bidimensional\Common\Resource.resx" />
-    <EmbeddedResource Include="Globe\Xml\Serialization\CSharp\Resource.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

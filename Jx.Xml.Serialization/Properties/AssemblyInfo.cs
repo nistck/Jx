@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("Jx.Drawing")]
+[assembly: AssemblyTitle("Jx.Xml.Serialization")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Jx.Drawing")]
+[assembly: AssemblyProduct("Jx.Xml.Serialization")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("091ccbbd-6591-47e0-b97f-3e0ef0e8a089")]
+[assembly: Guid("e9cecb94-2ee2-4ff6-a363-8825eebe765d")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
