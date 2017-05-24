@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
 
-using Jx.Serialization.XML;
+using Jx.Drawing.Serialization.XML;
 
 namespace Jx.Drawing.Common
 {

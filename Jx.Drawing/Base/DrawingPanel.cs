@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-using Jx.Serialization.XML;
+using Jx.Drawing.Serialization.XML;
 using Jx.Drawing.Utilities;
 
 using Jx.Drawing.Common;

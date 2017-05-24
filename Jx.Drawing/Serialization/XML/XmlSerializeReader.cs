@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace Jx.Serialization.XML
+namespace Jx.Drawing.Serialization.XML
 {
     /// <summary>
     /// Reads the xml and fill the SerializableData class.

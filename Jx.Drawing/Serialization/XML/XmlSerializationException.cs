@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-namespace Jx.Serialization.XML
+namespace Jx.Drawing.Serialization.XML
 {
     /// <summary>
     /// Manages all exceptions thrown by serialization.

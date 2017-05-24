@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 
-namespace Jx.Serialization.XML
+namespace Jx.Drawing.Serialization.XML
 {
     /// <summary>
     /// Specified that a class is serializable.

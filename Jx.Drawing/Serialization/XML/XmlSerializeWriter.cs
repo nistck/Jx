@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace Jx.Serialization.XML
+namespace Jx.Drawing.Serialization.XML
 {
     /// <summary>
     /// Reads an SerializableData class and creates a xml file.

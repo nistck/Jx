@@ -29,13 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            Jx.Drawing.Base.Pointer pointer1 = new Jx.Drawing.Base.Pointer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.XSS = new System.Windows.Forms.StatusStrip();
             this.ContentLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.Canvas = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.drawingPanel = new Jx.Drawing.Base.DrawingPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.XSS.SuspendLayout();
+            this.Canvas.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -73,6 +76,7 @@
             // 
             // Canvas
             // 
+            this.Canvas.Controls.Add(this.drawingPanel);
             this.Canvas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Canvas.Location = new System.Drawing.Point(3, 37);
             this.Canvas.Name = "Canvas";
@@ -88,6 +92,20 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // drawingPanel
+            // 
+            this.drawingPanel.ActiveCursor = System.Windows.Forms.Cursors.Default;
+            pointer1.MouseDownPoint = new System.Drawing.Point(0, 0);
+            pointer1.MouseUpPoint = new System.Drawing.Point(0, 0);
+            this.drawingPanel.ActiveTool = pointer1;
+            this.drawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.drawingPanel.EnableWheelZoom = true;
+            this.drawingPanel.Location = new System.Drawing.Point(0, 0);
+            this.drawingPanel.Name = "drawingPanel";
+            this.drawingPanel.Size = new System.Drawing.Size(681, 391);
+            this.drawingPanel.TabIndex = 0;
+            this.drawingPanel.Zoom = 1F;
+            // 
             // ContentForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -99,12 +117,14 @@
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.HideOnClose = true;
             this.Name = "ContentForm";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Unknown;
             this.Text = "MainViewForm";
             this.Load += new System.EventHandler(this.MainViewForm_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.XSS.ResumeLayout(false);
             this.XSS.PerformLayout();
+            this.Canvas.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -116,5 +136,6 @@
         private System.Windows.Forms.ToolStripStatusLabel ContentLabel;
         private System.Windows.Forms.Panel Canvas;
         private System.Windows.Forms.Timer timer1;
+        private Jx.Drawing.Base.DrawingPanel drawingPanel;
     }
 }

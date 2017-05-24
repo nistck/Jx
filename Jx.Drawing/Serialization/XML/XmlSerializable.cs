@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 
-namespace Jx.Serialization.XML
+namespace Jx.Drawing.Serialization.XML
 {
     /// <summary>
     /// Attribute to control the serialization system.

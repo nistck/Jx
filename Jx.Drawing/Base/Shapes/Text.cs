@@ -4,7 +4,7 @@ using System.Text;
 using System.Drawing;
 
 using Jx.Drawing.Common;
-using Jx.Serialization.XML;
+using Jx.Drawing.Serialization.XML;
 
 namespace Jx.Drawing.Base
 {

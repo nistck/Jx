@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using Jx.Serialization.XML;
+using Jx.Drawing.Serialization.XML;
 
 namespace Jx.Drawing.Common
 {

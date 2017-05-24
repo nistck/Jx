@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-using Jx.Serialization.XML;
+using Jx.Drawing.Serialization.XML;
 
 namespace Jx.Drawing.Common
 {
