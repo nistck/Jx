@@ -21,6 +21,9 @@ namespace JxDesign
 {
     internal class JxDesignApp : EngineApp
     {
+        public const string RESOURCE_TYPE_ENTITY_TYPE_NAME = "EntityType";
+        public const string RESOURCE_TYPE_ENTITY_TYPE_EXTENSION = "type";
+
         private static JxDesignApp instance;
 
         public new static JxDesignApp Instance
@@ -107,9 +110,9 @@ namespace JxDesign
         {
             ResourceTypeManager.Init();
 
-            ResourceTypeManager.Instance.Register(new ResourceType("EntityType", "Entity Type", new string[]
+            ResourceTypeManager.Instance.Register(new ResourceType(RESOURCE_TYPE_ENTITY_TYPE_NAME, "Entity Type", new string[]
             {
-                "type"
+                RESOURCE_TYPE_ENTITY_TYPE_EXTENSION
             }, DefaultResourceTypeImages.EntityType_16));
 
             ResourceTypeManager.Instance.Register(new ResourceType("Configuration", "Configuration File", new string[]

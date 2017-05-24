@@ -346,11 +346,13 @@ namespace Jx.MapSystem
             instance = this; 
         }
 
+        [Browsable(false)]
         public EditorLayer RootEditorLayer
         {
             get { return rootEditorLayer; }
         }
 
+        [Browsable(false)]
         public EditorLayer LayerSelected
         {
             get { return layerSelected; }
@@ -370,6 +372,7 @@ namespace Jx.MapSystem
         /// <summary>
         /// 地图全路径
         /// </summary>
+        [Browsable(false)]
         public string FileName
         {
             get {

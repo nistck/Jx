@@ -111,7 +111,7 @@ namespace JxDesign.UI
         }
  
         private void UpdateTreeViewObjects()
-        {
+        { 
             Blr.Clear();
             treeViewObjects.BeginUpdate();
 
@@ -130,19 +130,21 @@ namespace JxDesign.UI
             }
             enumerateTreeNodes_objects();
             currentObjectsNode = null;
-            if (TreeViewUtils.FindNodeByTag(this.treeViewObjects, null) == null)
+            /*
+            if (TreeViewUtil.FindNodeByTag(treeViewObjects, null) == null)
             {
                 currentObjectsNode = new TreeNode(ToolsLocalization.Translate("Various", "(no selection)"), 3, 3);
                 treeViewObjects.Nodes.Add(currentObjectsNode);
                 treeViewObjects.SelectedNode = currentObjectsNode;
             }
+            //*/
             treeViewObjects.TreeViewNodeSorter = new TreeNodeComparer(currentObjectsNode);
             treeViewObjects.Sort();
             treeViewObjects.EndUpdate();
 
             if (selectPath != null)
             {
-                TreeNode treeNode = TreeViewUtils.FindNodeByText(treeViewObjects, selectPath);
+                TreeNode treeNode = TreeViewUtil.FindNodeByText(treeViewObjects, selectPath);
                 if (treeNode != null)
                 {
                     List<TreeNode> nodes = new List<TreeNode>();
@@ -178,61 +180,40 @@ namespace JxDesign.UI
                 TreeNode node = new TreeNode(dirName, 0, 0);
                 node.Name = node.Text;
                 if (parentNode != null)
-                {
                     parentNode.Nodes.Add(node);
-                }
                 else
-                {
                     treeView.Nodes.Add(node);
-                }
+
                 CreateTreeNodeByDirectory(treeView, resourceType, dir, node);
                 if (node.Nodes.Count == 0)
-                {
                     node.Remove();
-                }
             }
-            string searchPattern;
+
+            string searchPattern = "*";
             if (resourceType != null && resourceType.Extensions.Length == 1)
-            {
                 searchPattern = "*." + resourceType.Extensions[0];
-            }
-            else
-            {
-                searchPattern = "*";
-            }
+
             string[] files = VirtualDirectory.GetFiles(path, searchPattern);
-            int j = 0;
-            while (j < files.Length)
+            for(int j = 0; j < files.Length; j ++)
             {
                 string file = files[j];
-                if (resourceType == null || resourceType.Extensions.Length == 1)
-                {
-                    CreateTreeNodeByFile(treeView, resourceType, parentNode, file);
-                    j++;
-                    continue;
-                }
-                string fileExt = System.IO.Path.GetExtension(file);
+                string fileExt = Path.GetExtension(file);
                 if (fileExt.Length > 0)
                     fileExt = fileExt.Substring(1);
 
-                string[] extensions = resourceType.Extensions;
-                for (int k = 0; k < extensions.Length; k++)
-                {
-                    string strB = extensions[k];
-                    if (string.Compare(fileExt, strB, true) == 0)
-                    {
-                        CreateTreeNodeByFile(treeView, resourceType, parentNode, file);
-                        break;
-                    }
-                }
-                j++;
+                ResourceType type = ResourceTypeManager.Instance.GetByExtension(fileExt);
+                ResourceType typeFound = resourceType ?? type;                
+                CreateTreeNodeByFile(treeView, typeFound, parentNode, file);
             }
         }
 
         private void CreateTreeNodeByFile(TreeView treeView, ResourceType resourceType, TreeNode parentNode, string text)
         {
+            int iconIndex = GetIconIndexByResourceType(treeView.ImageList, resourceType);
+            iconIndex = iconIndex == -1 ? 2 : iconIndex;
+
             string fileName = Path.GetFileName(text);
-            TreeNode node = new TreeNode(fileName, 2, 2);
+            TreeNode node = new TreeNode(fileName, iconIndex, iconIndex);
             node.Name = node.Text;
             node.Tag = text;
             if (parentNode != null)
@@ -247,14 +228,8 @@ namespace JxDesign.UI
         {
             treeView3dModel.BeginUpdate();
             treeView3dModel.Nodes.Clear();
-            CreateTreeNodeByDirectory(treeView3dModel, ResourceTypeManager.Instance.GetByExtension("mesh"), "", null);
+            CreateTreeNodeByDirectory(treeView3dModel, null, "", null);
             current3dModelNode = null;
-            if (TreeViewUtils.FindNodeByTag(treeView3dModel, null) == null)
-            {
-                current3dModelNode = new TreeNode(ToolsLocalization.Translate("Various", "(no selection)"), 3, 3);
-                treeView3dModel.Nodes.Add(current3dModelNode);
-                treeView3dModel.SelectedNode = current3dModelNode;
-            }
             treeView3dModel.TreeViewNodeSorter = new TreeNodeComparer(current3dModelNode);
             treeView3dModel.Sort();
             treeView3dModel.EndUpdate();
@@ -262,6 +237,7 @@ namespace JxDesign.UI
 
         public void UpdateTrees()
         {
+            initObjectsTreeViewIL();
             UpdateTreeViewObjects();
             UpdateTreeView3dModel();
         }
@@ -281,7 +257,7 @@ namespace JxDesign.UI
                 }
                 else
                 {
-                    this.treeViewObjects.SelectedNode = TreeViewUtils.FindNodeByTag(this.treeViewObjects, null);
+                    this.treeViewObjects.SelectedNode = TreeViewUtil.FindNodeByTag(this.treeViewObjects, null);
                 }
                 this.treeViewObjects.EndUpdate();
             }
@@ -298,7 +274,7 @@ namespace JxDesign.UI
                 }
                 else
                 {
-                    this.treeView3dModel.SelectedNode = TreeViewUtils.FindNodeByTag(this.treeView3dModel, null);
+                    this.treeView3dModel.SelectedNode = TreeViewUtil.FindNodeByTag(this.treeView3dModel, null);
                 }
                 this.treeView3dModel.EndUpdate();
             }
@@ -418,7 +394,7 @@ namespace JxDesign.UI
                 UpdateTreeView3dModel();
                 meshTreeModified = false;
             }
-            bool flag = TreeViewUtils.IsVScrollVisible(this.treeViewObjects);
+            bool flag = TreeViewUtil.IsVScrollVisible(this.treeViewObjects);
             if (this.Blq)
             {
                 this.BlR = flag;
@@ -525,24 +501,71 @@ namespace JxDesign.UI
 
             return 1;
         }
+         
+        private void initObjectsTreeViewIL()
+        {
+            LoadResourceTypeIconsIntoTreeViewIL(treeViewObjects);
+            LoadResourceTypeIconsIntoTreeViewIL(treeView3dModel);
+        }
+ 
+        private bool LoadResourceTypeIconsIntoTreeViewIL(TreeView tv)
+        {
+            if (tv == null)
+                return true;
+            if (tv.ImageList == null)
+                return false;
+
+            ImageList IL = tv.ImageList;
+            foreach (ResourceType resourceType in ResourceTypeManager.Instance.Types)
+            {
+                if( IL.Images.IndexOfKey(resourceType.Name) == -1 )
+                    IL.Images.Add(resourceType.Name, resourceType.Icon);
+            }
+            return true;
+        }
+
+        private int GetIconIndexByResourceType(ImageList IL, ResourceType resourceType)
+        {
+            if (IL == null || resourceType == null)
+                return -1;
+
+            return IL.Images.IndexOfKey(resourceType.Name);
+        }
+
+        private int GetIconIndexByKey(ImageList IL, string key)
+        {
+            if (IL == null || string.IsNullOrEmpty(key))
+                return -1;
+
+            return IL.Images.IndexOfKey(key); 
+        }
+        
+
+        private int EntityTypeIconIndex
+        {
+            get {
+                int iconIndex = GetIconIndexByKey(treeViewObjects.ImageList, JxDesignApp.RESOURCE_TYPE_ENTITY_TYPE_NAME);
+                return iconIndex < 0? 1 : iconIndex;
+            }
+        }
 
         private void InsertEntityType(EntityType entityType)
         {
             string entityDirectory = "";
             if (!string.IsNullOrEmpty(entityType.FilePath))
-                entityDirectory = Path.GetDirectoryName(entityType.FilePath); 
-
-
+                entityDirectory = Path.GetDirectoryName(entityType.FilePath);
+ 
+            int entityTypeIconIndex = EntityTypeIconIndex;
             if (entityDirectory != "")
             {
                 TreeNode treeNode = FindObjectByPath(entityDirectory);  
-                TreeNode treeNode2 = new TreeNode(entityType.FullName, 1, 1);
+                TreeNode treeNode2 = new TreeNode(entityType.FullName, entityTypeIconIndex, entityTypeIconIndex);
                 treeNode.Nodes.Add(treeNode2);
                 treeNode2.Tag = entityType;
                 return;
             }
 
-            TreeNode treeNode3 = new TreeNode(entityType.FullName, 1, 1);
+            TreeNode treeNode3 = new TreeNode(entityType.FullName, entityTypeIconIndex, entityTypeIconIndex);
             treeViewObjects.Nodes.Add(treeNode3);
             treeNode3.Tag = entityType;
         }
@@ -617,9 +640,9 @@ namespace JxDesign.UI
 
         private void enumerateTreeNodes_objects()
         {
-            TreeViewUtils.EnumerateAllNodesDelegate enumerateAllNodesDelegate =
-                new TreeViewUtils.EnumerateAllNodesDelegate(enumerateAllNodes); ;
-            while (!TreeViewUtils.EnumerateAllNodes(treeViewObjects, enumerateAllNodesDelegate)) ;
+            EnumerateNodesDelegate enumerateAllNodesDelegate =
+                new EnumerateNodesDelegate(enumerateAllNodes); ;
+            while (!TreeViewUtil.EnumerateNodes(treeViewObjects, enumerateAllNodesDelegate)) ;
         }
 
         private EntityType GetCurrentEntityType()

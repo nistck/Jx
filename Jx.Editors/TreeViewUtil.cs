@@ -7,49 +7,45 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace Jx.Editors
+namespace Jx.Ext
 {
-    public static class TreeViewUtils
-    {
-        public delegate bool EnumerateAllNodesDelegate(TreeNode node);
+    public delegate bool EnumerateNodesDelegate(TreeNode node);
+    public static class TreeViewUtil
+    {        
         private const int GWL_STYLE = -16;
         private const int WS_VSCROLL = 2097152;
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-        public static void ExpandAllPathToNode(TreeNode node)
+
+        public static void ExpandTo(TreeNode node)
         {
             for (TreeNode treeNode = node; treeNode != null; treeNode = treeNode.Parent)
             {
                 treeNode.Expand();
             }
         }
+
         public static TreeNode GetNodeByFullPath(TreeView treeView, string fullPath)
         {
-            if (string.IsNullOrEmpty(fullPath))
-            {
+            if (string.IsNullOrEmpty(fullPath)) 
                 return null;
-            }
+   
             string[] array = fullPath.Split("\\/".ToCharArray());
-            TreeNode treeNode = null;
-            string[] array2 = array;
-            for (int i = 0; i < array2.Length; i++)
+            TreeNode treeNode = null; 
+            for (int i = 0; i < array.Length; i++)
             {
-                string key = array2[i];
-                if (treeNode == null)
-                {
+                string key = array[i];
+                if (treeNode == null) 
                     treeNode = treeView.Nodes[key];
-                }
                 else
-                {
                     treeNode = treeNode.Nodes[key];
-                }
+
                 if (treeNode == null)
-                {
                     return null;
-                }
             }
             return treeNode;
         }
+
         public static TreeNode FindNodeByText(TreeView treeView, string fullPath)
         {
             if (string.IsNullOrEmpty(fullPath))
@@ -78,34 +74,41 @@ namespace Jx.Editors
             }
             return treeNode;
         }
-        private static TreeNode FindNodeByTagRecursive(TreeNode parentNode, object tag)
+ 
+        public static TreeNode FindNodeByTag(TreeNode node, object tag)
         {
-            if (parentNode.Tag == tag)
+            if (tag == null || node == null)
+                return null;
+
+            List<TreeNode> nodes = new List<TreeNode>();
+            nodes.Add(node);
+
+            while (nodes.Count > 0)
             {
-                return parentNode;
-            }
-            foreach (TreeNode parentNode2 in parentNode.Nodes)
-            {
-                TreeNode treeNode = TreeViewUtils.FindNodeByTagRecursive(parentNode2, tag);
-                if (treeNode != null)
-                {
-                    return treeNode;
-                }
+                TreeNode tn = nodes[0];
+                nodes.RemoveAt(0);
+
+                if (tn.Tag == tag)
+                    return tn;
+
+                TreeNode[] tns = new TreeNode[tn.Nodes.Count];
+                tn.Nodes.CopyTo(tns, 0);
+                nodes.AddRange(tns.ToList());
             }
             return null;
         }
+
         public static TreeNode FindNodeByTag(TreeView treeView, object tag)
         {
             foreach (TreeNode parentNode in treeView.Nodes)
             {
-                TreeNode treeNode = TreeViewUtils.FindNodeByTagRecursive(parentNode, tag);
+                TreeNode treeNode = FindNodeByTag(parentNode, tag);
                 if (treeNode != null)
-                {
                     return treeNode;
-                }
             }
             return null;
         }
+
         public static TreeNode GetNeedSelectNodeAfterRemoveNode(TreeNode node)
         {
             TreeNode parent = node.Parent;
@@ -124,35 +127,34 @@ namespace Jx.Editors
             }
             return parent;
         }
-        private static bool EnumerateAllNodes(TreeNode node, TreeViewUtils.EnumerateAllNodesDelegate callback)
+
+        public static bool EnumerateNodes(TreeNode node, EnumerateNodesDelegate callback)
         {
+            if (node == null || callback == null)
+                return false; 
+
             if (!callback(node))
-            {
                 return false;
-            }
+            
             foreach (TreeNode node2 in node.Nodes)
             {
-                if (!TreeViewUtils.EnumerateAllNodes(node2, callback))
-                {
+                if (!EnumerateNodes(node2, callback))
                     return false;
-                }
             }
             return true;
         }
-        public static bool EnumerateAllNodes(TreeView treeView, TreeViewUtils.EnumerateAllNodesDelegate callback)
+        public static bool EnumerateNodes(TreeView treeView, EnumerateNodesDelegate callback)
         {
             foreach (TreeNode node in treeView.Nodes)
             {
-                if (!TreeViewUtils.EnumerateAllNodes(node, callback))
-                {
+                if (!EnumerateNodes(node, callback))
                     return false;
-                }
             }
             return true;
         }
         public static bool IsVScrollVisible(TreeView treeView)
         {
-            int windowLong = TreeViewUtils.GetWindowLong(treeView.Handle, -16);
+            int windowLong = GetWindowLong(treeView.Handle, -16);
             return (windowLong & 2097152) != 0;
         }
     }

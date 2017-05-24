@@ -147,7 +147,7 @@
             this.tabPage3dModel.Name = "tabPage3dModel";
             this.tabPage3dModel.Size = new System.Drawing.Size(376, 480);
             this.tabPage3dModel.TabIndex = 1;
-            this.tabPage3dModel.Text = "3D Model";
+            this.tabPage3dModel.Text = "File System";
             this.tabPage3dModel.UseVisualStyleBackColor = true;
             // 
             // treeView3dModel

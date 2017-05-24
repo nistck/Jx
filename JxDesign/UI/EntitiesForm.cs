@@ -16,6 +16,8 @@ using Jx.UI;
 using Jx.MapSystem;
 using Jx.EntitySystem;
 using JxDesign.Actions;
+using Jx.Editors;
+
 
 namespace JxDesign.UI
 { 
@@ -90,49 +92,29 @@ namespace JxDesign.UI
                     editorLayer = mapObject.EditorLayer;
                 }
 
-                TreeNode layerNode = FindNodeByTag(editorLayer);
+                TreeNode layerNode = TreeViewUtil.FindNodeByTag(rootLayerNode, editorLayer);
                 layerNode = layerNode ?? rootNode;
                 CreateEntityNode(entity, layerNode, false);
             }
-        }
-               
+        } 
 
         public void UpdateMapObjectLayer(MapObject target)
         {
             if (target == null)
                 return;
 
-            TreeNode objectNode = FindNodeByTag(target);
+            TreeNode objectNode = TreeViewUtil.FindNodeByTag(rootNode, target);
             if (objectNode == null)
                 return;
 
-            TreeNode layerNode = FindNodeByTag(target.EditorLayer);
-            if( layerNode != null)
+            TreeNode layerNode = TreeViewUtil.FindNodeByTag(rootNode, target.EditorLayer);
+            if ( layerNode != null)
             {
                 objectNode.Remove();
                 layerNode.Nodes.Add(objectNode);
-                ExpandTo(objectNode);
+                TreeViewUtil.ExpandTo(objectNode);
             }
-        }
-
-        private void ExpandTo(TreeNode node)
-        {
-            if (node == null)
-                return;
-
-            List<TreeNode> nodes = new List<TreeNode>();
-            while (node != null && node != rootNode)
-            {
-                if (node.Parent == null)
-                    break;
-                nodes.Add(node.Parent);
-                node = node.Parent;
-            }
-
-            nodes.Reverse();
-            for (int i = 0; i < nodes.Count; i++)
-                nodes[i].Expand();
-        }
+        } 
 
         internal void OnNodeSelectChanged(TreeNode nodeNew)
         {
@@ -184,6 +166,13 @@ namespace JxDesign.UI
                 parent.Nodes.Add(node);
             else
                 treeViewEntities.Nodes.Add(node);
+
+            if(parent != null && entity is MapObject && parent.Tag is Map.EditorLayer )
+            {
+                ((MapObject)entity).EditorLayer = parent.Tag as Map.EditorLayer;
+            }
+               
+
             if (selected)
                 SetNodeSelected(node);
             return node;
@@ -224,30 +213,7 @@ namespace JxDesign.UI
 
             foreach(Map.EditorLayer layerChild in layer.Children)
                 BuildLayerNode(layerChild, node);
-        }
-
-        private TreeNode FindNodeByTag(object tag)
-        {
-            if (tag == null)
-                return null;
-
-            List<TreeNode> nodes = new List<TreeNode>();
-            nodes.Add(rootNode);
-            
-            while(nodes.Count > 0 )
-            {
-                TreeNode tn = nodes[0];
-                nodes.RemoveAt(0);
-
-                if (tn.Tag == tag)
-                    return tn;
-
-                TreeNode[] tns = new TreeNode[tn.Nodes.Count];
-                tn.Nodes.CopyTo(tns, 0);
-                nodes.AddRange(tns.ToList());
-            }
-            return null;
-        }
+        } 
         
         private Map.EditorLayer LayerSelected
         {
@@ -355,6 +321,8 @@ namespace JxDesign.UI
             MapWorld.Instance.Modified = true;
         }
 
+
+
         private void tsmiDeleteLayer_Click(object sender, EventArgs e)
         {
             TreeNode node = CurrentLayerNode;
@@ -362,6 +330,18 @@ namespace JxDesign.UI
             {
                 tsmiDeleteLayer.Enabled = false;
                 return; 
+            }
+            List<TreeNode> valueNodes = new List<TreeNode>();
+            TreeViewUtil.EnumerateNodes(node, (_node) => {
+                if (_node.Tag is Entity)
+                    valueNodes.Add(_node);
+                return true;
+            }); 
+            if( valueNodes.Count > 0 )
+            {
+                string infoMessage = string.Format("该Layer下有{0}个节点, 删除该Layer会将这些节点放在根节点下。是否继续？", valueNodes.Count);
+                if (MessageBox.Show(infoMessage, "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+                    return;
             }
 
             Map.EditorLayer layer = node.Tag as Map.EditorLayer;
@@ -431,6 +411,7 @@ namespace JxDesign.UI
                     else
                     {
                         e.Node.EndEdit(false);
+                        MapWorld.Instance.Modified = true;
                     }
                 }
             }

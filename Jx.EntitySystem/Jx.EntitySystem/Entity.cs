@@ -132,34 +132,25 @@ namespace Jx.EntitySystem
             private string value = "";
             public string Name
             {
-                get
-                {
-                    return this.name;
-                }
-                set
-                {
-                    this.name = value;
-                }
+                get { return name; }
+                set { this.name = value; }
             }
             public string Value
             {
-                get
-                {
-                    return this.value;
-                }
-                set
-                {
-                    this.value = value;
-                }
+                get { return value; }
+                set { this.value = value; }
             }
+
             public TagInfo()
             {
             }
+
             public TagInfo(string name, string value)
             {
                 this.name = name;
                 this.value = value;
             }
+
             public override string ToString()
             {
                 return string.Format("{0} = {1}", this.name, this.value);
@@ -174,6 +165,7 @@ namespace Jx.EntitySystem
         public delegate void DestroyedDelegate(Entity entity);
         public delegate void TickDelegate(Entity entity);
         public delegate void DeleteSubscribedToDeletionEventDelegate(Entity entity, Entity deletedEntity);
+
         internal static float tickDelta;
 
         [TypeField]
@@ -195,11 +187,7 @@ namespace Jx.EntitySystem
         internal bool isDestroyed;
 
         [FieldSerialize("name")]
-        private string name = "";
-
-        [FieldSerialize]
-        private string editorLayer = null;
-
+        private string name = ""; 
 
         internal List<Entity> subscriptionsToDeletionEvent;
         private LinkedListNode<Entity> zj;
@@ -373,26 +361,22 @@ namespace Jx.EntitySystem
         {
             get
             {
-                return this.logicClass;
+                return logicClass;
             }
             set
             {
-                if (this.logicClass != null)
+                if (logicClass != null)
                 {
-                    this.resetLogicObject();
+                    resetLogicObject();
                     if (!EntitySystemWorld.Instance.IsEditor())
-                    {
-                        this.UnsubscribeToDeletionEvent(this.logicClass);
-                    }
+                        UnsubscribeToDeletionEvent(logicClass);
                 }
-                this.logicClass = value;
-                if (this.logicClass != null)
+                logicClass = value;
+                if (logicClass != null)
                 {
-                    this.SubscribeToDeletionEvent(this.logicClass);
+                    SubscribeToDeletionEvent(logicClass);
                     if (!EntitySystemWorld.Instance.IsEditor())
-                    {
-                        this.d();
-                    }
+                        CreateLogicObject();
                 }
             }
         }
@@ -402,7 +386,7 @@ namespace Jx.EntitySystem
         {
             get
             {
-                return Entity.tickDelta;
+                return tickDelta;
             }
         }
 
@@ -411,11 +395,11 @@ namespace Jx.EntitySystem
         {
             get
             {
-                return this.userData;
+                return userData;
             }
             set
             {
-                this.userData = value;
+                userData = value;
             }
         }
 
@@ -450,7 +434,7 @@ namespace Jx.EntitySystem
         {
             get
             {
-                return this.logicObject;
+                return logicObject;
             }
         }
 
@@ -650,30 +634,26 @@ namespace Jx.EntitySystem
 
         protected internal virtual void OnPostCreate(bool loaded)
         {
-            if (this.editor_excludeEntityFromWorld)
+            if (editor_excludeEntityFromWorld)
             {
                 return;
             }
-            if (this.parent != null && this.zD.List == null)
+            if (parent != null && zD.List == null)
             {
-                this.parent.OnAddChild(this);
+                parent.OnAddChild(this);
             }
         }
 
         protected internal virtual void OnPostCreate2(bool loaded)
         {
-            if (this.editor_excludeEntityFromWorld)
-            {
+            if (editor_excludeEntityFromWorld)
                 return;
-            }
-            if (this.logicObject == null && this.logicClass != null && !EntitySystemWorld.Instance.IsEditor())
-            {
-                this.d();
-            }
+
+            if (logicObject == null && logicClass != null && !EntitySystemWorld.Instance.IsEditor())
+                CreateLogicObject();
+
             if (loaded)
-            {
-                this._OnPostCreated(true);
-            }
+                _OnPostCreated(true);
         }
 
         internal void executeDestory()
@@ -697,26 +677,23 @@ namespace Jx.EntitySystem
 
         protected internal virtual void OnDestroy()
         {
-            if (this.editor_excludeEntityFromWorld)
-            {
+            if (editor_excludeEntityFromWorld)
                 return;
-            }
-            if (this.extendedProperties != null && !this.Editor_IsExcludedFromWorld())
+            
+            if (extendedProperties != null && !Editor_IsExcludedFromWorld())
+                DestroyExtendedProperties();
+
+            if (Name != "" && IsPostCreated)
             {
-                this.DestroyExtendedProperties();
-            }
-            if (this.Name != "" && this.IsPostCreated)
-            {
-                Entity entity = Entities.Instance.entitySetByName[this.Name];
+                Entity entity = Entities.Instance.entitySetByName[Name];
                 if (entity == this)
-                {
-                    Entities.Instance.entitySetByName.Remove(this.Name);
-                }
+                    Entities.Instance.entitySetByName.Remove(Name);
             }
+
             if (LogicSystemManager.Instance != null && LogicSystemManager.Instance.Parent == this)
             {
                 LogicSystemManager logicSystemManager = null;
-                foreach (Entity current in this.Children)
+                foreach (Entity current in Children)
                 {
                     if (!current.isDestroyed)
                     {
@@ -735,35 +712,28 @@ namespace Jx.EntitySystem
 
             }
             IL_F5:
-            while (this.subscriptionsToDeletionEvent != null && this.subscriptionsToDeletionEvent.Count != 0)
+            while (subscriptionsToDeletionEvent != null && subscriptionsToDeletionEvent.Count != 0)
             {
-                for (int i = 0; i < this.subscriptionsToDeletionEvent.Count; i++)
+                for (int i = 0; i < subscriptionsToDeletionEvent.Count; i++)
                 {
-                    int count = this.subscriptionsToDeletionEvent.Count;
-                    if (this.subscriptionsToDeletionEvent[i] != null)
-                    {
-                        this.subscriptionsToDeletionEvent[i].DeleteSubscribedToDeletion(this);
-                    }
-                    if (count != this.subscriptionsToDeletionEvent.Count)
-                    {
+                    int count = subscriptionsToDeletionEvent.Count;
+                    if (subscriptionsToDeletionEvent[i] != null)
+                        subscriptionsToDeletionEvent[i].DeleteSubscribedToDeletion(this);
+                    
+                    if (count != subscriptionsToDeletionEvent.Count)
                         goto IL_F5;
-                    }
                 }
-                while (this.subscriptionsToDeletionEvent.Count != 0)
+                while (subscriptionsToDeletionEvent.Count != 0)
                 {
-                    if (this.subscriptionsToDeletionEvent[0] == null)
-                    {
-                        this.subscriptionsToDeletionEvent.RemoveAt(0);
-                    }
+                    if (subscriptionsToDeletionEvent[0] == null)
+                        subscriptionsToDeletionEvent.RemoveAt(0);
                     else
-                    {
-                        this.UnsubscribeToDeletionEvent(this.subscriptionsToDeletionEvent[0]);
-                    }
+                        UnsubscribeToDeletionEvent(subscriptionsToDeletionEvent[0]);
                 }
                 break;
             }
             this.c();
-            this.isDestroyed = true;
+            isDestroyed = true;
         }
         protected virtual void OnAddChild(Entity entity)
         {
@@ -887,7 +857,7 @@ namespace Jx.EntitySystem
             }
             if (this.logicObject == null && this.logicClass != null )
             {
-                this.d();
+                this.CreateLogicObject();
                 TextBlock textBlock = block.FindChild("logicObject");
                 if (textBlock != null && !this.logicObject.A(textBlock))
                 {
@@ -1208,7 +1178,7 @@ namespace Jx.EntitySystem
             this.OnClone(source);
         }
 
-        private void d()
+        private void CreateLogicObject()
         {
             if (EntitySystemWorld.Instance.LogicSystemScriptsAssembly == null)
             {

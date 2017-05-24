@@ -383,7 +383,7 @@ namespace JxDesign
         {
             if (!this.Bjc)
             {
-                List<object> list = this.A(gridItem);
+                List<object> list = this.ListGridItemValues(gridItem);
                 if (list.Count != 0 && gridItem.Tag != null)
                 {
                     object[] array = (object[])gridItem.Tag;
@@ -449,7 +449,7 @@ namespace JxDesign
 
         void propertiesForm_ContextMenuOpening(ContextMenuStrip contextMenuStrip)
         {
-            if (this.PropertiesForm.SelectedGridItem != null && this.PropertiesForm.SelectedGridItem.Label == "Tags")
+            if (PropertiesForm.SelectedGridItem != null && PropertiesForm.SelectedGridItem.Label == "Tags")
             {
                 List<Entity> entitiesSelected = EntityWorld.Instance.SelectedEntities;
 
@@ -535,9 +535,7 @@ namespace JxDesign
                     string text = ToolsLocalization.Translate("Various", "Tick you want create the class of Logic Editor for selected object?");
                     string caption = ToolsLocalization.Translate("Various", "Map Editor");
                     if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    {
                         return;
-                    }
                 }
                 A(entity.LogicClass, entity.LogicClass == null);
             }
@@ -550,50 +548,41 @@ namespace JxDesign
             this.BjB = bjB;
             this.Bjv.Start();
             //*/
-        }
-
+        } 
         
-        private System.Collections.Generic.List<object> A(GridItem gridItem)
+        private List<object> ListGridItemValues(GridItem gridItem)
         {
-            System.Collections.Generic.List<object> list = new System.Collections.Generic.List<object>();
+            List<object> list = new List<object>();
             try
             {
-                System.Reflection.FieldInfo field = gridItem.GetType().GetField("objs", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                FieldInfo field = gridItem.GetType().GetField("objs", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 if (field != null)
                 {
-                    object[] array = (object[])field.GetValue(gridItem);
-                    object[] array2 = array;
-                    for (int i = 0; i < array2.Length; i++)
+                    object[] objs = (object[])field.GetValue(gridItem);
+                    for (int i = 0; i < objs.Length; i++)
                     {
-                        object obj = array2[i];
-                        object obj2 = obj;
-                        EntityCustomTypeDescriptor entityCustomTypeDescriptor = obj2 as EntityCustomTypeDescriptor;
+                        object obj = objs[i];
+                        EntityCustomTypeDescriptor entityCustomTypeDescriptor = obj as EntityCustomTypeDescriptor;
                         if (entityCustomTypeDescriptor != null)
-                        {
-                            obj2 = entityCustomTypeDescriptor.Entity;
-                        }
-                        list.Add(obj2);
+                            obj = entityCustomTypeDescriptor.Entity;
+                        list.Add(obj);
                     }
                 }
             }
-            catch
-            {
-            }
+            catch { }
+
             if (list.Count == 0)
             {
                 EntityPropertyDescriptor entityPropertyDescriptor = gridItem.PropertyDescriptor as EntityPropertyDescriptor;
-                if (entityPropertyDescriptor != null)
-                {
-                    list.Add(entityPropertyDescriptor.Entity);
-                }
+                if (entityPropertyDescriptor != null) 
+                    list.Add(entityPropertyDescriptor.Entity); 
             }
+
             if (list.Count == 0)
             {
                 object value = gridItem.Parent.Value;
                 if (!(value is System.Collections.ICollection))
-                {
                     list.Add(gridItem.Parent.Value);
-                }
             }
             return list;
         }
@@ -604,7 +593,7 @@ namespace JxDesign
             GridItem current = gridItem;
             while (current != null && current.PropertyDescriptor != null)
             {
-                List<object> list = this.A(current);
+                List<object> list = ListGridItemValues(current);
                 if (list.Count != 0)
                 {
                     object[] array = new object[list.Count];

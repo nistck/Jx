@@ -68,7 +68,7 @@
     <Compile Include="ResourceEditorAddon.cs" />
     <Compile Include="ResourceType.cs" />
     <Compile Include="ResourceTypeManager.cs" />
-    <Compile Include="TreeViewUtils.cs" />
+    <Compile Include="TreeViewUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">

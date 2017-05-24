@@ -1072,7 +1072,7 @@ namespace JxRes.UI
                 return;
             }
 
-            MyTreeNode myTreeNode = (MyTreeNode)TreeViewUtils.GetNeedSelectNodeAfterRemoveNode(this.ResourcesView.SelectedNode);
+            MyTreeNode myTreeNode = (MyTreeNode)TreeViewUtil.GetNeedSelectNodeAfterRemoveNode(this.ResourcesView.SelectedNode);
             List<MyTreeNode> list = this.A(this.multiSelectedList);
             foreach (MyTreeNode current in list)
             {
@@ -1254,7 +1254,7 @@ namespace JxRes.UI
         public void SelectNodeByPath(string path)
         {
             TreeNode treeNode = this.FindNodeByPath(path);
-            TreeViewUtils.ExpandAllPathToNode(treeNode);
+            TreeViewUtil.ExpandTo(treeNode);
             Trace.Assert(treeNode != null);
             this.ResourcesView.SelectedNode = treeNode;
         }

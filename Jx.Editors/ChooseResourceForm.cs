@@ -113,9 +113,9 @@ namespace Jx.Editors
                 }
             }
             this.rootNode = new TreeNode("Data", 0, 0);
-            this.treeView.Nodes.Add(this.rootNode);
-            this.UpdateDataDirectory("", this.rootNode);
-            this.treeView.TreeViewNodeSorter = new ChooseResourceForm.NodeComparer();
+            this.treeView.Nodes.Add(rootNode);
+            this.UpdateDataDirectory("", rootNode);
+            this.treeView.TreeViewNodeSorter = new NodeComparer();
             this.treeView.Sort();
             this.rootNode.Expand();
             if (this.rootNode.Nodes.Count == 1)
@@ -128,100 +128,81 @@ namespace Jx.Editors
                 TreeNode nodeByPath = this.GetNodeByPath(currentPath);
                 if (nodeByPath != null)
                 {
-                    TreeViewUtils.ExpandAllPathToNode(nodeByPath);
+                    TreeViewUtil.ExpandTo(nodeByPath);
                     this.treeView.SelectedNode = nodeByPath;
                     flag = true;
                 }
             }
-            if (!flag && string.IsNullOrEmpty(currentPath) && !string.IsNullOrEmpty(ChooseResourceForm.currentHelperDirectoryName))
+            if (!flag && string.IsNullOrEmpty(currentPath) && !string.IsNullOrEmpty(currentHelperDirectoryName))
             {
-                TreeNode nodeByPath2 = this.GetNodeByPath(ChooseResourceForm.currentHelperDirectoryName);
+                TreeNode nodeByPath2 = GetNodeByPath(currentHelperDirectoryName);
                 if (nodeByPath2 != null)
                 {
-                    TreeViewUtils.ExpandAllPathToNode(nodeByPath2);
-                    this.treeView.SelectedNode = nodeByPath2;
+                    TreeViewUtil.ExpandTo(nodeByPath2);
+                    treeView.SelectedNode = nodeByPath2;
                     flag = true;
                 }
             }
             if (this.allowChooseNull)
             {
                 this.nullValueNode = new TreeNode(ToolsLocalization.Translate("ChooseResourceForm", "(Null)"), 1, 1);
-                this.nullValueNode.Name = this.nullValueNode.Text;
-                this.treeView.Nodes.Add(this.nullValueNode);
+                this.nullValueNode.Name = nullValueNode.Text;
+                this.treeView.Nodes.Add(nullValueNode);
                 if (string.IsNullOrEmpty(currentPath) && !flag)
                 {
-                    this.treeView.SelectedNode = this.nullValueNode;
+                    this.treeView.SelectedNode = nullValueNode;
                     flag = true;
                 }
             }
-            if (!flag && this.treeView.Nodes.Count != 0)
+            if (!flag && treeView.Nodes.Count != 0)
             {
-                this.treeView.SelectedNode = this.treeView.Nodes[0];
+                this.treeView.SelectedNode = treeView.Nodes[0];
             }
             this.treeView.EndUpdate();
         }
 
         private void UpdateDataDirectory(string path, TreeNode parentNode)
         {
-            string[] directories = VirtualDirectory.GetDirectories(path);
-            string[] array = directories;
-            for (int i = 0; i < array.Length; i++)
+            string[] directories = VirtualDirectory.GetDirectories(path); 
+            for (int i = 0; i < directories.Length; i++)
             {
-                string path2 = array[i];
+                string path2 = directories[i];
                 string fileName = Path.GetFileName(path2);
                 TreeNode treeNode = new TreeNode(fileName, 0, 0);
                 treeNode.Name = treeNode.Text;
                 parentNode.Nodes.Add(treeNode);
-                this.UpdateDataDirectory(path2, treeNode);
+                UpdateDataDirectory(path2, treeNode);
                 if (treeNode.Nodes.Count == 0)
-                {
                     treeNode.Remove();
-                }
             }
+
             string searchPattern;
-            if (this.resourceType != null && this.resourceType.Extensions.Length == 1)
-            {
-                searchPattern = "*." + this.resourceType.Extensions[0];
-            }
+            if (resourceType != null && resourceType.Extensions.Length == 1)
+                searchPattern = "*." + resourceType.Extensions[0];
             else
-            {
                 searchPattern = "*";
-            }
-            string[] files = VirtualDirectory.GetFiles(path, searchPattern);
-            string[] array2 = files;
-            for (int j = 0; j < array2.Length; j++)
+            
+            string[] files = VirtualDirectory.GetFiles(path, searchPattern); 
+            for (int j = 0; j < files.Length; j++)
             {
-                string text = array2[j];
-                if (this.shouldAddDelegate == null || this.shouldAddDelegate(text))
+                string file = files[j];
+                if (shouldAddDelegate == null || shouldAddDelegate(file))
                 {
-                    if (this.resourceType != null && this.resourceType.Extensions.Length != 1)
+                    if (resourceType != null && resourceType.Extensions.Length != 1)
                     {
-                        string text2 = Path.GetExtension(text);
-                        if (text2.Length > 0)
-                        {
-                            text2 = text2.Substring(1);
-                        }
-                        bool flag = false;
-                        string[] extensions = this.resourceType.Extensions;
-                        for (int k = 0; k < extensions.Length; k++)
-                        {
-                            string strB = extensions[k];
-                            if (string.Compare(text2, strB, true) == 0)
-                            {
-                                flag = true;
-                                break;
-                            }
-                        }
-                        if (!flag)
-                        {
-                            goto IL_152;
-                        }
+                        string ext = Path.GetExtension(file);
+                        if (ext.Length > 0)
+                            ext = ext.Substring(1);
+
+                        bool resourceFound = resourceType.Extensions.Where(_x => _x != null).Select(_s => _s.ToLower()).Where(_s => _s == ext).Count() > 0;
+                        if (!resourceFound)
+                            continue;
                     }
-                    this.UpdateAddResource(parentNode, text);
+                    UpdateAddResource(parentNode, file);
                 }
-                IL_152:;
             }
         }
+
         private void UpdateAddResource(TreeNode parentNode, string fileName)
         {
             string fileName2 = Path.GetFileName(fileName);
