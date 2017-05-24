@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BFAD8C6E-695D-4774-9145-DB556E4C44B1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Globe.Graphics.Bidimensional.Common</RootNamespace>
+    <AssemblyName>Globe.Graphics.Bidimensional.Common</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Globe.Graphics.Bidimensional.Common.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Appearances\Appearance.cs" />
+    <Compile Include="GridManager.cs" />
+    <Compile Include="TypeConverters\AppearanceTypeConverter.cs" />
+    <Compile Include="Appearances\GhostAppearance.cs" />
+    <Compile Include="Appearances\LineAppearance.cs" />
+    <Compile Include="Appearances\PolygonAppearance.cs" />
+    <Compile Include="Collections\ShapeCollectionEx.cs" />
+    <Compile Include="Delegates\Appearance delegates.cs" />
+    <Compile Include="Delegates\Transformer delegates.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\CompositeShape.cs" />
+    <Compile Include="Delegates\Shape delegates.cs" />
+    <Compile Include="Shapes\CustomShape.cs" />
+    <Compile Include="Enums\Versors.cs" />
+    <Compile Include="Enums\HitPositions.cs" />
+    <Compile Include="Interfaces\IDocument.cs" />
+    <Compile Include="Interfaces\IActions.cs" />
+    <Compile Include="Interfaces\IShape.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shapes\Ghosts\Ghost.cs" />
+    <Compile Include="Tools\Select.cs" />
+    <Compile Include="Shapes\Shape.cs" />
+    <Compile Include="Collections\ShapeCollection.cs" />
+    <Compile Include="Tools\Tool.cs" />
+    <Compile Include="Transformers\CompositeTransformer.cs" />
+    <Compile Include="Transformers\Transformer.cs" />
+    <Compile Include="TypeConverters\GridManagerTypeConverter.cs" />
+    <Compile Include="TypeConverters\SizeFTypeConverter.cs" />
+    <Compile Include="TypeConverters\PointFTypeConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Converters\Globe.Core.Converters.csproj">
+      <Project>{C7173FEB-5F8A-4E11-940B-35ECF4464D67}</Project>
+      <Name>Globe.Core.Converters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xml\Serialization\CSharp\Globe.Xml.Serialization.csproj">
+      <Project>{01D4D5C7-E640-4F86-AE67-7A1DFDA10DFC}</Project>
+      <Name>Globe.Xml.Serialization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

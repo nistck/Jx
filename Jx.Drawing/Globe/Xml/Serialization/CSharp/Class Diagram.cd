@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Globe.Xml.Serialization.DataMember" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataMember.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAEAAAAAAAAAAAQAQAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.Resource" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAGAAAAAAAAAAgABEAAAAQCAAJAAAQAgAQAACIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.SerializableData" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SerializableData.cs</FileName>
+      <HashCode>ABAAAACAEAAIAAQAABAAAAAAAACAAIAEAUAgAAAACAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.SerializableDataComposer" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SerializableDataComposer.cs</FileName>
+      <HashCode>AAAAAAAAEgAAAAAAAAAAAAAAAAgAAgAAAAAEAAABAQA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.SerializableDataController" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SerializableDataController.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAIAQAAgCAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.SerializableDataDecomposer" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SerializableDataDecomposer.cs</FileName>
+      <HashCode>CAAAAABAAAAAAgCAAAAAAAAAAAAAEAAAAAIIAAQAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.Serializer" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Serializer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAwAAAAAgAAAgCACBAAAAAAAAAAEgAAAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlClassSerializable" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlClassSerializable.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlFieldSerializable" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlFieldSerializable.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlSerializable" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlSerializable.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAACAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlSerializationException" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlSerializationException.cs</FileName>
+      <HashCode>AAAAAAAABAAAAAAAAAABAAAAAAAAAIAAgAAAIAAAACA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlSerializeReader" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlSerializeReader.cs</FileName>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Globe.Xml.Serialization.XmlSerializeWriter" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>XmlSerializeWriter.cs</FileName>
+      <HashCode>QAAAABAAAAAAAAAAAAAAAAABAAAAAgAAAAAAgAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

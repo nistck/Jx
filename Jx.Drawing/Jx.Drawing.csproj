@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jx.Drawing</RootNamespace>
+    <AssemblyName>Jx.Drawing</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Globe\Core\Converters\BitmapConverter.cs" />
+    <Compile Include="Globe\Core\Converters\ColorConverter.cs" />
+    <Compile Include="Globe\Core\Utilities\Clipboard.cs" />
+    <Compile Include="Globe\Core\Utilities\History.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\DrawingPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Globe\Graphics\Bidimensional\Base\GroupEngine.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Resource.Designer.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Copy of Text.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ellipse.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ghosts\GhostCollection.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Ghosts\MultiSelectGhost.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Image.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Line.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Rectangle.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Shapes\Text.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\CopyPoint.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Deform.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Draw.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawFreeLine.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawShape.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\DrawSloppedLine.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Move.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\MultiSelect.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Pointer.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Resize.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Base\Tools\Rotate.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\Appearance.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\GhostAppearance.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\LineAppearance.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Appearances\PolygonAppearance.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Collections\ShapeCollection.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Collections\ShapeCollectionEx.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Appearance delegates.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Shape delegates.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Delegates\Transformer delegates.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Enums\HitPositions.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Enums\Versors.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\GridManager.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IActions.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IDocument.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Interfaces\IShape.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Resource.Designer.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\CompositeShape.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\CustomShape.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\Ghosts\Ghost.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Shapes\Shape.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Tools\Select.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Tools\Tool.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Transformers\CompositeTransformer.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\Transformers\Transformer.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\AppearanceTypeConverter.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\GridManagerTypeConverter.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\PointFTypeConverter.cs" />
+    <Compile Include="Globe\Graphics\Bidimensional\Common\TypeConverters\SizeFTypeConverter.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\DataMember.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\Resource.Designer.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableData.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataComposer.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataController.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\SerializableDataDecomposer.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\Serializer.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlClassSerializable.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlFieldSerializable.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializable.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializationException.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializeReader.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\XmlSerializeWriter.cs" />
+    <Compile Include="Globe\Xml\Serialization\CSharp\_SerializableDataComposer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Globe\Graphics\Bidimensional\Base\Resources\Rotate.ico" />
+    <Content Include="Globe\Graphics\Bidimensional\Common\Globe.Graphics.Bidimensional.Common.csproj" />
+    <Content Include="Globe\Xml\Serialization\CSharp\Globe.Xml.Serialization.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Globe\Xml\Serialization\CSharp\Class Diagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Globe\Graphics\Bidimensional\Base\Resource.resx" />
+    <EmbeddedResource Include="Globe\Graphics\Bidimensional\Common\Resource.resx" />
+    <EmbeddedResource Include="Globe\Xml\Serialization\CSharp\Resource.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

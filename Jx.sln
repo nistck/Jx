@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CamalonDesign", "CamalonDes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.BuildAll", "Jx.BuildAll\Jx.BuildAll.csproj", "{0B3B91BF-01F0-44BE-8633-CB5CD92FDC11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Drawing", "Jx.Drawing\Jx.Drawing.csproj", "{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{0B3B91BF-01F0-44BE-8633-CB5CD92FDC11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B3B91BF-01F0-44BE-8633-CB5CD92FDC11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B3B91BF-01F0-44BE-8633-CB5CD92FDC11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287956D2-C937-46AE-BD9E-F2F0B38FEDF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
