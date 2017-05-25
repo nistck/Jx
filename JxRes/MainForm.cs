@@ -205,16 +205,18 @@ namespace JxRes
                 textMessages.Add(
                         "Ok"
                     );
-
+ 
                 for(int i = 0; i < textMessages.Count; i ++)
                 {
                     PointF pt = new PointF(x, y);
-                    CreateCanvasText(textMessages[i], pt);
+                    Text tx = CreateCanvasText(textMessages[i], pt);
+                    if (tx != null)
+                        tx.Transformer.Translate(x, y);
 
                    y += textLineHeight;
                 }
 
-                Canvas.Enabled = false;
+                //Canvas.Enabled = false;
             }
 
 #if DEBUG_RES

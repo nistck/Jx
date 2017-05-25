@@ -39,6 +39,13 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.addonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEntityTypesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEntitiesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiContentWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPropertiesWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOtherView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiConsoleWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbNew = new System.Windows.Forms.ToolStripButton();
             this.tsbOpen = new System.Windows.Forms.ToolStripButton();
@@ -51,18 +58,14 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiEntityTypesWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiEntitiesWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiContentWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiPropertiesWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiOtherView = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiConsoleWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.tsbLogic = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.timerLogicEditor = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -137,6 +140,61 @@
             this.addonsToolStripMenuItem.Size = new System.Drawing.Size(63, 21);
             this.addonsToolStripMenuItem.Text = "扩 展(&E)";
             // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiEntityTypesWindow,
+            this.tsmiEntitiesWindow,
+            this.tsmiContentWindow,
+            this.tsmiPropertiesWindow,
+            this.tsmiOtherView});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(64, 21);
+            this.viewToolStripMenuItem.Text = "视 图(&V)";
+            // 
+            // tsmiEntityTypesWindow
+            // 
+            this.tsmiEntityTypesWindow.Name = "tsmiEntityTypesWindow";
+            this.tsmiEntityTypesWindow.Size = new System.Drawing.Size(148, 22);
+            this.tsmiEntityTypesWindow.Text = "实体类管理器";
+            this.tsmiEntityTypesWindow.Click += new System.EventHandler(this.tsmiEntityTypesWindow_Click);
+            // 
+            // tsmiEntitiesWindow
+            // 
+            this.tsmiEntitiesWindow.Name = "tsmiEntitiesWindow";
+            this.tsmiEntitiesWindow.Size = new System.Drawing.Size(148, 22);
+            this.tsmiEntitiesWindow.Text = "实体管理器";
+            this.tsmiEntitiesWindow.Click += new System.EventHandler(this.tsmiEntitiesWindow_Click);
+            // 
+            // tsmiContentWindow
+            // 
+            this.tsmiContentWindow.Name = "tsmiContentWindow";
+            this.tsmiContentWindow.Size = new System.Drawing.Size(148, 22);
+            this.tsmiContentWindow.Text = "内容编辑器";
+            this.tsmiContentWindow.Click += new System.EventHandler(this.tsmiContentWindow_Click);
+            // 
+            // tsmiPropertiesWindow
+            // 
+            this.tsmiPropertiesWindow.Name = "tsmiPropertiesWindow";
+            this.tsmiPropertiesWindow.Size = new System.Drawing.Size(148, 22);
+            this.tsmiPropertiesWindow.Text = "属性编辑器";
+            this.tsmiPropertiesWindow.Click += new System.EventHandler(this.tsmiPropertiesWindow_Click);
+            // 
+            // tsmiOtherView
+            // 
+            this.tsmiOtherView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiConsoleWindow});
+            this.tsmiOtherView.Name = "tsmiOtherView";
+            this.tsmiOtherView.Size = new System.Drawing.Size(148, 22);
+            this.tsmiOtherView.Text = "其他";
+            // 
+            // tsmiConsoleWindow
+            // 
+            this.tsmiConsoleWindow.Name = "tsmiConsoleWindow";
+            this.tsmiConsoleWindow.Size = new System.Drawing.Size(124, 22);
+            this.tsmiConsoleWindow.Text = "信息输出";
+            this.tsmiConsoleWindow.Click += new System.EventHandler(this.tsmiOutputWindow_Click);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -147,7 +205,9 @@
             this.toolStripSeparator1,
             this.tsbUndo,
             this.tsbRedo,
-            this.toolStripSeparator2});
+            this.toolStripSeparator2,
+            this.tsbLogic,
+            this.toolStripSeparator3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1154, 25);
@@ -250,66 +310,12 @@
             this.IL16.Images.SetKeyName(11, "saveAs");
             this.IL16.Images.SetKeyName(12, "redo");
             this.IL16.Images.SetKeyName(13, "undo");
+            this.IL16.Images.SetKeyName(14, "logic");
             // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiEntityTypesWindow,
-            this.tsmiEntitiesWindow,
-            this.tsmiContentWindow,
-            this.tsmiPropertiesWindow,
-            this.tsmiOtherView});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(64, 21);
-            this.viewToolStripMenuItem.Text = "视 图(&V)";
-            // 
-            // tsmiEntityTypesWindow
-            // 
-            this.tsmiEntityTypesWindow.Name = "tsmiEntityTypesWindow";
-            this.tsmiEntityTypesWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsmiEntityTypesWindow.Text = "实体类管理器";
-            this.tsmiEntityTypesWindow.Click += new System.EventHandler(this.tsmiEntityTypesWindow_Click);
-            // 
-            // tsmiEntitiesWindow
-            // 
-            this.tsmiEntitiesWindow.Name = "tsmiEntitiesWindow";
-            this.tsmiEntitiesWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsmiEntitiesWindow.Text = "实体管理器";
-            this.tsmiEntitiesWindow.Click += new System.EventHandler(this.tsmiEntitiesWindow_Click);
-            // 
-            // tsmiContentWindow
-            // 
-            this.tsmiContentWindow.Name = "tsmiContentWindow";
-            this.tsmiContentWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsmiContentWindow.Text = "内容编辑器";
-            this.tsmiContentWindow.Click += new System.EventHandler(this.tsmiContentWindow_Click);
-            // 
-            // tsmiPropertiesWindow
-            // 
-            this.tsmiPropertiesWindow.Name = "tsmiPropertiesWindow";
-            this.tsmiPropertiesWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsmiPropertiesWindow.Text = "属性编辑器";
-            this.tsmiPropertiesWindow.Click += new System.EventHandler(this.tsmiPropertiesWindow_Click);
-            // 
-            // tsmiOtherView
-            // 
-            this.tsmiOtherView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiConsoleWindow});
-            this.tsmiOtherView.Name = "tsmiOtherView";
-            this.tsmiOtherView.Size = new System.Drawing.Size(152, 22);
-            this.tsmiOtherView.Text = "其他";
-            // 
-            // tsmiConsoleWindow
-            // 
-            this.tsmiConsoleWindow.Name = "tsmiConsoleWindow";
-            this.tsmiConsoleWindow.Size = new System.Drawing.Size(152, 22);
-            this.tsmiConsoleWindow.Text = "信息输出";
-            this.tsmiConsoleWindow.Click += new System.EventHandler(this.tsmiOutputWindow_Click);
             // 
             // dockPanel
             // 
@@ -323,6 +329,25 @@
             // vsToolStripExtender1
             // 
             this.vsToolStripExtender1.DefaultRenderer = null;
+            // 
+            // tsbLogic
+            // 
+            this.tsbLogic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbLogic.Image = ((System.Drawing.Image)(resources.GetObject("tsbLogic.Image")));
+            this.tsbLogic.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbLogic.Name = "tsbLogic";
+            this.tsbLogic.Size = new System.Drawing.Size(23, 22);
+            this.tsbLogic.Text = "toolStripButton1";
+            this.tsbLogic.Click += new System.EventHandler(this.tsbLogic_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // timerLogicEditor
+            // 
+            this.timerLogicEditor.Interval = 50;
             // 
             // MainForm
             // 
@@ -383,6 +408,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiPropertiesWindow;
         private System.Windows.Forms.ToolStripMenuItem tsmiOtherView;
         private System.Windows.Forms.ToolStripMenuItem tsmiConsoleWindow;
+        private System.Windows.Forms.ToolStripButton tsbLogic;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.Timer timerLogicEditor;
     }
 }
 

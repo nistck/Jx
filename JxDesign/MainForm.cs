@@ -45,6 +45,9 @@ namespace JxDesign
 
         private ImageCache imageCache;
 
+        private LogicClass currentLogicClass = null;
+        private bool currentLogicClassState = false;
+
         private bool Bjc { get; set; }
 
         public MainForm()
@@ -163,6 +166,7 @@ namespace JxDesign
             tsbSaveAs.Image = imageCache["saveAs"];
             tsbUndo.Image = imageCache["undo"];
             tsbRedo.Image = imageCache["redo"];
+            tsbLogic.Image = imageCache["logic"];
 
             Bootstrap();
 
@@ -548,6 +552,10 @@ namespace JxDesign
             this.BjB = bjB;
             this.Bjv.Start();
             //*/
+
+            this.currentLogicClass = bja;
+            this.currentLogicClassState = bjB;
+            this.timerLogicEditor.Enabled = true;
         } 
         
         private List<object> ListGridItemValues(GridItem gridItem)
@@ -807,6 +815,11 @@ namespace JxDesign
         private void tsmiOutputWindow_Click(object sender, EventArgs e)
         {
             ShowConsoleForm();
+        }
+
+        private void tsbLogic_Click(object sender, EventArgs e)
+        {
+            A(null, false);
         }
     }
 }

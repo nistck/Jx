@@ -57,6 +57,12 @@
     <Compile Include="CursorKeeper.cs" />
     <Compile Include="DefaultResourceTypeImages.cs" />
     <Compile Include="DesignerAddon.cs" />
+    <Compile Include="dy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dy.Designer.cs">
+      <DependentUpon>dy.cs</DependentUpon>
+    </Compile>
     <Compile Include="EntityUIEditor.cs" />
     <Compile Include="GeneralListCollectionEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +105,9 @@
   <ItemGroup>
     <EmbeddedResource Include="ChooseResourceForm.resx">
       <DependentUpon>ChooseResourceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dy.resx">
+      <DependentUpon>dy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
