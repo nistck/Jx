@@ -169,6 +169,7 @@ namespace JxDesign
             tsbLogic.Image = imageCache["logic"];
 
             Bootstrap();
+            EngineApp.Instance.TickInterval = timerEntitySystemWorld.Interval;
             timerEntitySystemWorld.Enabled = true;
 
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
@@ -826,7 +827,7 @@ namespace JxDesign
         private void timerEntitySystemWorld_Tick(object sender, EventArgs e)
         {
             if (EntitySystemWorld.Instance != null)
-                EntitySystemWorld.Instance.WorldTick(timerEntitySystemWorld.Interval);
+                EntitySystemWorld.Instance.Tick();
         }
     }
 }

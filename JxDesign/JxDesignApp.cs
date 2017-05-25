@@ -79,7 +79,7 @@ namespace JxDesign
             InitResourceTypeManager();
 
             UndoSystem.Init(64);
-
+                        
             //EntitySystemWorld.Instance.Simulation = true;
             return true;
         }

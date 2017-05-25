@@ -40,8 +40,12 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.timerEntitySystemWorld = new System.Windows.Forms.Timer(this.components);
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MapInfo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timerStatus = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,6 +104,9 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.MapInfo});
             this.statusStrip1.Location = new System.Drawing.Point(0, 483);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(815, 22);
@@ -135,6 +142,26 @@
             this.timerEntitySystemWorld.Interval = 20;
             this.timerEntitySystemWorld.Tick += new System.EventHandler(this.timerEntitySystemWorld_Tick);
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(800, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "Ready";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // MapInfo
+            // 
+            this.MapInfo.Name = "MapInfo";
+            this.MapInfo.Size = new System.Drawing.Size(0, 17);
+            this.MapInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // timerStatus
+            // 
+            this.timerStatus.Enabled = true;
+            this.timerStatus.Interval = 25;
+            this.timerStatus.Tick += new System.EventHandler(this.timerStatus_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -151,6 +178,8 @@
             this.tableLayoutPanel1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -170,6 +199,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tsbUnload;
         private System.Windows.Forms.Timer timerEntitySystemWorld;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel MapInfo;
+        private System.Windows.Forms.Timer timerStatus;
     }
 }
 

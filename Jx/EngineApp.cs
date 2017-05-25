@@ -24,7 +24,7 @@ namespace Jx
  
         private float time = 0.0f;
         private float lastTime = 0.0f;
-        private uint tickInterval = 10;
+        private int tickInterval = 10;
 
         private readonly object threadLock = new object(); 
         private Thread engineThread = null;
@@ -42,7 +42,7 @@ namespace Jx
             private set { this.time = value; }
         }
 
-        public uint TickInterval
+        public int TickInterval
         {
             get { return tickInterval; }
             set { this.tickInterval = value; }
@@ -115,7 +115,7 @@ namespace Jx
         {
             while(!engineThreadQuit)
             {
-                uint tickInterval = this.TickInterval;
+                int tickInterval = this.TickInterval;
                 int timeWaiting = 0;
                 if (tickInterval > 0)
                     timeWaiting = (int) tickInterval;

@@ -62,6 +62,8 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private MethodType method = MethodType.Get;
 
+        private Clock clock = null;
+
         protected override bool OnLoad(TextBlock block)
         { 
             return base.OnLoad(block);
@@ -89,14 +91,29 @@ namespace Jx.EntitiesCommon
         protected override void OnPostCreate(bool loaded)
         {
             base.OnPostCreate(loaded);
+
+            clock = new Clock(1000, this);
+            clock.Alarm += Clock_Alarm;
             SubscribeToTickEvent();
+        }
+
+        protected override void OnDestroy()
+        {
+            if (clock != null)
+                clock.Alarm -= Clock_Alarm;
+
+            base.OnDestroy();
+        }
+
+        private void Clock_Alarm(object state, Clock clock)
+        {
+            Log.Debug(">> OnTick: {0}, {1}", EngineApp.Instance.Time, this.UIN);
         }
 
         protected override void OnTick()
         {
             base.OnTick();
-
-            //Log.Debug(">> OnTick: {0}, {1}", EngineApp.Instance.Time, this.UIN);
+            clock.Tick(TimeSlice);            
         }
     }
 }

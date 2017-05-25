@@ -385,7 +385,7 @@ namespace Jx.EntitySystem
         public static float TickDelta
         {
             get
-            {
+            { 
                 return tickDelta;
             }
         }
@@ -771,6 +771,7 @@ namespace Jx.EntitySystem
 
         private readonly object tickingLock = new object(); 
         private bool InTicking = false;
+        private long lastTick = 0; 
         internal void Ticking()
         {
             lock (tickingLock)
@@ -787,11 +788,31 @@ namespace Jx.EntitySystem
                 }
                 finally
                 {
+                    lastTick = DateTime.Now.Ticks;
                     InTicking = false;
                 }
             }
         }
 
+        public long LastTick
+        {
+            get { return lastTick; }
+        }
+
+        /// <summary>
+        /// 毫秒
+        /// </summary>
+        public float TimeSlice
+        {
+            get {
+                if (LastTick == 0)
+                    return 0;
+
+                float ts = (DateTime.Now.Ticks - LastTick) / 10000;
+                return ts;
+            }
+        }
+ 
         internal void ClientOnTick()
         {
             this.Client_OnTick();

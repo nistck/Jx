@@ -15,6 +15,7 @@ using Jx.FileSystem;
 using Jx.UI;
 using Jx.UI.Forms;
 using Jx.EntitySystem;
+using Jx.MapSystem;
 
 namespace JxMain
 {
@@ -76,20 +77,29 @@ namespace JxMain
         private void tsbLoad_Click(object sender, EventArgs e)
         {
             string p = @"Maps\NewMap\Map.map";
-            MapWorld.Instance.MapLoad(p);
+            bool loadResult = MapWorld.Instance.MapLoad(p);
+            if (!loadResult)
+                return; 
             timerEntitySystemWorld.Enabled = true;
         }
 
         private void tsbUnload_Click(object sender, EventArgs e)
         {
             timerEntitySystemWorld.Enabled = false;
-            MapWorld.Instance.MapDestroy();
+            MapWorld.Instance.MapDestroy(); 
         }
 
         private void timerEntitySystemWorld_Tick(object sender, EventArgs e)
         {
             if (EntitySystemWorld.Instance != null)
-                EntitySystemWorld.Instance.WorldTick(timerEntitySystemWorld.Interval);
+                EntitySystemWorld.Instance.Tick();
+        }
+
+        private void timerStatus_Tick(object sender, EventArgs e)
+        {
+            tsbLoad.Enabled = !MapWorld.MapLoaded;
+            tsbUnload.Enabled = MapWorld.MapLoaded;
+            MapInfo.Text = MapWorld.MapLoaded ? string.Format("地图: {0}", Map.Instance.VirtualFileName) : "<无地图>";
         }
     }
 }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clock.cs" />
     <Compile Include="CollectionItemPropertyDescriptor.cs" />
     <Compile Include="CollectionTypeConverter.cs" />
     <Compile Include="ConfigAttribute.cs" />

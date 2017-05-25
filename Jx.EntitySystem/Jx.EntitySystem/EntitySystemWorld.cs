@@ -325,6 +325,7 @@ namespace Jx.EntitySystem
 			//EntitySystemWorld.entitySystemTimeCounter.End();
 		}
 
+        /*
 		public void WorldTick(int tick)
 		{
 			this.networkTickCounter = tick;
@@ -348,10 +349,11 @@ namespace Jx.EntitySystem
 			this.engineTime = time;
 			Simulate(); // WorldTick
 		}
+        //*/
 
 		public void Tick()
 		{
-			if (Entities.Instance == null)
+			if (Entities.Instance == null || EngineApp.Instance == null)
 				return;
 			 
             float time = EngineApp.Instance.Time;
