@@ -798,20 +798,6 @@ namespace Jx.EntitySystem
         {
             get { return lastTick; }
         }
-
-        /// <summary>
-        /// 毫秒
-        /// </summary>
-        public float TimeSlice
-        {
-            get {
-                if (LastTick == 0)
-                    return 0;
-
-                float ts = (DateTime.Now.Ticks - LastTick) / 10000;
-                return ts;
-            }
-        }
  
         internal void ClientOnTick()
         {

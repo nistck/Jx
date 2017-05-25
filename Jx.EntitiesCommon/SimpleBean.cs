@@ -113,7 +113,7 @@ namespace Jx.EntitiesCommon
         protected override void OnTick()
         {
             base.OnTick();
-            clock.Tick(TimeSlice);            
+            clock.Tick(TickDelta);            
         }
     }
 }

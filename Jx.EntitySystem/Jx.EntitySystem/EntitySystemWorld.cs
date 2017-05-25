@@ -50,6 +50,8 @@ namespace Jx.EntitySystem
 			}
 		}
 
+        public float GameFPS { get; private set; }
+
         public WorldType DefaultWorldType
         {
             get { return defaultWorldType; }
@@ -182,16 +184,26 @@ namespace Jx.EntitySystem
         }
 
 		private bool _Startup()
-		{			
-			TextBlock textBlock = null;
+		{
+            #region ȱʡ
+            Entity.tickDelta = 20;
+            this.GameFPS = 50f;
+            #endregion
+
+            TextBlock textBlock = null;
 			if (VirtualFile.Exists("Base/Constants/EntitySystem.config"))
 			{
 				textBlock = TextBlockUtils.LoadFromVirtualFile("Base/Constants/EntitySystem.config");
-				if (textBlock == null)
-				{
-					return false;
-				}
+				
+                if( textBlock != null )
+                {
+                    if( textBlock.IsAttributeExist("GameFPS"))
+                        this.GameFPS = float.Parse(textBlock.GetAttribute("GameFPS"));
+                }
 			}
+            if (this.GameFPS <= 0.0f)
+                this.GameFPS = 50f;
+            Entity.tickDelta = 1.0f / this.GameFPS;
 
             CreateEntityClassAssembly(typeof(EntitySystemWorld).Assembly);
             CreateEntityClassAssembly(Assembly.GetExecutingAssembly());

@@ -168,8 +168,7 @@ namespace JxDesign
             tsbRedo.Image = imageCache["redo"];
             tsbLogic.Image = imageCache["logic"];
 
-            Bootstrap();
-            EngineApp.Instance.TickInterval = timerEntitySystemWorld.Interval;
+            Bootstrap(); 
             timerEntitySystemWorld.Enabled = true;
 
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);

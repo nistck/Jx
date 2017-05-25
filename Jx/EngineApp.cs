@@ -41,13 +41,7 @@ namespace Jx
             get { return this.time; }
             private set { this.time = value; }
         }
-
-        public int TickInterval
-        {
-            get { return tickInterval; }
-            set { this.tickInterval = value; }
-        }
-
+ 
         public static bool Init(EngineApp overridedObject, IntPtr mainModuleData)
         {
             if (overridedObject == null)
@@ -113,15 +107,9 @@ namespace Jx
 
         private void MainLoop()
         {
-            while(!engineThreadQuit)
-            {
-                int tickInterval = this.TickInterval;
-                int timeWaiting = 0;
-                if (tickInterval > 0)
-                    timeWaiting = (int) tickInterval;
-                else
-                    timeWaiting = 1000;                
- 
+            int timeWaiting = 1;
+            while (!engineThreadQuit)
+            {   
                 try
                 {
                     if (engineRunningEvent.Wait(timeWaiting))
