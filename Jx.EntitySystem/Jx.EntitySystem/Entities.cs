@@ -245,45 +245,48 @@ namespace Jx.EntitySystem
 
 		internal void OnSetSimulation(bool simulation)
 		{
-			foreach (KeyValuePair<uint, Entity> current in this.entitiesUINDictionary)
+			foreach (KeyValuePair<uint, Entity> current in entitiesUINDictionary)
 			{
-				//current.Value.OnSetSimulation(simulation);
+				current.Value.NotifySetSimulation(simulation);
 			}
 		}
 
 		internal virtual void TickEntities(float tickTime, bool isClient)
 		{
 			this.tickTime = tickTime;
-			this.tickRound++;
-			if (this.tickRound >= 2147483647)
+			tickRound++;
+			if (tickRound >= 2147483647)
 			{
-				this.tickRound = 1;
-				foreach (Entity entity in this.entitiesSubscribedToOnTick)
+				tickRound = 1;
+				foreach (Entity entity in entitiesSubscribedToOnTick)
 					entity.tickRound = 0;
 			}
 
 			while (true)
 			{ 
-				this.entitiesSubscribedToOnTickChanged = false;
-				foreach (Entity entity in this.entitiesSubscribedToOnTick)
+				entitiesSubscribedToOnTickChanged = false;
+				foreach (Entity entity in entitiesSubscribedToOnTick)
 				{
 					if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
 					{
-						entity.tickRound = this.tickRound;
+						entity.tickRound = tickRound;
+                        /*
 						if (!isClient)
 							entity.Ticking();
 						else
 							entity.ClientOnTick();
+                        //*/
+                        entity.Ticking();
 
-                        if (this.entitiesSubscribedToOnTickChanged)
+                        if (entitiesSubscribedToOnTickChanged)
                             break;
 					}
 				}
 
-                if(!this.entitiesSubscribedToOnTickChanged)
+                if(!entitiesSubscribedToOnTickChanged)
 				    break;
 			}
-			this.DeleteEntitiesQueuedForDeletion();
+			DeleteEntitiesQueuedForDeletion();
 		}
 
 		public bool Internal_LoadEntityTreeFromTextBlock(Entity entity, TextBlock block, bool loadRootEntity, List<Entity> loadedEntities)

@@ -78,8 +78,9 @@ namespace JxDesign
             AddonManager.PreInit();
             InitResourceTypeManager();
 
-            UndoSystem.Init(64);  
-            
+            UndoSystem.Init(64);
+
+            //EntitySystemWorld.Instance.Simulation = true;
             return true;
         }
 

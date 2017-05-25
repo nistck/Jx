@@ -169,6 +169,7 @@ namespace JxDesign
             tsbLogic.Image = imageCache["logic"];
 
             Bootstrap();
+            timerEntitySystemWorld.Enabled = true;
 
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
 
@@ -629,8 +630,7 @@ namespace JxDesign
             EntityTypesForm.SelectedItemChange += EntityTypesForm_SelectedItemChange;
             EntityTypesForm.ObjectNodeSelectChanged += EntityTypesForm_ObjectNodeSelectChanged;
             EntityTypesForm.ModelNodeSelectChanged += EntityTypesForm_ModelNodeSelectChanged;
-        } 
-
+        }
 
         private void DestroyEntityTypesForm()
         {
@@ -820,6 +820,13 @@ namespace JxDesign
         private void tsbLogic_Click(object sender, EventArgs e)
         {
             A(null, false);
+            //EngineApp.Instance.SetMainLoopQuit();
+        }
+
+        private void timerEntitySystemWorld_Tick(object sender, EventArgs e)
+        {
+            if (EntitySystemWorld.Instance != null)
+                EntitySystemWorld.Instance.WorldTick(timerEntitySystemWorld.Interval);
         }
     }
 }

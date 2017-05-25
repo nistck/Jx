@@ -760,16 +760,36 @@ namespace Jx.EntitySystem
             }
         }
 
+        internal void NotifySetSimulation(bool simulation)
+        {
+            OnSetSimulation(simulation);
+        }
+
         protected virtual void OnSetSimulation(bool simulation)
         {
         }
 
+        private readonly object tickingLock = new object(); 
+        private bool InTicking = false;
         internal void Ticking()
         {
-            this.OnTick();
+            lock (tickingLock)
+            {
+                if (InTicking)
+                    return;
 
-            if (Tick != null)
-                Tick(this);
+                InTicking = true;
+                try
+                {
+                    OnTick();
+                    if (Tick != null)
+                        Tick(this);
+                }
+                finally
+                {
+                    InTicking = false;
+                }
+            }
         }
 
         internal void ClientOnTick()

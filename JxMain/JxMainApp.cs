@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Jx.EntitySystem;
+using Jx;
 
-namespace Jx
+namespace JxMain
 {
-    internal class MyEngineApp : EngineApp
+    internal class JxMainApp : EngineApp
     {
         protected override bool OnCreate()
         {
@@ -19,13 +20,16 @@ namespace Jx
                 return false;
             }
 
+            /*
             WorldType worldType = EntitySystemWorld.Instance.DefaultWorldType;
             if ( !EntitySystemWorld.Instance.WorldCreate(WorldSimulationTypes.Editor, worldType) )
             {
                 Log.Info(">> 创建世界失败, WorldType: {0}", worldType);
                 return false;
             }
+            //*/
 
+            EntitySystemWorld.Instance.Simulation = true;
             return true;
         }
     }

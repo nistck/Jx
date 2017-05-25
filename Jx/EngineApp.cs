@@ -24,7 +24,13 @@ namespace Jx
  
         private float time = 0.0f;
         private float lastTime = 0.0f;
+        private uint tickInterval = 10;
 
+        private readonly object threadLock = new object(); 
+        private Thread engineThread = null;
+        private ManualResetEventSlim engineRunningEvent = null;
+        private bool engineThreadQuit = false;
+        
         public EngineApp()
         {
 
@@ -33,7 +39,13 @@ namespace Jx
         public float Time
         {
             get { return this.time; }
-            internal set { this.time = value; }
+            private set { this.time = value; }
+        }
+
+        public uint TickInterval
+        {
+            get { return tickInterval; }
+            set { this.tickInterval = value; }
         }
 
         public static bool Init(EngineApp overridedObject, IntPtr mainModuleData)
@@ -85,7 +97,52 @@ namespace Jx
 
         public void Run()
         {
+            lock(threadLock)
+            {
+                if (engineThread != null)
+                    return; 
+            }
 
+            engineRunningEvent = new ManualResetEventSlim(false);
+
+            Thread t = new Thread(new ThreadStart(MainLoop));
+            t.Name = "EngineApp Main";
+            t.IsBackground = true;
+            t.Start();
+        }
+
+        private void MainLoop()
+        {
+            while(!engineThreadQuit)
+            {
+                uint tickInterval = this.TickInterval;
+                int timeWaiting = 0;
+                if (tickInterval > 0)
+                    timeWaiting = (int) tickInterval;
+                else
+                    timeWaiting = 1000;                
+ 
+                try
+                {
+                    if (engineRunningEvent.Wait(timeWaiting))
+                        break;
+                    time += timeWaiting;
+                }
+                catch 
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 退出主线程
+        /// </summary>
+        public void SetMainLoopQuit()
+        {
+            if (engineRunningEvent != null)
+                engineRunningEvent.Set();
+            engineThreadQuit = true;
         }
 
         protected virtual bool OnCreate()
@@ -98,6 +155,10 @@ namespace Jx
 
         }
 
+
+        /// <summary>
+        /// EngineApp 准备退出 (Instance != null)
+        /// </summary>
         protected virtual void OnShutdown()
         {
 

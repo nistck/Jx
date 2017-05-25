@@ -85,5 +85,18 @@ namespace Jx.EntitiesCommon
             base.OnCreate();
             BeanId = Type.Id;
         }
+
+        protected override void OnPostCreate(bool loaded)
+        {
+            base.OnPostCreate(loaded);
+            SubscribeToTickEvent();
+        }
+
+        protected override void OnTick()
+        {
+            base.OnTick();
+
+            //Log.Debug(">> OnTick: {0}, {1}", EngineApp.Instance.Time, this.UIN);
+        }
     }
 }

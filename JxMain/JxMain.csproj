@@ -46,24 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MyEngineApp.cs" />
+    <Compile Include="JxMainApp.cs" />
+    <Compile Include="MapWorld.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -90,6 +82,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.Drawing\Jx.Drawing.csproj">
+      <Project>{091ccbbd-6591-47e0-b97f-3e0ef0e8a089}</Project>
+      <Name>Jx.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.Editors\Jx.Editors.csproj">
+      <Project>{762d1435-8784-448d-9486-3ce30787b6bb}</Project>
+      <Name>Jx.Editors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon\Jx.EntitiesCommon.csproj">
+      <Project>{ba2442d4-cb7b-4032-b5f6-0bc2f8151115}</Project>
+      <Name>Jx.EntitiesCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
       <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
       <Name>Jx.EntitySystem</Name>
@@ -101,6 +105,10 @@
     <ProjectReference Include="..\Jx.FileSystem\Jx.FileSystem.csproj">
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
+      <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
+      <Name>Jx.MapSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\Jx.UI\Jx.UI.csproj">
       <Project>{c09af302-c508-4d5c-91a6-0669a9fa5be7}</Project>
@@ -121,7 +129,12 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\12-messenger.png" />
+    <Content Include="Resources\load_16.png" />
+    <Content Include="Resources\unload_16.png" />
+    <Content Include="Resources\open_16.png" />
+    <Content Include="Resources\Splash.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

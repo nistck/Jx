@@ -55,6 +55,8 @@
             this.tsbUndo = new System.Windows.Forms.ToolStripButton();
             this.tsbRedo = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbLogic = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -63,9 +65,8 @@
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.tsbLogic = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.timerLogicEditor = new System.Windows.Forms.Timer(this.components);
+            this.timerEntitySystemWorld = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -284,6 +285,21 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // tsbLogic
+            // 
+            this.tsbLogic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbLogic.Image = ((System.Drawing.Image)(resources.GetObject("tsbLogic.Image")));
+            this.tsbLogic.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbLogic.Name = "tsbLogic";
+            this.tsbLogic.Size = new System.Drawing.Size(23, 22);
+            this.tsbLogic.Text = "toolStripButton1";
+            this.tsbLogic.Click += new System.EventHandler(this.tsbLogic_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 688);
@@ -330,24 +346,14 @@
             // 
             this.vsToolStripExtender1.DefaultRenderer = null;
             // 
-            // tsbLogic
-            // 
-            this.tsbLogic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbLogic.Image = ((System.Drawing.Image)(resources.GetObject("tsbLogic.Image")));
-            this.tsbLogic.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbLogic.Name = "tsbLogic";
-            this.tsbLogic.Size = new System.Drawing.Size(23, 22);
-            this.tsbLogic.Text = "toolStripButton1";
-            this.tsbLogic.Click += new System.EventHandler(this.tsbLogic_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
             // timerLogicEditor
             // 
             this.timerLogicEditor.Interval = 50;
+            // 
+            // timerEntitySystemWorld
+            // 
+            this.timerEntitySystemWorld.Interval = 20;
+            this.timerEntitySystemWorld.Tick += new System.EventHandler(this.timerEntitySystemWorld_Tick);
             // 
             // MainForm
             // 
@@ -411,6 +417,7 @@
         private System.Windows.Forms.ToolStripButton tsbLogic;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Timer timerLogicEditor;
+        private System.Windows.Forms.Timer timerEntitySystemWorld;
     }
 }
 

@@ -256,9 +256,7 @@ namespace Jx.EntitySystem
 
             Log.Info(">> Ä¬ÈÏWorldType: {0}", defaultWorldType);
 			return true;
-		}
-
- 
+		} 
 
 		private void _Shutdown()
 		{
@@ -320,6 +318,8 @@ namespace Jx.EntitySystem
  
 		private void Simulate()
 		{
+            if (!this.simulation || this.systemPauseOfSimulation)
+                return; 
 			//EntitySystemWorld.entitySystemTimeCounter.Start();
 			Entities.Instance.TickEntities(this.engineTime, /*clientOnly*/true);
 			//EntitySystemWorld.entitySystemTimeCounter.End();
@@ -352,9 +352,8 @@ namespace Jx.EntitySystem
 		public void Tick()
 		{
 			if (Entities.Instance == null)
-			{
 				return;
-			} 
+			 
             float time = EngineApp.Instance.Time;
 			if (!this.simulation || this.systemPauseOfSimulation)
 			{
@@ -367,6 +366,16 @@ namespace Jx.EntitySystem
 				Simulate(); // Tick
 			}
 		}
+
+        public bool Simulation
+        {
+            get { return this.simulation; }
+            set {
+                this.simulation = value;
+                if (Entities.Instance != null)
+                    Entities.Instance.OnSetSimulation(value);
+            }
+        }
 
 		internal bool IsEntityFieldSerializable(Entity.FieldSerializeSerializationTypes fieldSerializeSerializationTypes)
 		{
