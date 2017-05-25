@@ -240,7 +240,7 @@ namespace Jx.EntitySystem
 						foreach (TextBlock current in logicSystemClassAssembliesBlock.Children)
 						{
 							string assemblyFileName = current.GetAttribute("file");
-							this.logicSystemSystemClassesAssemblies.Add(assemblyFileName);
+							logicSystemSystemClassesAssemblies.Add(assemblyFileName);
 						}
 					}
 				}

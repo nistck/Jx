@@ -907,5 +907,13 @@ namespace Jx.EntitySystem
             }
             return list;
         }
+
+        public static List<ClassInfo> GetClassInfo(EntityType entityType)
+        {
+            List<ClassInfo> classInfoLink = new List<ClassInfo>();
+            if (entityType == null)
+                return classInfoLink;
+            return entityType.GetClassInfo(); 
+        }
     }
 }

@@ -17,7 +17,9 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private int id;
         [FieldSerialize]
-        private string scope; 
+        private string scope;
+        [FieldSerialize]
+        private uint clock;
 
         [JxName("Id")]
         [DefaultValue(1981)]
@@ -33,6 +35,14 @@ namespace Jx.EntitiesCommon
         {
             get { return scope; }
             set { this.scope = value; }
+        }
+
+        [Description("时间间隔, 单位: 秒")]
+        [JxName("时间间隔")]
+        public uint Clock
+        {
+            get { return clock == 0? 1000 : clock; }
+            set { this.clock = value; }
         }
 
         protected override void OnLoaded()
@@ -92,7 +102,7 @@ namespace Jx.EntitiesCommon
         {
             base.OnPostCreate(loaded);
 
-            clock = new Clock(1000, this);
+            clock = new Clock(Type.Clock, this);
             clock.Alarm += Clock_Alarm;
             SubscribeToTickEvent();
         }
@@ -107,7 +117,7 @@ namespace Jx.EntitiesCommon
 
         private void Clock_Alarm(object state, Clock clock)
         {
-            Log.Debug(">> OnTick: {0}, {1}", EngineApp.Instance.Time, this.UIN);
+            Log.Debug(">> OnTick: {0}, {1}, {2}", EngineApp.Instance.Time, this.Name, this.UIN);
         }
 
         protected override void OnTick()

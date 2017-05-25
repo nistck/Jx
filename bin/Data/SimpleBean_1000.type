@@ -1,0 +1,6 @@
+type SimpleBean_1000
+{
+	class = SimpleBean
+	id = 1992
+	scope = view
+}

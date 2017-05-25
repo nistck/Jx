@@ -8,6 +8,16 @@ namespace Jx.EntitySystem
 {
     public static class EntityExtension
     {
+        public static List<EntityTypes.ClassInfo> GetClassInfo(this EntityType entityType)
+        {
+            List<EntityTypes.ClassInfo> result = new List<EntityTypes.ClassInfo>();
+            if (entityType == null)
+                return result;
+            for (EntityTypes.ClassInfo classInfo = entityType.ClassInfo; classInfo != null; classInfo = classInfo.BaseClassInfo)
+                result.Add(classInfo);
+            return result;
+        }
+
 
         /// <summary>
         /// <para>手动创建Entity</para>

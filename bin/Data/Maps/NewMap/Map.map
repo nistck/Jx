@@ -9,73 +9,11 @@ tags
 editorLayers
 {
 	name = Root
-	layer
-	{
-		name = New Layer_0
-	}
-	layer
-	{
-		name = New Layer_1
-	}
 }
 entity
 {
 	type = ddd
 	uin = 3
-	classPrompt = SimpleBean
-	beanId = 19817
-	method = Get
-	name = ddd_0
-	tags
-	{
-	}
-}
-entity
-{
-	type = ddd
-	uin = 4
-	classPrompt = SimpleBean
-	beanId = 1981
-	method = Post
-	name = ddd_1
-	tags
-	{
-	}
-}
-entity
-{
-	type = Ax
-	uin = 5
-	classPrompt = SimpleBean
-	beanId = 19813332
-	method = Get
-	name = Ax_0
-	tags
-	{
-		item
-		{
-			name = ddd
-		}
-	}
-}
-entity
-{
-	editorLayer = Root
-	type = ddd
-	uin = 6
-	classPrompt = SimpleBean
-	beanId = 1981
-	method = Get
-	name = ddd_2
-	tags
-	{
-	}
-}
-entity
-{
-	editorLayer = "Root\\New Layer_0"
-	type = ddd
-	uin = 7
 	classPrompt = SimpleBean
 	beanId = 1981
 	method = Get
@@ -86,13 +24,26 @@ entity
 }
 entity
 {
-	editorLayer = "Root\\New Layer_1"
-	type = Ax
-	uin = 8
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 4
 	classPrompt = SimpleBean
-	beanId = 1981333
+	beanId = 1992
 	method = Get
-	name = Ax_1
+	name = SimpleBean_1000_0
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_20000
+	uin = 5
+	classPrompt = SimpleBean
+	beanId = 87923
+	method = Get
+	name = SimpleBean_20000_0
 	tags
 	{
 	}

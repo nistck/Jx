@@ -34,8 +34,8 @@
             this.XSS = new System.Windows.Forms.StatusStrip();
             this.ContentLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.Canvas = new System.Windows.Forms.Panel();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.drawingPanel = new Jx.Drawing.Base.DrawingPanel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.XSS.SuspendLayout();
             this.Canvas.SuspendLayout();
@@ -87,24 +87,24 @@
             this.Canvas.MouseLeave += new System.EventHandler(this.Canvas_MouseLeave);
             this.Canvas.MouseHover += new System.EventHandler(this.Canvas_MouseHover);
             // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // drawingPanel
             // 
             this.drawingPanel.ActiveCursor = System.Windows.Forms.Cursors.Default;
             pointer1.MouseDownPoint = new System.Drawing.Point(0, 0);
             pointer1.MouseUpPoint = new System.Drawing.Point(0, 0);
             this.drawingPanel.ActiveTool = pointer1;
-            this.drawingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.drawingPanel.Cursor = System.Windows.Forms.Cursors.Default;
             this.drawingPanel.EnableWheelZoom = true;
-            this.drawingPanel.Location = new System.Drawing.Point(0, 0);
+            this.drawingPanel.Location = new System.Drawing.Point(76, 108);
             this.drawingPanel.Name = "drawingPanel";
-            this.drawingPanel.Size = new System.Drawing.Size(681, 391);
+            this.drawingPanel.Size = new System.Drawing.Size(497, 250);
             this.drawingPanel.TabIndex = 0;
             this.drawingPanel.Zoom = 1F;
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // ContentForm
             // 
@@ -117,7 +117,6 @@
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.HideOnClose = true;
             this.Name = "ContentForm";
-            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Unknown;
             this.Text = "MainViewForm";
             this.Load += new System.EventHandler(this.MainViewForm_Load);
             this.tableLayoutPanel1.ResumeLayout(false);

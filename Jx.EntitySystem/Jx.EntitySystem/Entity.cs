@@ -1285,6 +1285,35 @@ namespace Jx.EntitySystem
             return this.editor_excludeEntityFromWorld;
         }
 
+        protected virtual bool OnIsExistsReferenceToObject(object obj)
+        {
+            return false;
+        }
+
+        public bool IsExistsReferenceToObject(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            bool r = OnIsExistsReferenceToObject(obj);
+            if (r)
+                return true;
+
+            Type type = obj.GetType();
+
+            List<EntityTypes.ClassInfo.EntitySerializableFieldItem> fields = Type.GetClassInfo()
+                .SelectMany(_clazz => _clazz.EntitySerializableFields)
+                .Where(_f => _f.Field.FieldType.IsAssignableFrom(type))
+                .ToList();
+
+            EntityTypes.ClassInfo.EntitySerializableFieldItem anyOne = fields.Where(_f =>
+            {
+                object _v = _f.Field.GetValue(this);
+                return obj.Equals(_v);
+            }).FirstOrDefault();  
+            return anyOne != null;
+        }
+
         public EntityExtendedProperties CreateExtendedProperties(Type extendedPropertiesClass)
         {
             this.DestroyExtendedProperties();

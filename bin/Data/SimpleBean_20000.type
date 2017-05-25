@@ -1,0 +1,7 @@
+type SimpleBean_20000
+{
+	class = SimpleBean
+	id = 87923
+	scope = global
+	clock = 20000
+}

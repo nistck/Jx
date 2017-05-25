@@ -43,6 +43,7 @@
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.ILtreeView = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tsmiDelete = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.XTS.SuspendLayout();
             this.SuspendLayout();
@@ -85,7 +86,8 @@
             this.tsmiCreateLayer,
             this.tsmiDeleteLayer,
             this.tsmiEditLayer,
-            this.toolStripSeparator3});
+            this.toolStripSeparator3,
+            this.tsmiDelete});
             this.XTS.Location = new System.Drawing.Point(0, 0);
             this.XTS.Name = "XTS";
             this.XTS.Size = new System.Drawing.Size(344, 25);
@@ -155,6 +157,7 @@
             this.IL16.Images.SetKeyName(1, "layer_delete");
             this.IL16.Images.SetKeyName(2, "layer_edit");
             this.IL16.Images.SetKeyName(3, "layer_new");
+            this.IL16.Images.SetKeyName(4, "delete");
             // 
             // ILtreeView
             // 
@@ -168,6 +171,16 @@
             // 
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // tsmiDelete
+            // 
+            this.tsmiDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsmiDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsmiDelete.Image")));
+            this.tsmiDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsmiDelete.Name = "tsmiDelete";
+            this.tsmiDelete.Size = new System.Drawing.Size(23, 22);
+            this.tsmiDelete.Text = "删除Entity";
+            this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
             // 
             // EntitiesForm
             // 
@@ -202,5 +215,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton tsmiEditLayer;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripButton tsmiDelete;
     }
 }

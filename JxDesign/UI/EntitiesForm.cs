@@ -47,7 +47,8 @@ namespace JxDesign.UI
             tsbRefresh.Image = imageCache["refresh"];
             tsmiCreateLayer.Image = imageCache["layer_new"];
             tsmiDeleteLayer.Image = imageCache["layer_delete"];
-            tsmiEditLayer.Image = imageCache["layer_edit"]; 
+            tsmiEditLayer.Image = imageCache["layer_edit"];
+            tsmiDelete.Image = imageCache["delete"];
 
             treeViewEntities.ImageList = ILtreeView; 
         }
@@ -230,11 +231,27 @@ namespace JxDesign.UI
                     Map.Instance.LayerSelected = value;
             }
         }
+ 
+        private T CurrentNode<T>()
+        {
+            if (treeViewEntities.SelectedNode == null || treeViewEntities.SelectedNode.Tag == null)
+                return default(T);
+
+            object tag = treeViewEntities.SelectedNode.Tag;
+            if (typeof(T).IsAssignableFrom(tag.GetType()))
+                return (T)tag;
+
+            return default(T);
+        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            tsmiCreateLayer.Enabled = Map.Instance != null;
             tsmiDeleteLayer.Enabled = (LayerSelected != null) && (Map.Instance != null && Map.Instance.RootEditorLayer != LayerSelected);
-            tsmiEditLayer.Enabled = IsLayerSelected;
+            tsmiEditLayer.Enabled = IsLayerSelected && Map.Instance != null;
+
+            Entity entity = CurrentNode<Entity>();
+            tsmiDelete.Enabled = entity != null && Map.Instance != entity && Map.Instance != null;
         }
 
         /// <summary>
@@ -431,6 +448,41 @@ namespace JxDesign.UI
         {
             TreeNode node = treeViewEntities.GetNodeAt(new Point(e.X, e.Y));
             SetNodeSelected(node);
-        } 
+        }
+
+        private void tsmiDelete_Click(object sender, EventArgs e)
+        {
+            Entity entity = CurrentNode<Entity>(); 
+            if( entity == null || entity == Map.Instance )
+            {
+                tsmiDelete.Enabled = false;
+                return; 
+            }
+            TreeNode node = treeViewEntities.SelectedNode;
+            if (node == null)
+                return;
+
+
+            List<Entity> rList = Entities.Instance.GetReferenceTo(entity);
+            string referenceInfo = string.Format("删除回影响到{0}个引用。", rList.Count);
+            if (rList.Count == 0)
+                referenceInfo = "";
+
+            string infoMessage = string.Format("确定要删除【{0}】吗？ \n\n{1}", entity, referenceInfo);
+            if (MessageBox.Show(infoMessage, "询问", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            rList.Any(_entity => {
+
+                return false;
+            });
+
+            entity.SetForDeletion(false);
+            if (node.Parent != null)
+                treeViewEntities.SelectedNode = node.Parent;
+            node.Remove();
+
+            MapWorld.Instance.Modified = true;
+        }
     }
 }

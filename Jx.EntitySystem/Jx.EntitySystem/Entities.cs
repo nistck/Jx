@@ -571,5 +571,22 @@ namespace Jx.EntitySystem
 		{
 			return entitiesSubscribedToOnTick.Count;
 		}
-	}
+
+        public List<Entity> GetReferenceTo(Entity entity, bool excludeSelf = true)
+        {
+            List<Entity> result = new List<Entity>();
+            if (entity == null)
+                return result;
+
+            foreach(Entity en in EntitiesCollection)
+            {
+                if (excludeSelf && en == entity)
+                    continue;
+                if (en.IsExistsReferenceToObject(entity))
+                    result.Add(en);
+            }
+            return result; 
+        }
+
+    }
 }
