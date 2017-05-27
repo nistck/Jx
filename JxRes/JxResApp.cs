@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using Jx;
@@ -20,7 +21,7 @@ using Jx.UI.Editors;
 
 namespace JxRes
 {
-    internal class JxResApp : EngineApp
+    internal class JxResApp : JxEngineApp
     {
         private static JxResApp instance;
 

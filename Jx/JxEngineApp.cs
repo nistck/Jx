@@ -8,41 +8,39 @@ using System.Threading;
 
 namespace Jx
 {
-    public class EngineApp
+    public class JxEngineApp
     {
-        private static EngineApp instance = null;
+        private static JxEngineApp instance = null;
 
-        public static EngineApp Instance
+        public static JxEngineApp Instance
         {
             get { return instance; }
-        }
-
-        class Timer0State
-        {
-
         }
  
         private float time = 0.0f;
         private float lastTime = 0.0f;
-        private int tickInterval = 10;
 
         private readonly object threadLock = new object(); 
         private Thread engineThread = null;
         private ManualResetEventSlim engineRunningEvent = null;
-        private bool engineThreadQuit = false;
-        
-        public EngineApp()
+        private bool engineThreadQuit = false; 
+
+        public JxRuntime Runtime
         {
-
+            get { return JxRuntime.Default; }
         }
-
+        
+        public JxEngineApp() 
+        {
+        }
+ 
         public float Time
         {
             get { return this.time; }
             private set { this.time = value; }
         }
  
-        public static bool Init(EngineApp overridedObject, IntPtr mainModuleData)
+        public static bool Init(JxEngineApp overridedObject, IntPtr mainModuleData)
         {
             if (overridedObject == null)
             {
@@ -57,13 +55,11 @@ namespace Jx
             instance = overridedObject;
             bool flag = instance.DoInit(mainModuleData);
             if (!flag)
-            {
-                Shutdown();
-            }
+                Shutdown();            
             return flag;
         }
 
-        public static bool Init(EngineApp overridedObject)
+        public static bool Init(JxEngineApp overridedObject)
         {
             return Init(overridedObject, IntPtr.Zero);
         }
@@ -109,17 +105,14 @@ namespace Jx
         {
             int timeWaiting = 1;
             while (!engineThreadQuit)
-            {   
+            {
                 try
                 {
                     if (engineRunningEvent.Wait(timeWaiting))
                         break;
                     time += timeWaiting;
                 }
-                catch 
-                {
-                    break;
-                }
+                catch { break; }
             }
         }
 

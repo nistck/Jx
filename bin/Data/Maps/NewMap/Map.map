@@ -48,3 +48,159 @@ entity
 	{
 	}
 }
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 6
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_1
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 7
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_2
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 8
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_3
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 9
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_4
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 10
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_5
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 11
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_6
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 12
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_7
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 13
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_8
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 14
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_9
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 15
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_10
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 16
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_11
+	tags
+	{
+	}
+}
+entity
+{
+	editorLayer = Root
+	type = SimpleBean_1000
+	uin = 17
+	classPrompt = SimpleBean
+	beanId = 1992
+	method = Get
+	name = SimpleBean_1000_12
+	tags
+	{
+	}
+}

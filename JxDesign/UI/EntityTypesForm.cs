@@ -723,8 +723,8 @@ namespace JxDesign.UI
             bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew);
 
             bool changed = b1 || b2 || b3;
-            if (changed && ObjectNodeSelectChanged != null)
-                ObjectNodeSelectChanged(nodeNew, nodeOld);
+            if (ObjectNodeSelectChanged != null)
+                ObjectNodeSelectChanged(nodeNew, nodeOld, changed);
         }
 
         private void SetObjectNodeSelected(TreeNode node)
@@ -752,8 +752,8 @@ namespace JxDesign.UI
             bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew);
 
             bool changed = b1 || b2 || b3;
-            if (changed && ModelNodeSelectChanged != null)
-                ModelNodeSelectChanged(nodeNew, nodeOld);
+            if (ModelNodeSelectChanged != null)
+                ModelNodeSelectChanged(nodeNew, nodeOld, changed);
         }
 
         private void SetModelNodeSelected(TreeNode node)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Jx.EntitySystem
 {
@@ -101,7 +101,7 @@ namespace Jx.EntitySystem
 
 		private void _Init()
 		{
-			this.tickTime = EngineApp.Instance.Time;
+			this.tickTime = JxEngineApp.Instance.Time;
 		}
 
 		private void _Shutdown()
@@ -276,7 +276,10 @@ namespace Jx.EntitySystem
 						else
 							entity.ClientOnTick();
                         //*/
-                        entity.Ticking();
+                        if (JxEngineApp.Instance != null)
+                            JxEngineApp.Instance.Runtime.Run(() => entity.Ticking());
+                        else
+                            entity.Ticking();
 
                         if (entitiesSubscribedToOnTickChanged)
                             break;

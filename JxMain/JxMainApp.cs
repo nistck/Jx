@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 using Jx.EntitySystem;
 using Jx;
 
 namespace JxMain
 {
-    internal class JxMainApp : EngineApp
+    internal class JxMainApp : JxEngineApp
     {
         protected override bool OnCreate()
         {

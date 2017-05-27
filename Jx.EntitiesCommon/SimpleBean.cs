@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Jx.EntitySystem;
@@ -117,7 +118,9 @@ namespace Jx.EntitiesCommon
 
         private void Clock_Alarm(object state, Clock clock)
         {
-            Log.Debug(">> OnTick: {0}, {1}, {2}", EngineApp.Instance.Time, this.Name, this.UIN);
+            Log.Debug(">> OnTick: {0}, {1}, {2}, {3}", JxEngineApp.Instance.Time, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
+
+            Thread.Sleep(1230);
         }
 
         protected override void OnTick()

@@ -240,12 +240,12 @@ namespace JxDesign
 
         private void Bootstrap()
         {
-            EngineApp.Init(new JxDesignApp());
+            JxEngineApp.Init(new JxDesignApp());
 
-            bool created = EngineApp.Instance.Create();
+            bool created = JxEngineApp.Instance.Create();
             if (created)
             {
-                EngineApp.Instance.Run();
+                JxEngineApp.Instance.Run();
             }
             //EngineApp.Shutdown();
         }
@@ -278,7 +278,7 @@ namespace JxDesign
             DestroyContentForm();
             DestroyEntitiesForm();
             DestroyPropertiesForm();
-            EngineApp.Shutdown();
+            JxEngineApp.Shutdown();
         }
 
         public bool ToolsProcessKeyDownHotKeys(Keys keyCode, Keys modifiers, bool processCharactersWithoutModifiers)
@@ -676,12 +676,12 @@ namespace JxDesign
  
         }
 
-        private void EntityTypesForm_ModelNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        private void EntityTypesForm_ModelNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld, bool changed)
         {
             OnEntityTypesNodeSelectionChanged();
         }
 
-        private void EntityTypesForm_ObjectNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        private void EntityTypesForm_ObjectNodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld, bool changed)
         {
             OnEntityTypesNodeSelectionChanged();
         }
@@ -759,7 +759,7 @@ namespace JxDesign
             PropertiesForm.RefreshProperties();
         }
 
-        private void EntitiesForm_NodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld)
+        private void EntitiesForm_NodeSelectChanged(TreeNode nodeNew, TreeNode nodeOld, bool changed)
         {
             PropertiesForm.ReadOnly = false;
             if ( nodeNew == null )

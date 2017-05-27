@@ -145,8 +145,8 @@ namespace JxDesign.UI
             bool b3 = nodeOld != null && nodeNew != null && !nodeOld.Equals(nodeNew); 
 
             bool changed = b1 || b2 || b3;
-            if (changed && NodeSelectChanged != null)
-                NodeSelectChanged(nodeNew, nodeOld);
+            if (NodeSelectChanged != null)
+                NodeSelectChanged(nodeNew, nodeOld, changed);
         }
 
         private void SetNodeSelected(TreeNode node)

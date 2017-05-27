@@ -77,12 +77,12 @@ namespace JxRes
 
         private void Bootstrap()
         { 
-            EngineApp.Init(new JxResApp());  
+            JxEngineApp.Init(new JxResApp());  
 
-            bool created = EngineApp.Instance.Create();
+            bool created = JxEngineApp.Instance.Create();
             if (created)
             {
-                EngineApp.Instance.Run();
+                JxEngineApp.Instance.Run();
             }
             //EngineApp.Shutdown();
         }
@@ -313,7 +313,7 @@ namespace JxRes
         {
             SaveLayoutConfig(SaveLayoutFlag);
 
-            EngineApp.Shutdown();
+            JxEngineApp.Shutdown();
         }
 
         private void UIStatus_TIMER_Tick(object sender, EventArgs e)

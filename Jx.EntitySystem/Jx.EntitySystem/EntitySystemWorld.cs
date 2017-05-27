@@ -365,10 +365,10 @@ namespace Jx.EntitySystem
 
 		public void Tick()
 		{
-			if (Entities.Instance == null || EngineApp.Instance == null)
+			if (Entities.Instance == null || JxEngineApp.Instance == null)
 				return;
 			 
-            float time = EngineApp.Instance.Time;
+            float time = JxEngineApp.Instance.Time;
 			if (!this.simulation || this.systemPauseOfSimulation)
 			{
 				this.engineTime = time;
@@ -410,7 +410,7 @@ namespace Jx.EntitySystem
 
 		public void ResetExecutedTime()
 		{
-            this.engineTime = EngineApp.Instance.Time;
+            this.engineTime = JxEngineApp.Instance.Time;
 			//RendererWorld.Instance._ResetFrameRenderTimeAndRenderTimeStep();
 		}
 

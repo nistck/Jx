@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using Jx;
@@ -19,7 +20,7 @@ using JxDesign.UI;
 
 namespace JxDesign
 {
-    internal class JxDesignApp : EngineApp
+    internal class JxDesignApp : JxEngineApp
     {
         public const string RESOURCE_TYPE_ENTITY_TYPE_NAME = "EntityType";
         public const string RESOURCE_TYPE_ENTITY_TYPE_EXTENSION = "type";
@@ -30,7 +31,7 @@ namespace JxDesign
         {
             get { return instance; }
         }
- 
+
         protected override bool OnCreate()
         {
             if (!base.OnCreate())

@@ -49,6 +49,7 @@ namespace JxMain
             tsbLoad.Image = imageCache["load"];
             tsbUnload.Image = imageCache["unload"];
 
+            Console.WriteLine(System.Threading.SynchronizationContext.Current);
             Bootstrap();
 
             #region Splash Screen
@@ -64,12 +65,12 @@ namespace JxMain
 
         private void Bootstrap()
         {
-            EngineApp.Init(new JxMainApp());
+            JxEngineApp.Init(new JxMainApp());
 
-            bool created = EngineApp.Instance.Create();
+            bool created = JxEngineApp.Instance.Create();
             if (created)
             {
-                EngineApp.Instance.Run();
+                JxEngineApp.Instance.Run();
             }
             //EngineApp.Shutdown();
         }
@@ -81,12 +82,18 @@ namespace JxMain
             if (!loadResult)
                 return; 
             timerEntitySystemWorld.Enabled = true;
+            Log.Info("加载地图: {0}", p);
         }
 
         private void tsbUnload_Click(object sender, EventArgs e)
         {
+            if (Map.Instance == null)
+                return;
+            string filePath = Map.Instance.VirtualFileName;
+
             timerEntitySystemWorld.Enabled = false;
-            MapWorld.Instance.MapDestroy(); 
+            MapWorld.Instance.MapDestroy();
+            Log.Info("地图销毁: {0}", filePath);
         }
 
         private void timerEntitySystemWorld_Tick(object sender, EventArgs e)

@@ -7,5 +7,5 @@ using System.Windows.Forms;
 
 namespace Jx.UI
 {
-    public delegate void TreeNodeSelectChangedHandler(TreeNode nodeNew, TreeNode nodeOld);
+    public delegate void TreeNodeSelectChangedHandler(TreeNode nodeNew, TreeNode nodeOld, bool changed);
 }
