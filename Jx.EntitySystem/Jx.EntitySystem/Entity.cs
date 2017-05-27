@@ -251,7 +251,7 @@ namespace Jx.EntitySystem
                 return this.uin;
             }
         }
-
+ 
         [Browsable(false)]
         public uint NetworkUIN
         {
@@ -565,7 +565,7 @@ namespace Jx.EntitySystem
                 Log.Fatal("Entity: PostCreate: Already post created.");
             }
             this.A(false);
-            this.OnCreate();
+            _OnCreate();
             this.EntityCreated();
             this.OnPostCreate(false);
             this.OnPostCreate2(false);
@@ -576,7 +576,12 @@ namespace Jx.EntitySystem
             {
                 //SendEntityPostCreateMessage(EntitySystemWorld.Instance.RemoteEntityWorlds);
             }
-        } 
+        }
+
+        private void _OnCreate()
+        {
+            OnCreate();
+        }
 
         protected internal virtual void OnCreate()
         {
@@ -770,7 +775,7 @@ namespace Jx.EntitySystem
         }
 
         private readonly object tickingLock = new object(); 
-        private bool InTicking = false;
+        internal bool InTicking { get; private set; }
         private long lastTick = 0; 
         internal void Ticking()
         {

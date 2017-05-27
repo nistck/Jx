@@ -66,6 +66,10 @@ namespace Jx.EntitySystem
         internal Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object> entityTypeSerializableFields = 
             new Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object>();
         internal uint networkUIN;
+
+        [FieldSerialize]
+        private uint taskTimeout = 0;
+
         /// <summary>
         /// Gets the class information of type.
         /// </summary>
@@ -103,6 +107,15 @@ namespace Jx.EntitySystem
                 this.fullName = value;
             }
         }
+
+        [Description("任务超时时间, 单位: 毫秒。取值0，不限定。")]
+        [DefaultValue(0)]
+        public uint TaskTimeout
+        {
+            get { return taskTimeout; }
+            set { taskTimeout = value; }
+        }
+
         /// <summary>
         /// Gets the file path of the .type file, which defines the given type.
         /// </summary>

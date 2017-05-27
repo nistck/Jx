@@ -118,15 +118,22 @@ namespace Jx.EntitiesCommon
 
         private void Clock_Alarm(object state, Clock clock)
         {
-            Log.Debug(">> OnTick: {0}, {1}, {2}, {3}", JxEngineApp.Instance.Time, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
+            int n = 2500;
+            float ts0 = JxEngineApp.Instance.Time;
 
-            Thread.Sleep(1230);
+            Log.Debug(">> OnTick: {0}, {1}, {2}, {3}", ts0, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
+            Thread.Sleep(2500);
+
+            float ts1 = JxEngineApp.Instance.Time;
+            float dt = ts1 - ts0;
+            Log.Debug(">> OnTick: {0}, {1}, T{2}, {3}, {4}, {5}", 
+                ts1, ts1 - ts0, n, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
         }
 
         protected override void OnTick()
         {
             base.OnTick();
-            clock.Tick(TickDelta);            
+            clock.Tick(TickDelta); 
         }
     }
 }

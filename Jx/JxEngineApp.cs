@@ -101,9 +101,14 @@ namespace Jx
             t.Start();
         }
 
+        public const int MAIN_LOOP_INTERVAL = 100;
+        public static int GameFPS
+        {
+            get { return 1000 / MAIN_LOOP_INTERVAL; }
+        }
         private void MainLoop()
         {
-            int timeWaiting = 1;
+            int timeWaiting = MAIN_LOOP_INTERVAL;
             while (!engineThreadQuit)
             {
                 try

@@ -4,4 +4,5 @@ type SimpleBean_20000
 	id = 87923
 	scope = global
 	clock = 20000
+	taskTimeout = 5600
 }

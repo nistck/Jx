@@ -9,12 +9,14 @@ namespace Jx
 {
     public class JxRuntime
     {
-        private TaskScheduler taskScheduler = null; 
+        private TaskScheduler taskScheduler = null;
+        private TaskFactory taskFactory = null;
 
         private JxRuntime()
         {
             uint numberOfProcessors = Win32Api.GetNumberOfProcessors();
             taskScheduler = new LimitedConcurrencyLevelTaskScheduler((int)numberOfProcessors + 1);
+            taskFactory = new TaskFactory(taskScheduler);
         }
         
         public SynchronizationContext Context
@@ -24,19 +26,39 @@ namespace Jx
 
         public Task Run(Action action)
         { 
-            Task t = Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+            Task t = taskFactory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+            return t;
+        }
+
+        public Task Run(Action action, CancellationToken token)
+        {
+            Task t = taskFactory.StartNew(action, token, TaskCreationOptions.None, taskScheduler);
+            return t;
+        }
+
+        public Task Run(Action action, uint timeout = 0)
+        {
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            Task t = taskFactory.StartNew(action, tokenSource.Token, TaskCreationOptions.None, taskScheduler);
+            if (timeout > 0)
+            {
+                tokenSource.CancelAfter((int)timeout);
+                tokenSource.Token.Register( () => {
+                    Log.Debug(">>>>>>>>>>>");
+                });
+            }
             return t;
         }
 
         public Task<TResult> Run<TResult>(Func<TResult> f)
         {
-            Task<TResult> t = Task.Factory.StartNew(f);
+            Task<TResult> t = taskFactory.StartNew(f);
             return t;
         }
 
         public Task<TResult> Run<TResult>(Func<object, TResult> f, object state = null)
         {
-            Task<TResult> t = Task.Factory.StartNew(f, state);
+            Task<TResult> t = taskFactory.StartNew(f, state);
             return t;
         }
 

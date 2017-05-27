@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Jx.EntitySystem
@@ -249,47 +250,52 @@ namespace Jx.EntitySystem
 			{
 				current.Value.NotifySetSimulation(simulation);
 			}
-		}
-
-		internal virtual void TickEntities(float tickTime, bool isClient)
+		} 
+ 
+        internal virtual void TickEntities(float tickTime, bool isClient)
 		{
-			this.tickTime = tickTime;
+			this.tickTime = tickTime; 
+            
 			tickRound++;
 			if (tickRound >= 2147483647)
 			{
 				tickRound = 1;
-				foreach (Entity entity in entitiesSubscribedToOnTick)
-					entity.tickRound = 0;
+                foreach (Entity entity in entitiesSubscribedToOnTick)
+                    entity.tickRound = 0; 
 			}
 
-			while (true)
-			{ 
-				entitiesSubscribedToOnTickChanged = false;
-				foreach (Entity entity in entitiesSubscribedToOnTick)
-				{
-					if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
-					{
-						entity.tickRound = tickRound;
-                        /*
-						if (!isClient)
-							entity.Ticking();
-						else
-							entity.ClientOnTick();
-                        //*/
-                        if (JxEngineApp.Instance != null)
-                            JxEngineApp.Instance.Runtime.Run(() => entity.Ticking());
-                        else
-                            entity.Ticking();
+            List<Entity> entities = new List<Entity>();
+            entities.AddRange(entitiesSubscribedToOnTick);
 
-                        if (entitiesSubscribedToOnTickChanged)
-                            break;
-					}
-				}
+            foreach (Entity entity in entities)
+            {
+                if (entity.InTicking)
+                    continue;
+                if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
+                {
+                    entity.tickRound = tickRound;
 
-                if(!entitiesSubscribedToOnTickChanged)
-				    break;
-			}
-			DeleteEntitiesQueuedForDeletion();
+                    /*
+                    if (!isClient)
+                        entity.Ticking();
+                    else
+                        entity.ClientOnTick(); 
+                    //*/
+
+                    if (JxEngineApp.Instance != null)
+                    {
+
+                        JxEngineApp.Instance.Runtime.Run(() => entity.Ticking(), entity.Type.TaskTimeout);
+                    }
+                    else
+                        entity.Ticking();
+
+                    if (entitiesSubscribedToOnTickChanged)
+                        break;
+                }
+            }
+
+            DeleteEntitiesQueuedForDeletion();
 		}
 
 		public bool Internal_LoadEntityTreeFromTextBlock(Entity entity, TextBlock block, bool loadRootEntity, List<Entity> loadedEntities)
