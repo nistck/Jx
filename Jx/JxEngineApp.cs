@@ -16,6 +16,8 @@ namespace Jx
         {
             get { return instance; }
         }
+
+        private int loopInterval = 0;
  
         private float time = 0.0f;
         private float lastTime = 0.0f;
@@ -23,7 +25,21 @@ namespace Jx
         private readonly object threadLock = new object(); 
         private Thread engineThread = null;
         private bool engineThreadQuit = false; 
+
+        /// <summary>
+        /// 时间间隔，单位：毫秒
+        /// </summary>
+        /// <param name="loopInterval"></param>
+        public JxEngineApp(int loopInterval)
+        {
+            this.loopInterval = loopInterval;
+        }
  
+        public int LoopInterval
+        {
+            get { return loopInterval < 0 ? 0 : loopInterval; }
+        }
+
         /// <summary>
         /// 引擎时间, 单位: 毫秒
         /// </summary>
@@ -90,25 +106,17 @@ namespace Jx
             engineThread.Name = "JxEngineApp Main";
             engineThread.IsBackground = true;
             engineThread.Start();
-        }
+        } 
  
-        public const int CLOCK_INTERVAL = 20;
-        public const int CLOCK_TICKS_ONE_SECOND = 1000 / CLOCK_INTERVAL;
-
-        public static int GameFPS
-        {
-            get { return CLOCK_TICKS_ONE_SECOND; }
-        }
         private void MainLoop()
-        {
-            int timeWaiting = CLOCK_INTERVAL;
-            while (!engineThreadQuit)
+        { 
+            while (!engineThreadQuit && LoopInterval > 0)
             {
                 try
                 {
-                    Thread.Sleep(timeWaiting);
+                    Thread.Sleep(LoopInterval);
                     Clock.Tick();
-                    time += timeWaiting;
+                    time += LoopInterval;
                 }
                 catch { break; }
             }
@@ -137,7 +145,6 @@ namespace Jx
         {
 
         }
-
 
         /// <summary>
         /// EngineApp 准备退出 (Instance != null)

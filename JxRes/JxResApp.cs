@@ -29,12 +29,19 @@ namespace JxRes
         {
             get { return instance; }
         }
+
+        
          
         private ResourceObjectEditor currentResourceObjectEditor;
         private string currentResourcePath;
         private long currentResourceFileSize;
         private bool currentResourceIsArchive;
         private bool currentResourceIsInArchive;
+
+        public JxResApp(int loopInterval)
+            : base(loopInterval)
+        {
+        }
 
         public ResourceObjectEditor ResourceObjectEditor
         {

@@ -168,7 +168,7 @@ namespace JxDesign
             tsbRedo.Image = imageCache["redo"];
             tsbLogic.Image = imageCache["logic"];
 
-            Bootstrap(); 
+            Bootstrap(timerEntitySystemWorld.Interval); 
             timerEntitySystemWorld.Enabled = true;
 
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
@@ -238,9 +238,9 @@ namespace JxDesign
             ConsoleForm.DefaultInstance.WriteLine(format, args);
         }
 
-        private void Bootstrap()
+        private void Bootstrap(int loopInterval)
         {
-            JxEngineApp.Init(new JxDesignApp());
+            JxEngineApp.Init(new JxDesignApp(loopInterval));
 
             bool created = JxEngineApp.Instance.Create();
             if (created)

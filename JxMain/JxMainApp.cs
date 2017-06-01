@@ -12,6 +12,11 @@ namespace JxMain
 {
     internal class JxMainApp : JxEngineApp
     {
+        public JxMainApp(int loopInterval)
+            : base(loopInterval)
+        {
+        }
+
         protected override bool OnCreate()
         {
             Log.Info(">> 初始化 EntitySystemWorld...");

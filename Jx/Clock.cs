@@ -39,19 +39,7 @@ namespace Jx
             Clock c = new Clock(ticks, state);
             return c;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeout">毫秒</param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        public static Clock Create(uint timeout, object state = null)
-        {
-            timeout = timeout == 0 ? JxEngineApp.CLOCK_INTERVAL : timeout;
-            return New(1000 / timeout, state);
-        }
-
+ 
         public event AlarmHandler Alarm;
 
         private uint alarmCount = 0;

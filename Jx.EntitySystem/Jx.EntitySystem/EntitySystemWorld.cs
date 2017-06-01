@@ -201,10 +201,7 @@ namespace Jx.EntitySystem
                         this.GameFPS = float.Parse(textBlock.GetAttribute("GameFPS"));
                 }
 			}
-            if (this.GameFPS <= 0.0f)
-                this.GameFPS = JxEngineApp.GameFPS;
-            if (this.GameFPS > JxEngineApp.GameFPS)
-                this.GameFPS = JxEngineApp.GameFPS;
+ 
             Entity.tickDelta = 1.0f / this.GameFPS;
 
             CreateEntityClassAssembly(typeof(EntitySystemWorld).Assembly);

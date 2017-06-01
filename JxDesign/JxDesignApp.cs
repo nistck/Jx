@@ -32,6 +32,11 @@ namespace JxDesign
             get { return instance; }
         }
 
+        public JxDesignApp(int loopInterval)
+            : base(loopInterval)
+        {
+        }
+
         protected override bool OnCreate()
         {
             if (!base.OnCreate())

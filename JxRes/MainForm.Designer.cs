@@ -46,6 +46,7 @@
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.timerEntitySystemWorld = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -198,6 +199,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiConsoleForm;
         private System.Windows.Forms.Timer UIStatus_TIMER;
         private System.Windows.Forms.ToolStripMenuItem addonsToolStripMenuItem;
+        private System.Windows.Forms.Timer timerEntitySystemWorld;
     }
 }
 

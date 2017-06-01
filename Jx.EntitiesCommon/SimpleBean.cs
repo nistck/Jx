@@ -18,9 +18,7 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private int id;
         [FieldSerialize]
-        private string scope;
-        [FieldSerialize]
-        private uint clock;
+        private string scope; 
 
         [JxName("Id")]
         [DefaultValue(1981)]
@@ -37,15 +35,7 @@ namespace Jx.EntitiesCommon
             get { return scope; }
             set { this.scope = value; }
         }
-
-        [Description("时钟间隔, 单位: 次数")]
-        [JxName("时钟间隔")]
-        public uint Clock
-        {
-            get { return clock == 0? JxEngineApp.CLOCK_TICKS_ONE_SECOND : clock; }
-            set { this.clock = value; }
-        }
-
+ 
         protected override void OnLoaded()
         {
             base.OnLoaded();
@@ -71,9 +61,7 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private int beanId;
         [FieldSerialize]
-        private MethodType method = MethodType.Get;
-
-        private Clock clock = null;
+        private MethodType method = MethodType.Get; 
 
         protected override bool OnLoad(TextBlock block)
         { 
@@ -109,21 +97,7 @@ namespace Jx.EntitiesCommon
         {
             base.OnDestroy();
         }
-
-        private void Clock_Alarm(object state, Clock clock)
-        {
-            int n = 2500;
-            float ts0 = JxEngineApp.Instance.Time;
-
-            Log.Debug(">> OnTick: {0}, {1}, {2}, {3}", ts0, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
-            Thread.Sleep(2500);
-
-            float ts1 = JxEngineApp.Instance.Time;
-            float dt = ts1 - ts0;
-            Log.Debug(">> OnTick: {0}, {1}, T{2}, {3}, {4}, {5}", 
-                ts1, ts1 - ts0, n, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
-        }
-
+         
         protected override void OnTick()
         {
             base.OnTick();

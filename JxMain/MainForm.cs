@@ -50,7 +50,7 @@ namespace JxMain
             tsbUnload.Image = imageCache["unload"];
 
             Console.WriteLine(System.Threading.SynchronizationContext.Current);
-            Bootstrap();
+            Bootstrap(timerEntitySystemWorld.Interval);
 
             #region Splash Screen
             LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
@@ -63,9 +63,9 @@ namespace JxMain
 
         }
 
-        private void Bootstrap()
+        private void Bootstrap(int loopInterval)
         {
-            JxEngineApp.Init(new JxMainApp());
+            JxEngineApp.Init(new JxMainApp(loopInterval));
 
             bool created = JxEngineApp.Instance.Create();
             if (created)
