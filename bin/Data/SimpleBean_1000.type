@@ -4,4 +4,5 @@ type SimpleBean_1000
 	id = 1992
 	scope = view
 	taskTimeout = 1800
+	threadMode = New
 }

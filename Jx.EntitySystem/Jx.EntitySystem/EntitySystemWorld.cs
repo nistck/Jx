@@ -333,11 +333,11 @@ namespace Jx.EntitySystem
 		private void Simulate()
 		{
             if (!this.simulation || this.systemPauseOfSimulation)
-                return; 
-			//EntitySystemWorld.entitySystemTimeCounter.Start();
-			Entities.Instance.TickEntities(this.engineTime, /*clientOnly*/true);
-			//EntitySystemWorld.entitySystemTimeCounter.End();
-		}
+                return;
+            //EntitySystemWorld.entitySystemTimeCounter.Start();
+            Entities.Instance.TickEntities(this.engineTime, /*clientOnly*/true);
+            //EntitySystemWorld.entitySystemTimeCounter.End();
+        }
 
         /*
 		public void WorldTick(int tick)

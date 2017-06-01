@@ -88,6 +88,8 @@ namespace Jx.EntitySystem
 		{
 			Trace.Assert(instance == null);
 			instance = new Entities();
+            //ThreadPool.SetMaxThreads(1000, 1000);
+            //ThreadPool.SetMinThreads(20, 20);
 			instance._Init();
 		}
 
@@ -250,19 +252,160 @@ namespace Jx.EntitySystem
 			{
 				current.Value.NotifySetSimulation(simulation);
 			}
-		} 
+		}
+
+        private readonly List<Entity> defaultThreadEntities = new List<Entity>();
+        private Thread defaultThread = null;
+        private bool defaultThreadRunning = true;
+        private readonly ManualResetEventSlim defaultThreadEntityEvent = new ManualResetEventSlim(false);
+
+        private readonly List<Entity> threadEntities = new List<Entity>();
+        private Thread threadListener = null;
+        private bool threadListenerRunning = true;
+        private readonly ManualResetEventSlim threadListenerEvent = new ManualResetEventSlim(false);
+
+        private void CreateDefaultThread()
+        {
+            lock(defaultThreadEntities)
+            {
+                if( defaultThread == null )
+                {
+                    defaultThread = new Thread(new ThreadStart(TickEntityDefault));
+                    defaultThread.IsBackground = true;
+                    defaultThread.Name = string.Format("Default Entity Tick Thread");
+                    defaultThread.Start();
+                }
+            }
+
+            lock(threadEntities)
+            {
+                if( threadListener == null )
+                {
+                    threadListener = new Thread(new ThreadStart(TickListen));
+                    threadListener.IsBackground = true;
+                    threadListener.Start();
+                }
+            }
+        }
+
+        private void TickListen()
+        {
+            while(threadListenerRunning)
+            {
+                Entity nextEntity = null;
+                lock (threadEntities)
+                {
+                    if (threadEntities.Count > 0)
+                    {
+                        nextEntity = threadEntities[0];
+                        threadEntities.RemoveAt(0);
+                    }
+                }
+
+                if (nextEntity == null)
+                {
+                    threadListenerEvent.Wait();
+                    threadListenerEvent.Reset();
+                    continue;
+                }
+                CreateEntityTickThread(nextEntity);
+            }
+        }
+
+        private void CreateEntityTickThread(Entity entity)
+        {
+            Thread tx = new Thread(new ParameterizedThreadStart(_TickEntityQuiet));
+            tx.IsBackground = true;
+            tx.Start(entity);
+        }
+
+        private void TickEntity(Entity entity)
+        {
+            if (entity == null)
+                return; 
+
+            if( entity.Type.TaskMode == EntityType.ThreadMode.Default )
+            {
+                lock (defaultThreadEntities)
+                {
+                    if (!defaultThreadEntities.Contains(entity))
+                    {
+                        defaultThreadEntities.Add(entity);
+                        defaultThreadEntityEvent.Set();
+                    }
+                }
+            }
+            else
+            {
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(_TickEntityQuiet), entity);
+                /*
+                lock (entity.tickingLock)
+                {
+                    Task.Factory.StartNew((x) => _TickEntityQuiet(x), entity);
+                }
+                //*/
+                lock(threadEntities)
+                {
+                    if( !threadEntities.Contains(entity))
+                    {
+                        threadEntities.Add(entity);
+                        threadListenerEvent.Set();
+                    }
+                }
+            } 
+        }
+
+        private void TickEntityDefault()
+        {
+            while(defaultThreadRunning)
+            {
+                Entity nextEntity = null; 
+                lock(defaultThreadEntities)
+                {
+                    if(defaultThreadEntities.Count > 0)
+                    {
+                        nextEntity = defaultThreadEntities[0];
+                        defaultThreadEntities.RemoveAt(0); 
+                    }
+                }
+
+                if (nextEntity == null)
+                {
+                    defaultThreadEntityEvent.Wait();
+                    defaultThreadEntityEvent.Reset();
+                    continue;
+                }
+                //TickEntityQuiet(nextEntity);
+            }
+        }
+
+        private void _TickEntityQuiet(object entity)
+        {
+            Entity x = entity as Entity;
+            //Log.Info(">> Tick Entity Quiet -> {0}", x);
+            TickEntityQuiet(x);
+        }
+
+        private void TickEntityQuiet(Entity entity)
+        {
+            if (entity == null)
+                return;
+            try
+            {
+                entity.Ticking();
+            }
+            catch (Exception) { }
+        }
  
-        internal virtual void TickEntities(float tickTime, bool isClient)
-		{
-			this.tickTime = tickTime; 
-            
-			tickRound++;
-			if (tickRound >= 2147483647)
-			{
-				tickRound = 1;
+        private void _TickEntities()
+        { 
+            tickRound++;
+            if (tickRound >= 2147483647)
+            {
+                tickRound = 1;
                 foreach (Entity entity in entitiesSubscribedToOnTick)
-                    entity.tickRound = 0; 
-			}
+                    entity.tickRound = 0;
+            }
 
             List<Entity> entities = new List<Entity>();
             entities.AddRange(entitiesSubscribedToOnTick);
@@ -274,29 +417,23 @@ namespace Jx.EntitySystem
                 if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
                 {
                     entity.tickRound = tickRound;
-
-                    /*
-                    if (!isClient)
-                        entity.Ticking();
-                    else
-                        entity.ClientOnTick(); 
-                    //*/
-
-                    if (JxEngineApp.Instance != null)
-                    {
-
-                        JxEngineApp.Instance.Runtime.Run(() => entity.Ticking(), entity.Type.TaskTimeout);
-                    }
-                    else
-                        entity.Ticking();
-
-                    if (entitiesSubscribedToOnTickChanged)
-                        break;
+                    TickEntity(entity); 
                 }
             }
-
             DeleteEntitiesQueuedForDeletion();
-		}
+        }
+
+        internal virtual void TickEntities(float tickTime, bool isClient)
+		{
+			this.tickTime = tickTime;
+            try
+            {
+                CreateDefaultThread();
+                _TickEntities();
+            }finally
+            {
+            }
+        }
 
 		public bool Internal_LoadEntityTreeFromTextBlock(Entity entity, TextBlock block, bool loadRootEntity, List<Entity> loadedEntities)
 		{

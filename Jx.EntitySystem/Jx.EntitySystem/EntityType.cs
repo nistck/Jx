@@ -14,6 +14,11 @@ namespace Jx.EntitySystem
     [LogicSystemBrowsable(true), Editor(typeof(EditorEntityTypeUITypeEditor), typeof(UITypeEditor))]
     public class EntityType : IDisposable
     {
+        public enum ThreadMode
+        {
+            Default, 
+            New
+        }
 
         /// <summary>
         /// Specifies that a field will be serialized. This class cannot be inherited.
@@ -66,9 +71,9 @@ namespace Jx.EntitySystem
         internal Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object> entityTypeSerializableFields = 
             new Dictionary<EntityTypes.ClassInfo.EntityTypeSerializableFieldItem, object>();
         internal uint networkUIN;
-
+         
         [FieldSerialize]
-        private uint taskTimeout = 0;
+        private ThreadMode threadMode = ThreadMode.Default;
 
         /// <summary>
         /// Gets the class information of type.
@@ -107,13 +112,12 @@ namespace Jx.EntitySystem
                 this.fullName = value;
             }
         }
-
-        [Description("任务超时时间, 单位: 毫秒。取值0，不限定。")]
-        [DefaultValue(0)]
-        public uint TaskTimeout
+         
+        [Description("任务线程模式")]
+        public ThreadMode TaskMode
         {
-            get { return taskTimeout; }
-            set { taskTimeout = value; }
+            get { return threadMode; }
+            set { this.threadMode = value; }
         }
 
         /// <summary>

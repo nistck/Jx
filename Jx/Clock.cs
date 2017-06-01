@@ -13,20 +13,88 @@ namespace Jx
     /// </summary>
     public class Clock
     {
+        private static readonly List<WeakReference<Clock>> clocksKnown = new List<WeakReference<Clock>>(); 
+
+        internal static void Tick() 
+        { 
+            lock(clocksKnown)
+            {
+                for(int i = clocksKnown.Count - 1; i >= 0; i --)
+                {
+                    WeakReference<Clock> r = clocksKnown[i];
+
+                    Clock item = null;
+                    if (r.TryGetTarget(out item))
+                    {
+                        item._Tick();
+                    }
+                    else
+                        clocksKnown.RemoveAt(i);
+                }
+            }
+        }
+
+        public static Clock New(uint ticks, object state = null)
+        {
+            Clock c = new Clock(ticks, state);
+            return c;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timeout">毫秒</param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public static Clock Create(uint timeout, object state = null)
+        {
+            timeout = timeout == 0 ? JxEngineApp.CLOCK_INTERVAL : timeout;
+            return New(1000 / timeout, state);
+        }
+
         public event AlarmHandler Alarm;
 
         private uint alarmCount = 0;
         private float tick = 0;
 
-        public Clock(uint timeout, object state = null)
+        Clock(uint ticks, object state = null)
         {
-            this.Timeout = timeout;
+            this.Id = Guid.NewGuid().ToString();
+            this.Ticks = ticks;
             this.State = state;
+
+            lock (clocksKnown)
+            {
+                clocksKnown.Add(new WeakReference<Clock>(this));
+            }
         }
+
+        ~Clock()
+        {
+            lock (clocksKnown)
+            {
+                for (int i = clocksKnown.Count - 1; i >= 0; i--)
+                {
+                    WeakReference<Clock> r = clocksKnown[i];
+
+                    Clock item = null;
+                    if (r.TryGetTarget(out item))
+                    {
+                        if (item == this)
+                            clocksKnown.RemoveAt(i);
+                    }
+                    else
+                        clocksKnown.RemoveAt(i);
+                }
+            }
+        }
+
+        public string Id { get; private set; }
+
         /// <summary>
-        /// 超时间隔， 单位: 毫秒
+        /// 超时间隔， 单位: 次数
         /// </summary>
-        public uint Timeout { get; private set; }
+        public uint Ticks { get; private set; }
         /// <summary>
         /// 状态
         /// </summary>
@@ -43,16 +111,16 @@ namespace Jx
         /// </summary>
         public void Disable()
         {
-            this.Timeout = 0;
+            this.Ticks = 0;
         }
+
         /// <summary>
         /// 闹钟Tick
-        /// </summary>
-        /// <param name="delta"></param>
-        public void Tick(float delta)
+        /// </summary> 
+        private void _Tick( )
         {
-            tick += delta;
-            if( Timeout > 0 && tick >= Timeout )
+            tick++;
+            if( Ticks > 0 && tick >= Ticks )
             {
                 tick = 0;
                 alarmCount++;
@@ -69,6 +137,19 @@ namespace Jx
                 Alarm(State, this);
             }
             catch { }
+        }
+
+        public override bool Equals(object obj)
+        {
+            Clock c = obj as Clock;
+            if (c == null)
+                return false;
+            return c.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

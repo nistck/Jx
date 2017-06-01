@@ -774,7 +774,7 @@ namespace Jx.EntitySystem
         {
         }
 
-        private readonly object tickingLock = new object(); 
+        internal readonly object tickingLock = new object(); 
         internal bool InTicking { get; private set; }
         private long lastTick = 0; 
         internal void Ticking()

@@ -22,18 +22,11 @@ namespace Jx
 
         private readonly object threadLock = new object(); 
         private Thread engineThread = null;
-        private ManualResetEventSlim engineRunningEvent = null;
         private bool engineThreadQuit = false; 
-
-        public JxRuntime Runtime
-        {
-            get { return JxRuntime.Default; }
-        }
-        
-        public JxEngineApp() 
-        {
-        }
  
+        /// <summary>
+        /// 引擎时间, 单位: 毫秒
+        /// </summary>
         public float Time
         {
             get { return this.time; }
@@ -93,28 +86,28 @@ namespace Jx
                     return; 
             }
 
-            engineRunningEvent = new ManualResetEventSlim(false);
-
-            Thread t = new Thread(new ThreadStart(MainLoop));
-            t.Name = "EngineApp Main";
-            t.IsBackground = true;
-            t.Start();
+            engineThread = new Thread(new ThreadStart(MainLoop));
+            engineThread.Name = "JxEngineApp Main";
+            engineThread.IsBackground = true;
+            engineThread.Start();
         }
+ 
+        public const int CLOCK_INTERVAL = 20;
+        public const int CLOCK_TICKS_ONE_SECOND = 1000 / CLOCK_INTERVAL;
 
-        public const int MAIN_LOOP_INTERVAL = 100;
         public static int GameFPS
         {
-            get { return 1000 / MAIN_LOOP_INTERVAL; }
+            get { return CLOCK_TICKS_ONE_SECOND; }
         }
         private void MainLoop()
         {
-            int timeWaiting = MAIN_LOOP_INTERVAL;
+            int timeWaiting = CLOCK_INTERVAL;
             while (!engineThreadQuit)
             {
                 try
                 {
-                    if (engineRunningEvent.Wait(timeWaiting))
-                        break;
+                    Thread.Sleep(timeWaiting);
+                    Clock.Tick();
                     time += timeWaiting;
                 }
                 catch { break; }
@@ -126,8 +119,12 @@ namespace Jx
         /// </summary>
         public void SetMainLoopQuit()
         {
-            if (engineRunningEvent != null)
-                engineRunningEvent.Set();
+            if(engineThread != null)
+            {
+                engineThread.Interrupt();
+                engineThread.Abort();
+                engineThread = null; 
+            }
             engineThreadQuit = true;
         }
 

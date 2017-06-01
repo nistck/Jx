@@ -38,11 +38,11 @@ namespace Jx.EntitiesCommon
             set { this.scope = value; }
         }
 
-        [Description("时间间隔, 单位: 秒")]
-        [JxName("时间间隔")]
+        [Description("时钟间隔, 单位: 次数")]
+        [JxName("时钟间隔")]
         public uint Clock
         {
-            get { return clock == 0? 1000 : clock; }
+            get { return clock == 0? JxEngineApp.CLOCK_TICKS_ONE_SECOND : clock; }
             set { this.clock = value; }
         }
 
@@ -102,17 +102,11 @@ namespace Jx.EntitiesCommon
         protected override void OnPostCreate(bool loaded)
         {
             base.OnPostCreate(loaded);
-
-            clock = new Clock(Type.Clock, this);
-            clock.Alarm += Clock_Alarm;
             SubscribeToTickEvent();
         }
 
         protected override void OnDestroy()
         {
-            if (clock != null)
-                clock.Alarm -= Clock_Alarm;
-
             base.OnDestroy();
         }
 
@@ -133,7 +127,17 @@ namespace Jx.EntitiesCommon
         protected override void OnTick()
         {
             base.OnTick();
-            clock.Tick(TickDelta); 
+
+            int n = 2500;
+            float ts0 = JxEngineApp.Instance.Time;
+
+            Log.Debug(">> OnTick: {0}, {1}, {2}, {3}", ts0, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
+            Thread.Sleep(2500);
+
+            float ts1 = JxEngineApp.Instance.Time;
+            float dt = ts1 - ts0;
+            Log.Debug(">> OnTick: {0}, {1}, T{2}, {3}, {4}, {5}",
+                ts1, ts1 - ts0, n, this.Name, this.UIN, Thread.CurrentThread.ManagedThreadId);
         }
     }
 }
