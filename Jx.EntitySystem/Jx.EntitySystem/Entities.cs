@@ -251,138 +251,39 @@ namespace Jx.EntitySystem
 			}
 		}
 
-        private readonly List<Entity> defaultThreadEntities = new List<Entity>();
-        private Thread defaultThread = null;
-        private bool defaultThreadRunning = true;
-        private readonly ManualResetEventSlim defaultThreadEntityEvent = new ManualResetEventSlim(false);
+        private JxThread jxWorkers = null; 
 
-        private readonly List<Entity> threadEntities = new List<Entity>();
-        private Thread threadListener = null;
-        private bool threadListenerRunning = true;
-        private readonly ManualResetEventSlim threadListenerEvent = new ManualResetEventSlim(false);
+        private void __TickEntity(object item)
+        {
+            Entity entity = item as Entity;
+            if (entity == null)
+                return;
+
+#if DEBUGx
+            Log.Info(">> Tick: {0}, Worker: {1}", item, Thread.CurrentThread.Name);
+#endif
+            TickEntityQuiet(entity);
+        }
 
         private void CreateDefaultThread()
         {
-            lock(defaultThreadEntities)
+            lock(this)
             {
-                if( defaultThread == null )
+                if( jxWorkers == null )
                 {
-                    defaultThread = new Thread(new ThreadStart(TickEntityDefault));
-                    defaultThread.IsBackground = true;
-                    defaultThread.Name = string.Format("Default Entity Tick Thread");
-                    defaultThread.Start();
-                }
-            }
-
-            lock(threadEntities)
-            {
-                if( threadListener == null )
-                {
-                    threadListener = new Thread(new ThreadStart(TickListen));
-                    threadListener.IsBackground = true;
-                    threadListener.Start();
+                    jxWorkers = new JxThread(__TickEntity); 
                 }
             }
         }
-
-        private void TickListen()
-        {
-            while(threadListenerRunning)
-            {
-                Entity nextEntity = null;
-                lock (threadEntities)
-                {
-                    if (threadEntities.Count > 0)
-                    {
-                        nextEntity = threadEntities[0];
-                        threadEntities.RemoveAt(0);
-                    }
-                }
-
-                if (nextEntity == null)
-                {
-                    threadListenerEvent.Wait();
-                    threadListenerEvent.Reset();
-                    continue;
-                }
-                CreateEntityTickThread(nextEntity);
-            }
-        }
-
-        private void CreateEntityTickThread(Entity entity)
-        {
-            Thread tx = new Thread(new ParameterizedThreadStart(_TickEntityQuiet));
-            tx.IsBackground = true;
-            tx.Start(entity);
-        }
-
+ 
         private void TickEntity(Entity entity)
         {
             if (entity == null)
                 return; 
-
-            if( entity.Type.TaskMode == EntityType.ThreadMode.Default )
-            {
-                lock (defaultThreadEntities)
-                {
-                    if (!defaultThreadEntities.Contains(entity))
-                    {
-                        defaultThreadEntities.Add(entity);
-                        defaultThreadEntityEvent.Set();
-                    }
-                }
-            }
-            else
-            {
-                //ThreadPool.QueueUserWorkItem(new WaitCallback(_TickEntityQuiet), entity);
-                /*
-                lock (entity.tickingLock)
-                {
-                    Task.Factory.StartNew((x) => _TickEntityQuiet(x), entity);
-                }
-                //*/
-                lock(threadEntities)
-                {
-                    if( !threadEntities.Contains(entity))
-                    {
-                        threadEntities.Add(entity);
-                        threadListenerEvent.Set();
-                    }
-                }
-            } 
+            jxWorkers.Work(entity); 
         }
-
-        private void TickEntityDefault()
-        {
-            while(defaultThreadRunning)
-            {
-                Entity nextEntity = null; 
-                lock(defaultThreadEntities)
-                {
-                    if(defaultThreadEntities.Count > 0)
-                    {
-                        nextEntity = defaultThreadEntities[0];
-                        defaultThreadEntities.RemoveAt(0); 
-                    }
-                }
-
-                if (nextEntity == null)
-                {
-                    defaultThreadEntityEvent.Wait();
-                    defaultThreadEntityEvent.Reset();
-                    continue;
-                }
-                //TickEntityQuiet(nextEntity);
-            }
-        }
-
-        private void _TickEntityQuiet(object entity)
-        {
-            Entity x = entity as Entity;
-            //Log.Info(">> Tick Entity Quiet -> {0}", x);
-            TickEntityQuiet(x);
-        }
-
+         
+ 
         private void TickEntityQuiet(Entity entity)
         {
             if (entity == null)

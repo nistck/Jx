@@ -55,8 +55,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.BuildAll", "Jx.BuildAll\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Drawing", "Jx.Drawing\Jx.Drawing.csproj", "{091CCBBD-6591-47E0-B97F-3E0EF0E8A089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Threading", "Jx.Threading\Jx.Threading.csproj", "{FCD90FD8-1DD0-4BFB-9483-944FCEB46940}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,10 +133,6 @@ Global
 		{091CCBBD-6591-47E0-B97F-3E0EF0E8A089}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{091CCBBD-6591-47E0-B97F-3E0EF0E8A089}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{091CCBBD-6591-47E0-B97F-3E0EF0E8A089}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCD90FD8-1DD0-4BFB-9483-944FCEB46940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCD90FD8-1DD0-4BFB-9483-944FCEB46940}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCD90FD8-1DD0-4BFB-9483-944FCEB46940}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCD90FD8-1DD0-4BFB-9483-944FCEB46940}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
