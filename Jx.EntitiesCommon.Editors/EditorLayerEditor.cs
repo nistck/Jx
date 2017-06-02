@@ -11,6 +11,9 @@ using System.Globalization;
 
 namespace Jx.EntitiesCommon.Editors
 {
+    /// <summary>
+    /// 在MapObject中引用
+    /// </summary>
     public class EditorLayerEditor : BasePropertyEditor
     {
         private ListBox layersListBox;

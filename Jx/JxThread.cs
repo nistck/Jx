@@ -17,7 +17,7 @@ namespace Jx
             private long time = 0; 
 
             private Action<object> workerProc = null;
-            private readonly Queue<object> items = new Queue<object>();
+            private readonly List<object> items = new List<object>();
             private readonly ManualResetEventSlim itemEvent = new ManualResetEventSlim(false);
 
             public WorkerInfo(string name, Action<object> workerProc)
@@ -31,6 +31,8 @@ namespace Jx
             public Thread Worker { get; private set; } 
             public bool Running { get; private set; }
             public bool Idle { get; private set; }
+            public object Current { get; private set; }
+            private bool _CurrentValid;
 
             public void Quit()
             {
@@ -82,7 +84,7 @@ namespace Jx
             {
                 lock(items)
                 {
-                    items.Enqueue(item);
+                    items.Add(item);
                     itemEvent.Set();
                 }
             }
@@ -102,7 +104,8 @@ namespace Jx
                     {
                         if( items.Count > 0)
                         {
-                            item = items.Dequeue();
+                            item = items[0];
+                            items.RemoveAt(0);
                             itemFound = true;
                         }
                     }
@@ -117,15 +120,31 @@ namespace Jx
                         continue; 
                     }
 
-                    // 有数据!
-                    workQuiet(item);
+                    try
+                    {
+                        _SetCurrent(item, true);
+                        // 有数据!
+                        workQuiet(item);
+                    }
+                    finally {
+                        _SetCurrent(null, false);
+                    }
+                }
+            }
+
+            private void _SetCurrent(object item, bool valid)
+            {
+                lock(items)
+                {
+                    Current = item;
+                    _CurrentValid = valid;
                 }
             }
 
             private void workQuiet(object item)
             {
 #if DEBUG_THREAD
-                Log.Info(">> [{0}] 处理数据: {1}", Name, item);
+                Log.Info(">> [{0}] 开始处理数据: {1}, 队列长度: {2}", this.Name, item, items.Count);
 #endif
                 long ts1 = 0; 
                 try
@@ -152,10 +171,25 @@ namespace Jx
             {
                 get { return time; }
             }
+
+            public bool ContainsItem(object item)
+            {
+                lock (items)
+                {
+                    if (item == null)
+                    {
+                        int n = items.Where(_x => _x == null).Count();
+                        return n > 0 || (_CurrentValid && Current == null);
+                    }
+
+                    return items.Contains(item) || (_CurrentValid && Current != null && Current.Equals(item));
+                }
+            }
         }
 
         private int id = 0;
 
+        private bool unique = true;
         private int numberOfWorkers = 0;
         private Action<object> itemProcessProc = null;
 
@@ -207,7 +241,7 @@ namespace Jx
             }
         }
 
-        public void Work(object state)
+        public void Work(object item)
         {
             lock(this)
             {
@@ -221,7 +255,26 @@ namespace Jx
                     Log.Info(">> [{0}] 创建 {1}", Thread.CurrentThread.Name, name);
 #endif
                 }
-                this.dispatcher.Work(state);
+
+                if (!dispatcher.ContainsItem(item))
+                    dispatcher.Work(item);
+            }
+        }
+
+        private void Work(WorkerInfo worker, object item)
+        {
+            if (worker == null)
+                return;
+
+            if (unique)
+            {
+                int n = workers.Sum(_worker => _worker.ContainsItem(item) ? 1 : 0);
+                if (n == 0)
+                    worker.Work(item);
+            }
+            else
+            {
+                worker.Work(item);
             }
         }
 
@@ -233,16 +286,18 @@ namespace Jx
         {
             lock(workers)
             {
-                WorkerInfo workerIdle = workers.Where(_worker => _worker.Idle).FirstOrDefault();
-                if( workerIdle != null )
+                if (workers.Count > numberOfWorkers)
                 {
-#if DEBUG_THREAD
-                    Log.Info(">> [{0}] 工作线程({1}) 空闲, 数据: {2}", Thread.CurrentThread.Name, workerIdle.Name, item);
-#endif
-                    workerIdle.Work(item);
-                    return;
+                    for (int i = workers.Count - 1; i >= 0; i--)
+                    {
+                        WorkerInfo worker = workers[i];
+                        if (workers.Count > numberOfWorkers && worker.ItemsCount == 0 && worker.Idle)
+                        {
+                            workers.RemoveAt(i);
+                        }
+                    }
                 }
-
+ 
                 // 没有Worker空闲
                 if(workers.Count == 0 || workers.Count < numberOfWorkers)
                 {
@@ -253,15 +308,27 @@ namespace Jx
                     Log.Info(">> [{0}] 创建工作线程 ({1}) 处理数据: {2}", Thread.CurrentThread.Name, workerName, item);
 #endif
                     worker.Create();
-                    worker.Work(item);
+                    Work(worker, item);
                     return; 
                 }
+
+                int itemsMin = workers.Min(_worker => _worker.ItemsCount);
+                WorkerInfo workerMinItems = workers.Where(_worker => _worker.ItemsCount == itemsMin).FirstOrDefault();
+                if (workerMinItems != null)
+                {
+#if DEBUG_THREAD
+                    Log.Info(">> [{0}] 工作线程({1}) 队列中数据最少 ({2}个), 可以处理数据: {3}", 
+                        Thread.CurrentThread.Name, workerMinItems.Name, workerMinItems.ItemsCount, item);
+#endif
+                    Work(workerMinItems, item);
+                    return;
+                } 
 
                 WorkerInfo wf = workers[0];
 #if DEBUG_THREAD
                 bool wfDefault = true;
 #endif
-                // 负载最轻的
+                // 负载最轻的 
                 long timeMin = workers.Min(_worker => _worker.Time);
                 WorkerInfo wx = workers.Where(_worker => _worker.Time == timeMin).FirstOrDefault();
                 if (wx != null)
@@ -276,7 +343,7 @@ namespace Jx
                 Log.Info(">> [{0}] 使用工作线程 ({1}) 处理数据 {2}, 工作线程队列长度: {3}, 数据: {4}", 
                     Thread.CurrentThread.Name, wf.Name, wfDefault? "(缺省)" : "(负载最轻)", wf.ItemsCount, item);
 #endif
-                wf.Work(item);
+                Work(wf, item);
             }
         }
 
