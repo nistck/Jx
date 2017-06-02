@@ -32,7 +32,7 @@ namespace JxDesign
             get { return instance; }
         }
 
-        public JxDesignApp(int loopInterval)
+        public JxDesignApp(int loopInterval = 20)
             : base(loopInterval)
         {
         }

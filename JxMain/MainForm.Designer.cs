@@ -36,12 +36,11 @@
             this.tsbUnload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MapInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
-            this.timerEntitySystemWorld = new System.Windows.Forms.Timer(this.components);
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.MapInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerStatus = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -113,6 +112,20 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(800, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "Ready";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // MapInfo
+            // 
+            this.MapInfo.Name = "MapInfo";
+            this.MapInfo.Size = new System.Drawing.Size(0, 17);
+            this.MapInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -136,25 +149,6 @@
             this.IL16.Images.SetKeyName(0, "load");
             this.IL16.Images.SetKeyName(1, "open");
             this.IL16.Images.SetKeyName(2, "unload");
-            // 
-            // timerEntitySystemWorld
-            // 
-            this.timerEntitySystemWorld.Interval = 20;
-            this.timerEntitySystemWorld.Tick += new System.EventHandler(this.timerEntitySystemWorld_Tick);
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(800, 17);
-            this.toolStripStatusLabel1.Spring = true;
-            this.toolStripStatusLabel1.Text = "Ready";
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // MapInfo
-            // 
-            this.MapInfo.Name = "MapInfo";
-            this.MapInfo.Size = new System.Drawing.Size(0, 17);
-            this.MapInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // timerStatus
             // 
@@ -198,7 +192,6 @@
         private System.Windows.Forms.ImageList IL16;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tsbUnload;
-        private System.Windows.Forms.Timer timerEntitySystemWorld;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel MapInfo;
         private System.Windows.Forms.Timer timerStatus;

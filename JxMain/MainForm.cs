@@ -50,7 +50,7 @@ namespace JxMain
             tsbUnload.Image = imageCache["unload"];
 
             Console.WriteLine(System.Threading.SynchronizationContext.Current);
-            Bootstrap(timerEntitySystemWorld.Interval);
+            Bootstrap();
 
             #region Splash Screen
             LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
@@ -63,7 +63,7 @@ namespace JxMain
 
         }
 
-        private void Bootstrap(int loopInterval)
+        private void Bootstrap(int loopInterval = 20)
         {
             JxEngineApp.Init(new JxMainApp(loopInterval));
 
@@ -81,7 +81,6 @@ namespace JxMain
             bool loadResult = MapWorld.Instance.MapLoad(p);
             if (!loadResult)
                 return; 
-            timerEntitySystemWorld.Enabled = true;
             Log.Info("加载地图: {0}", p);
         }
 
@@ -91,15 +90,8 @@ namespace JxMain
                 return;
             string filePath = Map.Instance.VirtualFileName;
 
-            timerEntitySystemWorld.Enabled = false;
             MapWorld.Instance.MapDestroy();
             Log.Info("地图销毁: {0}", filePath);
-        }
-
-        private void timerEntitySystemWorld_Tick(object sender, EventArgs e)
-        {
-            if (EntitySystemWorld.Instance != null)
-                EntitySystemWorld.Instance.Tick();
         }
 
         private void timerStatus_Tick(object sender, EventArgs e)

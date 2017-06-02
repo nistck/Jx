@@ -75,7 +75,7 @@ namespace JxRes
          
         private bool SaveLayoutFlag = true;
 
-        private void Bootstrap(int loopInterval)
+        private void Bootstrap(int loopInterval = 20)
         { 
             JxEngineApp.Init(new JxResApp(loopInterval));  
 
@@ -123,7 +123,7 @@ namespace JxRes
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Bootstrap(timerEntitySystemWorld.Interval);
+            Bootstrap();
             //SetTheme(VisualStudioToolStripExtender.VsVersion.Vs2015, vS2015LightTheme1);
 
             AddonManager.Instance.PostInit();

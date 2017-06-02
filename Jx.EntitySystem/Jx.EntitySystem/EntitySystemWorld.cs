@@ -49,9 +49,7 @@ namespace Jx.EntitySystem
 				return instance;
 			}
 		}
-
-        public float GameFPS { get; private set; }
-
+ 
         public WorldType DefaultWorldType
         {
             get { return defaultWorldType; }
@@ -144,7 +142,7 @@ namespace Jx.EntitySystem
 			}
 		}
 
-		public static bool Init(EntitySystemWorld overridedObject)
+		public static bool Init(EntitySystemWorld overridedObject, bool useEngineTicking = true)
 		{
             if (instance != null)
                 return false;
@@ -157,6 +155,15 @@ namespace Jx.EntitySystem
 			{
 				Shutdown();
 			}
+            else
+            {
+                if( JxEngineApp.Instance != null && useEngineTicking )
+                {
+                    JxEngineApp.Instance.Tick += () => {
+                        instance.Tick();
+                    };
+                }
+            }
 			return flag;
 		}
 
@@ -186,8 +193,7 @@ namespace Jx.EntitySystem
 		private bool _Startup()
 		{
             #region ȱʡ
-            Entity.tickDelta = 20;
-            this.GameFPS = 50f;
+            Entity.tickDelta = 20; 
             #endregion
 
             TextBlock textBlock = null;
@@ -197,12 +203,11 @@ namespace Jx.EntitySystem
 				
                 if( textBlock != null )
                 {
-                    if( textBlock.IsAttributeExist("GameFPS"))
-                        this.GameFPS = float.Parse(textBlock.GetAttribute("GameFPS"));
                 }
 			}
  
-            Entity.tickDelta = 1.0f / this.GameFPS;
+            if (JxEngineApp.Instance != null)
+                Entity.tickDelta = JxEngineApp.Instance.LoopInterval;
 
             CreateEntityClassAssembly(typeof(EntitySystemWorld).Assembly);
             CreateEntityClassAssembly(Assembly.GetExecutingAssembly());
@@ -373,6 +378,7 @@ namespace Jx.EntitySystem
 				this.engineTime = time;
 				return;
 			}
+
 			while (time > this.engineTime + Entity.TickDelta)
 			{
 				this.engineTime += Entity.TickDelta;

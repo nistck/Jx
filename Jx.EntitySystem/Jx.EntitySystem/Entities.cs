@@ -102,11 +102,11 @@ namespace Jx.EntitySystem
 		private void _Init()
 		{  
             this.tickTime = JxEngineApp.Instance.Time;
-		} 
+		}
 
         private void _Shutdown()
 		{
-		}
+        }
 
 		public Entity _CreateInternal(EntityType type, Entity parent, uint uin, uint networkUIN)
 		{
@@ -253,7 +253,7 @@ namespace Jx.EntitySystem
 
         private JxThread jxWorkers = null; 
 
-        private void __TickEntity(object item)
+        private void TickEntityProc(object item)
         {
             Entity entity = item as Entity;
             if (entity == null)
@@ -262,37 +262,22 @@ namespace Jx.EntitySystem
 #if DEBUGx
             Log.Info(">> Tick: {0}, Worker: {1}", item, Thread.CurrentThread.Name);
 #endif
-            TickEntityQuiet(entity);
-        }
-
-        private void CreateDefaultThread()
-        {
-            lock(this)
-            {
-                if( jxWorkers == null )
-                {
-                    jxWorkers = new JxThread(__TickEntity); 
-                }
-            }
-        }
- 
-        private void TickEntity(Entity entity)
-        {
-            if (entity == null)
-                return; 
-            jxWorkers.Work(entity); 
-        }
-         
- 
-        private void TickEntityQuiet(Entity entity)
-        {
-            if (entity == null)
-                return;
             try
             {
                 entity.Ticking();
             }
             catch (Exception) { }
+        }
+
+        private void CreateWorkersThread()
+        {
+            lock(this)
+            {
+                if( jxWorkers == null )
+                {
+                    jxWorkers = new JxThread(TickEntityProc); 
+                }
+            }
         }
  
         private void _TickEntities()
@@ -315,7 +300,7 @@ namespace Jx.EntitySystem
                 if (!entity.IsSetForDeletion && entity.CreateTime != this.tickTime && this.tickRound != entity.tickRound)
                 {
                     entity.tickRound = tickRound;
-                    TickEntity(entity); 
+                    jxWorkers.Work(entity);
                 }
             }
             DeleteEntitiesQueuedForDeletion();
@@ -326,7 +311,7 @@ namespace Jx.EntitySystem
 			this.tickTime = tickTime;
             try
             {
-                CreateDefaultThread();
+                CreateWorkersThread();
                 _TickEntities();
             }finally
             {

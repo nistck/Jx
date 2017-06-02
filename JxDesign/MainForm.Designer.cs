@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,15 +57,14 @@
             this.tsbLogic = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.IL16 = new System.Windows.Forms.ImageList(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.IL16 = new System.Windows.Forms.ImageList();
+            this.timer1 = new System.Windows.Forms.Timer();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
+            this.vsToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.timerLogicEditor = new System.Windows.Forms.Timer(this.components);
-            this.timerEntitySystemWorld = new System.Windows.Forms.Timer(this.components);
+            this.timerLogicEditor = new System.Windows.Forms.Timer();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -350,11 +348,6 @@
             // 
             this.timerLogicEditor.Interval = 50;
             // 
-            // timerEntitySystemWorld
-            // 
-            this.timerEntitySystemWorld.Interval = 20;
-            this.timerEntitySystemWorld.Tick += new System.EventHandler(this.timerEntitySystemWorld_Tick);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -417,7 +410,6 @@
         private System.Windows.Forms.ToolStripButton tsbLogic;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Timer timerLogicEditor;
-        private System.Windows.Forms.Timer timerEntitySystemWorld;
     }
 }
 

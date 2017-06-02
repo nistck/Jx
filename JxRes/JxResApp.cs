@@ -38,7 +38,7 @@ namespace JxRes
         private bool currentResourceIsArchive;
         private bool currentResourceIsInArchive;
 
-        public JxResApp(int loopInterval)
+        public JxResApp(int loopInterval = 20)
             : base(loopInterval)
         {
         }

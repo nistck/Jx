@@ -10,6 +10,8 @@ namespace Jx
 {
     public class JxEngineApp
     {
+        public delegate void TickDelegate();
+
         private static JxEngineApp instance = null;
 
         public static JxEngineApp Instance
@@ -24,7 +26,9 @@ namespace Jx
 
         private readonly object threadLock = new object(); 
         private Thread engineThread = null;
-        private bool engineThreadQuit = false; 
+        private bool engineThreadQuit = false;
+
+        public event TickDelegate Tick;
 
         /// <summary>
         /// 时间间隔，单位：毫秒
@@ -117,6 +121,7 @@ namespace Jx
                     Thread.Sleep(LoopInterval);
                     Clock.Tick();
                     time += LoopInterval;
+                    try { _Tick();  } catch (Exception) { }
                 }
                 catch { break; }
             }
@@ -287,8 +292,19 @@ namespace Jx
             return true;
         }
 
-        public void Tick()
+        private void NotifyTick()
         {
+            try
+            {
+                if (Tick != null)
+                    Tick();
+            }
+            catch (Exception) { }
+        }
+
+        private void _Tick()
+        {
+            NotifyTick();
             float time = this.Time;
             float delta = time - this.lastTime;
             if( delta != 0.0f)
@@ -300,7 +316,7 @@ namespace Jx
 
         protected virtual void OnTick(float delta)
         {
-
+            
         }
     }
 }

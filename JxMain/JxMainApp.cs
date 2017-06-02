@@ -12,7 +12,7 @@ namespace JxMain
 {
     internal class JxMainApp : JxEngineApp
     {
-        public JxMainApp(int loopInterval)
+        public JxMainApp(int loopInterval = 20)
             : base(loopInterval)
         {
         }
