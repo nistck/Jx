@@ -150,6 +150,10 @@
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jx.Threading\Jx.Threading.csproj">
+      <Project>{fcd90fd8-1dd0-4bfb-9483-944fceb46940}</Project>
+      <Name>Jx.Threading</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx\Jx.csproj">
       <Project>{cfa4b908-1b01-49d5-ad2d-a535cbcda042}</Project>
       <Name>Jx</Name>

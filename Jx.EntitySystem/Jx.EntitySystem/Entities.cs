@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Threading; 
 
 namespace Jx.EntitySystem
 {
@@ -51,8 +50,8 @@ namespace Jx.EntitySystem
 
         public event CreateDeleteEntityDelegate CreateEntity; 
         public event CreateDeleteEntityDelegate DeleteEntity;
-
-		public static Entities Instance
+ 
+        public static Entities Instance
 		{
 			get
 			{
@@ -88,8 +87,6 @@ namespace Jx.EntitySystem
 		{
 			Trace.Assert(instance == null);
 			instance = new Entities();
-            //ThreadPool.SetMaxThreads(1000, 1000);
-            //ThreadPool.SetMinThreads(20, 20);
 			instance._Init();
 		}
 
@@ -103,11 +100,11 @@ namespace Jx.EntitySystem
 		}
 
 		private void _Init()
-		{
-			this.tickTime = JxEngineApp.Instance.Time;
-		}
+		{  
+            this.tickTime = JxEngineApp.Instance.Time;
+		} 
 
-		private void _Shutdown()
+        private void _Shutdown()
 		{
 		}
 
