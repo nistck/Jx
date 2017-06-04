@@ -1,0 +1,11 @@
+fullName = "JxGame classes"
+componentTypes = "EntityClasses"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "Jx.Game.dll"
+	platforms = "Windows"
+	entryPoint = True
+}

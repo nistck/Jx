@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BA2442D4-CB7B-4032-B5F6-0BC2F8151115}</ProjectGuid>
+    <ProjectGuid>{5C054C2C-7F4E-4801-BB83-8FA97BF80312}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jx.EntitiesCommon</RootNamespace>
-    <AssemblyName>Jx.EntitiesCommon</AssemblyName>
+    <RootNamespace>Jx.Game</RootNamespace>
+    <AssemblyName>Jx.Game</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DEBUG_ENTITY</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -32,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,24 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\ActionNode.cs" />
-    <Compile Include="Behaviors\BehaviorNode.cs" />
-    <Compile Include="Behaviors\BehaviorTree.cs" />
-    <Compile Include="Behaviors\BehaviorTreeNode.cs" />
-    <Compile Include="Behaviors\CompositeNode.cs" />
-    <Compile Include="Behaviors\ConditionNode.cs" />
-    <Compile Include="Behaviors\DeciderNode.cs" />
-    <Compile Include="Behaviors\DecoratorNode.cs" />
-    <Compile Include="Behaviors\SerialNode.cs" />
-    <Compile Include="Behaviors\ParallelNode.cs" />
-    <Compile Include="Behaviors\SequenceNode.cs" />
-    <Compile Include="Behaviors\SelectorNode.cs" />
-    <Compile Include="Dynamic.cs" />
+    <Compile Include="GameBot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleBean.cs" />
-    <Compile Include="SimpleWorld.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jx.Drawing\Jx.Drawing.csproj">
+      <Project>{091ccbbd-6591-47e0-b97f-3e0ef0e8a089}</Project>
+      <Name>Jx.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jx.EntitiesCommon\Jx.EntitiesCommon.csproj">
+      <Project>{ba2442d4-cb7b-4032-b5f6-0bc2f8151115}</Project>
+      <Name>Jx.EntitiesCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.EntitySystem\Jx.EntitySystem.csproj">
       <Project>{1f14f57b-c1fa-4f62-a290-cec225237313}</Project>
       <Name>Jx.EntitySystem</Name>
