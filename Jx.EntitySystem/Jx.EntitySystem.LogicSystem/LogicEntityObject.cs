@@ -8,85 +8,86 @@ namespace Jx.EntitySystem.LogicSystem
 	{
 		public class WaitingThreadItem
 		{
-			private string aBC = "";
-			private float aBc;
+			private string threadName = "";
+			private float remainingTime;
 			internal List<LogicExecuteMethodInformation> aBD;
 
 			public string ThreadName
 			{
 				get
 				{
-					return this.aBC;
+					return this.threadName;
 				}
 				set
 				{
-					this.aBC = value;
+					this.threadName = value;
 				}
 			}
 			public float RemainingTime
 			{
 				get
 				{
-					return this.aBc;
+					return this.remainingTime;
 				}
 				set
 				{
-					this.aBc = value;
+					this.remainingTime = value;
 				}
 			}
 		}
 
-		private Entity aAx;
+		private Entity ownerEntity;
 		private int aAY = -1;
-		private List<LogicExecuteMethodInformation> aAy;
-		private List<LogicEntityObject.WaitingThreadItem> aAZ = new List<LogicEntityObject.WaitingThreadItem>();
+		private List<LogicExecuteMethodInformation> currentExecutingMethodInformations;
+		private List<LogicEntityObject.WaitingThreadItem> waitintThreads = new List<LogicEntityObject.WaitingThreadItem>();
 		public IList<LogicEntityObject.WaitingThreadItem> WaitingThreads
 		{
 			get
 			{
-				return this.aAZ.AsReadOnly();
+				return this.waitintThreads.AsReadOnly();
 			}
 		}
 
 		protected LogicEntityObject(Entity ownerEntity)
 		{
-			this.aAx = ownerEntity;
+			this.ownerEntity = ownerEntity;
 		}
 
-		internal Entity A()
+		internal Entity OwnerEntity()
 		{
-			return this.aAx;
+			return this.ownerEntity;
 		}
 
 		internal void TickWaitItems()
 		{
-			int num = this.aAZ.Count;
+			int num = this.waitintThreads.Count;
 			for (int i = 0; i < num; i++)
 			{
-				LogicEntityObject.WaitingThreadItem waitingThreadItem = this.aAZ[i];
+				LogicEntityObject.WaitingThreadItem waitingThreadItem = this.waitintThreads[i];
 				waitingThreadItem.RemainingTime -= Entity.TickDelta;
 				if (waitingThreadItem.RemainingTime <= 0f)
 				{
-					this.aAZ.RemoveAt(i);
+					this.waitintThreads.RemoveAt(i);
 					i--;
 					num--;
-					this.aAx.UnsubscribeToTickEvent();
+					this.ownerEntity.UnsubscribeToTickEvent();
 					if (this.B() != -1)
 					{
 						Log.Fatal("LogicEntityObject: Internal error: TickWaitItems: currentExecutingMethodLevel != -1");
 					}
-					if (this.aAy != null)
+					if (this.currentExecutingMethodInformations != null)
 					{
 						Log.Fatal("LogicEntityObject: Internal error: TickWaitItems: currentExecutingMethodInformations != null");
 					}
-					this.aAy = waitingThreadItem.aBD;
-					foreach (LogicExecuteMethodInformation current in this.aAy)
+
+					this.currentExecutingMethodInformations = waitingThreadItem.aBD;
+					foreach (LogicExecuteMethodInformation current in this.currentExecutingMethodInformations)
 					{
 						current.NeedReturn = false;
 						current.NeedReturnForWait = false;
 					}
-					((LogicDesignerMethod)this.aAy[0].Method).A(this.aAy[0]);
-					if (this.aAy == null)
+					((LogicDesignerMethod)this.currentExecutingMethodInformations[0].Method).A(this.currentExecutingMethodInformations[0]);
+					if (this.currentExecutingMethodInformations == null)
 					{
 						Log.Fatal("LogicEntityObject: Internal error: TickWaitItems: currentExecutingMethodInformations == null");
 					}
@@ -94,7 +95,7 @@ namespace Jx.EntitySystem.LogicSystem
 					{
 						Log.Fatal("LogicEntityObject: Internal error: TickWaitItems: currentExecutingMethodLevel != -1");
 					}
-					this.aAy = null;
+					this.currentExecutingMethodInformations = null;
 				}
 			}
 		}
@@ -104,14 +105,14 @@ namespace Jx.EntitySystem.LogicSystem
 			LogicEntityObject.WaitingThreadItem waitingThreadItem = new LogicEntityObject.WaitingThreadItem();
 			waitingThreadItem.ThreadName = threadName;
 			waitingThreadItem.RemainingTime = remainingTime;
-			waitingThreadItem.aBD = this.aAy;
-			this.aAZ.Add(waitingThreadItem);
-			foreach (LogicExecuteMethodInformation current in this.aAy)
+			waitingThreadItem.aBD = this.currentExecutingMethodInformations;
+			this.waitintThreads.Add(waitingThreadItem);
+			foreach (LogicExecuteMethodInformation current in this.currentExecutingMethodInformations)
 			{
 				current.NeedReturn = true;
 				current.NeedReturnForWait = true;
 			}
-			this.aAx.SubscribeToTickEvent();
+			this.ownerEntity.SubscribeToTickEvent();
 		}
 
 		internal int B()
@@ -124,14 +125,14 @@ namespace Jx.EntitySystem.LogicSystem
 			this.aAY = num;
 		}
 
-		internal List<LogicExecuteMethodInformation> b()
+		internal List<LogicExecuteMethodInformation> GetCurrentExecutingMethodInformations()
 		{
-			return this.aAy;
+			return this.currentExecutingMethodInformations;
 		}
 
-		internal void A(List<LogicExecuteMethodInformation> list)
+		internal void SetCurrentExecutingMethodInformations(List<LogicExecuteMethodInformation> list)
 		{
-			this.aAy = list;
+			this.currentExecutingMethodInformations = list;
 		}
 
 		internal bool A(TextBlock textBlock)
@@ -164,19 +165,19 @@ namespace Jx.EntitySystem.LogicSystem
 							waitingThreadItem.aBD.Add(logicExecuteMethodInformation);
 						}
 					}
-					this.aAZ.Add(waitingThreadItem);
+					this.waitintThreads.Add(waitingThreadItem);
 				}
 			}
-			if (this.aAZ.Count != 0)
+			if (this.waitintThreads.Count != 0)
 			{
-				this.aAx.SubscribeToTickEvent();
+				this.ownerEntity.SubscribeToTickEvent();
 			}
 			return true;
 		}
 
 		internal void C()
 		{
-			foreach (LogicEntityObject.WaitingThreadItem current in this.aAZ)
+			foreach (WaitingThreadItem current in this.waitintThreads)
 			{
 				if (current.aBD != null)
 				{
@@ -190,10 +191,10 @@ namespace Jx.EntitySystem.LogicSystem
 
 		internal void OnSave(TextBlock textBlock)
 		{
-			if (this.aAZ.Count != 0)
+			if (this.waitintThreads.Count != 0)
 			{
 				TextBlock textBlock2 = textBlock.AddChild("waitItems");
-				foreach (LogicEntityObject.WaitingThreadItem current in this.aAZ)
+				foreach (WaitingThreadItem current in this.waitintThreads)
 				{
 					TextBlock textBlock3 = textBlock2.AddChild("item");
 					if (!string.IsNullOrEmpty(current.ThreadName))
@@ -214,14 +215,14 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 		}
 
-		public LogicEntityObject.WaitingThreadItem[] GetWaitingThreadsByName(string threadName)
+		public WaitingThreadItem[] GetWaitingThreadsByName(string threadName)
 		{
 			if (threadName == null)
 			{
 				threadName = "";
 			}
-			List<LogicEntityObject.WaitingThreadItem> list = new List<LogicEntityObject.WaitingThreadItem>();
-			foreach (LogicEntityObject.WaitingThreadItem current in this.aAZ)
+			List<WaitingThreadItem> list = new List<WaitingThreadItem>();
+			foreach (WaitingThreadItem current in this.waitintThreads)
 			{
 				if (current.ThreadName == threadName)
 				{

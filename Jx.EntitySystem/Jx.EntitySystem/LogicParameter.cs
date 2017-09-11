@@ -4,33 +4,34 @@ namespace Jx.EntitySystem
 	public class LogicParameter : LogicComponent
 	{
 		[Entity.FieldSerializeAttribute("parameterType")]
-		internal Type aBS;
+		internal Type parameterType;
 		[Entity.FieldSerializeAttribute("parameterName")]
-		internal string aBs;
+		internal string parameterName;
+
 		public Type ParameterType
 		{
 			get
 			{
-				return this.aBS;
+				return this.parameterType;
 			}
 		}
 		public string ParameterName
 		{
 			get
 			{
-				return this.aBs;
+				return this.parameterName;
 			}
 		}
 		public override string ToString()
 		{
-			if (this.aBS == null)
+			if (this.parameterType == null)
 			{
 				return "(not initialized)";
 			}
-			string text = this.aBS.Name;
-			if (!string.IsNullOrEmpty(this.aBs))
+			string text = this.parameterType.Name;
+			if (!string.IsNullOrEmpty(this.parameterName))
 			{
-				text = text + " " + this.aBs;
+				text = text + " " + this.parameterName;
 			}
 			return text;
 		}

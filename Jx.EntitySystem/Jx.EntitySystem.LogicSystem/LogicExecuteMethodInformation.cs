@@ -108,7 +108,7 @@ namespace Jx.EntitySystem.LogicSystem
 				return null;
 			}
 			logicLocalVariable = new LogicLocalVariable(methodParameter);
-			this.aAR.Add(methodParameter.aBs, logicLocalVariable);
+			this.aAR.Add(methodParameter.parameterName, logicLocalVariable);
 			return logicLocalVariable;
 		}
 		public LogicLocalVariable DeclareLocalVariable(LogicDeclareLocalVariableAction declareVariableAction)
@@ -228,7 +228,7 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 			if (this.aAp != null)
 			{
-				textBlock.SetAttribute("logicEntityObjectOwnerEntity", this.aAp.A().UIN.ToString());
+				textBlock.SetAttribute("logicEntityObjectOwnerEntity", this.aAp.OwnerEntity().UIN.ToString());
 			}
 			textBlock.SetAttribute("needReturn", this.aAQ.ToString());
 			textBlock.SetAttribute("needReturnForWait", this.aAq.ToString());

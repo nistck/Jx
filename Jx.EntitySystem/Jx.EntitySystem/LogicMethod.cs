@@ -86,8 +86,8 @@ namespace Jx.EntitySystem
 				return null;
 			}
 			logicParameter = (LogicParameter)Entities.Instance.Create(EntityTypes.Instance.GetByName("LogicParameter"), this);
-			logicParameter.aBS = type;
-			logicParameter.aBs = name;
+			logicParameter.parameterType = type;
+			logicParameter.parameterName = name;
 			logicParameter.PostCreate();
 			this.parameters.Add(logicParameter);
 			return logicParameter;

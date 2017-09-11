@@ -7,12 +7,12 @@ namespace Jx.EntitySystem.LogicSystem
 	public class LogicDesignerMethod : LogicMethod
 	{
 		[Entity.FieldSerializeAttribute("actions")]
-		private List<LogicAction> abK = new List<LogicAction>();
+		private List<LogicAction> actions = new List<LogicAction>();
 		public List<LogicAction> Actions
 		{
 			get
 			{
-				return this.abK;
+				return this.actions;
 			}
 		}
 		public object Execute(Type staticClassType, object[] parameterValues)
@@ -20,7 +20,9 @@ namespace Jx.EntitySystem.LogicSystem
 			if (staticClassType == null)
 			{
 				Log.Fatal("LogicDesignedMethod: staticClassType = null");
+                return null;
 			}
+
 			LogicExecuteMethodInformation logicExecuteMethodInformation = new LogicExecuteMethodInformation(this, staticClassType);
 			if (!this.A(logicExecuteMethodInformation, parameterValues))
 			{
@@ -33,11 +35,13 @@ namespace Jx.EntitySystem.LogicSystem
 			if (logicEntityObject == null)
 			{
 				Log.Fatal("LogicDesignedMethod: logicEntityObject = null");
+                return null;
 			}
+
 			LogicExecuteMethodInformation logicExecuteMethodInformation;
-			if (logicEntityObject.b() != null && logicEntityObject.B() + 1 < logicEntityObject.b().Count)
+			if (logicEntityObject.GetCurrentExecutingMethodInformations() != null && logicEntityObject.B() + 1 < logicEntityObject.GetCurrentExecutingMethodInformations().Count)
 			{
-				logicExecuteMethodInformation = logicEntityObject.b()[logicEntityObject.B() + 1];
+				logicExecuteMethodInformation = logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.B() + 1];
 			}
 			else
 			{
@@ -48,11 +52,11 @@ namespace Jx.EntitySystem.LogicSystem
 				}
 			}
 			object result;
-			if (logicEntityObject.b() == null)
+			if (logicEntityObject.GetCurrentExecutingMethodInformations() == null)
 			{
-				logicEntityObject.A(new List<LogicExecuteMethodInformation>());
+				logicEntityObject.SetCurrentExecutingMethodInformations(new List<LogicExecuteMethodInformation>());
 				result = this.A(logicExecuteMethodInformation);
-                logicEntityObject.A((List<LogicExecuteMethodInformation>)null);
+                logicEntityObject.SetCurrentExecutingMethodInformations((List<LogicExecuteMethodInformation>)null);
 			}
 			else
 			{
@@ -60,13 +64,14 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 			return result;
 		}
+
 		private bool A(LogicExecuteMethodInformation logicExecuteMethodInformation, object[] array)
 		{
 			for (int i = 0; i < base.Parameters.Count; i++)
 			{
 				LogicParameter logicParameter = base.Parameters[i];
 				object obj = array[i];
-				if (!logicParameter.aBS.IsAssignableFrom((obj != null) ? obj.GetType() : null))
+				if (!logicParameter.parameterType.IsAssignableFrom((obj != null) ? obj.GetType() : null))
 				{
 					Log.Error("Method: invalid parameter value type \"{0}\"", logicParameter.ParameterName);
 					return false;
@@ -79,6 +84,7 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 			return true;
 		}
+
 		internal object A(LogicExecuteMethodInformation logicExecuteMethodInformation)
 		{
 			LogicEntityObject logicEntityObject = logicExecuteMethodInformation.LogicEntityObject;
@@ -88,13 +94,13 @@ namespace Jx.EntitySystem.LogicSystem
 			{
 				LogicEntityObject expr_0F = logicEntityObject;
 				expr_0F.A(expr_0F.B() + 1);
-				if (logicEntityObject.B() >= logicEntityObject.b().Count)
+				if (logicEntityObject.B() >= logicEntityObject.GetCurrentExecutingMethodInformations().Count)
 				{
-					logicEntityObject.b().Add(logicExecuteMethodInformation);
+					logicEntityObject.GetCurrentExecutingMethodInformations().Add(logicExecuteMethodInformation);
 				}
 				else
 				{
-					if (logicEntityObject.b()[logicEntityObject.B()] != logicExecuteMethodInformation)
+					if (logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.B()] != logicExecuteMethodInformation)
 					{
 						Log.Fatal("LogicDesignerMethod: Internal error: Execute: logicEntityObject.CurrentExecutingMethodInformations[logicEntityObject.CurrentExecutingMethodLevel] != executeMethodInformation");
 					}
@@ -103,9 +109,9 @@ namespace Jx.EntitySystem.LogicSystem
 				}
 			}
 			object result = null;
-			for (int i = num; i < this.abK.Count; i++)
+			for (int i = num; i < this.actions.Count; i++)
 			{
-				LogicAction logicAction = this.abK[i];
+				LogicAction logicAction = this.actions[i];
 				if (!flag)
 				{
 					logicExecuteMethodInformation.PushCallActionsLevelIndex(i);
@@ -148,7 +154,7 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 			if (logicExecuteMethodInformation.LogicEntityObject != null)
 			{
-				logicExecuteMethodInformation.LogicEntityObject.b().RemoveAt(logicExecuteMethodInformation.LogicEntityObject.b().Count - 1);
+				logicExecuteMethodInformation.LogicEntityObject.GetCurrentExecutingMethodInformations().RemoveAt(logicExecuteMethodInformation.LogicEntityObject.GetCurrentExecutingMethodInformations().Count - 1);
 			}
 			if (logicEntityObject != null)
 			{
@@ -159,12 +165,12 @@ namespace Jx.EntitySystem.LogicSystem
 		}
 		public void InsertAction(int index, LogicAction action)
 		{
-			if (index < this.abK.Count)
+			if (index < this.actions.Count)
 			{
-				this.abK.Insert(index, action);
+				this.actions.Insert(index, action);
 				return;
 			}
-			this.abK.Add(action);
+			this.actions.Add(action);
 		}
 		protected internal override void OnRemoveChild(Entity entity)
 		{
@@ -172,7 +178,7 @@ namespace Jx.EntitySystem.LogicSystem
 			LogicAction logicAction = entity as LogicAction;
 			if (logicAction != null)
 			{
-				this.abK.Remove(logicAction);
+				this.actions.Remove(logicAction);
 			}
 		}
 		private void A(LogicAction logicAction, List<LogicLocalVariable> list)
