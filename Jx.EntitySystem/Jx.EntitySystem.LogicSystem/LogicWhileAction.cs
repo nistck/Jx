@@ -174,7 +174,7 @@ namespace Jx.EntitySystem.LogicSystem
 						executeMethodInformation.PushCallActionsLevelIndex(i + 1);
 						if (executeMethodInformation.LogicEntityObject != null)
 						{
-							executeMethodInformation.LogicEntityObject.A(LogicUtils.a(), LogicUtils.A());
+							executeMethodInformation.LogicEntityObject.CreateWaitingThreadItem(LogicUtils.a(), LogicUtils.A());
 						}
 						LogicUtils.A(0f);
 						LogicUtils.A("");

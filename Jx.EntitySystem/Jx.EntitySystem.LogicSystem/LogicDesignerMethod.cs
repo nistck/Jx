@@ -39,9 +39,9 @@ namespace Jx.EntitySystem.LogicSystem
 			}
 
 			LogicExecuteMethodInformation logicExecuteMethodInformation;
-			if (logicEntityObject.GetCurrentExecutingMethodInformations() != null && logicEntityObject.B() + 1 < logicEntityObject.GetCurrentExecutingMethodInformations().Count)
+			if (logicEntityObject.GetCurrentExecutingMethodInformations() != null && logicEntityObject.GetCurrentExecutingMethodLevel() + 1 < logicEntityObject.GetCurrentExecutingMethodInformations().Count)
 			{
-				logicExecuteMethodInformation = logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.B() + 1];
+				logicExecuteMethodInformation = logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.GetCurrentExecutingMethodLevel() + 1];
 			}
 			else
 			{
@@ -93,14 +93,14 @@ namespace Jx.EntitySystem.LogicSystem
 			if (logicEntityObject != null)
 			{
 				LogicEntityObject expr_0F = logicEntityObject;
-				expr_0F.A(expr_0F.B() + 1);
-				if (logicEntityObject.B() >= logicEntityObject.GetCurrentExecutingMethodInformations().Count)
+				expr_0F.SetCurrentExecutingMethodLevel(expr_0F.GetCurrentExecutingMethodLevel() + 1);
+				if (logicEntityObject.GetCurrentExecutingMethodLevel() >= logicEntityObject.GetCurrentExecutingMethodInformations().Count)
 				{
 					logicEntityObject.GetCurrentExecutingMethodInformations().Add(logicExecuteMethodInformation);
 				}
 				else
 				{
-					if (logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.B()] != logicExecuteMethodInformation)
+					if (logicEntityObject.GetCurrentExecutingMethodInformations()[logicEntityObject.GetCurrentExecutingMethodLevel()] != logicExecuteMethodInformation)
 					{
 						Log.Fatal("LogicDesignerMethod: Internal error: Execute: logicEntityObject.CurrentExecutingMethodInformations[logicEntityObject.CurrentExecutingMethodLevel] != executeMethodInformation");
 					}
@@ -125,7 +125,7 @@ namespace Jx.EntitySystem.LogicSystem
 					if (logicEntityObject != null)
 					{
 						LogicEntityObject expr_C7 = logicEntityObject;
-						expr_C7.A(expr_C7.B() - 1);
+						expr_C7.SetCurrentExecutingMethodLevel(expr_C7.GetCurrentExecutingMethodLevel() - 1);
 					}
 					return null;
 				}
@@ -135,14 +135,14 @@ namespace Jx.EntitySystem.LogicSystem
 					logicExecuteMethodInformation.PushCallActionsLevelIndex(i + 1);
 					if (logicExecuteMethodInformation.LogicEntityObject != null)
 					{
-						logicExecuteMethodInformation.LogicEntityObject.A(LogicUtils.a(), LogicUtils.A());
+						logicExecuteMethodInformation.LogicEntityObject.CreateWaitingThreadItem(LogicUtils.a(), LogicUtils.A());
 					}
 					LogicUtils.A(0f);
 					LogicUtils.A("");
 					if (logicEntityObject != null)
 					{
 						LogicEntityObject expr_128 = logicEntityObject;
-						expr_128.A(expr_128.B() - 1);
+						expr_128.SetCurrentExecutingMethodLevel(expr_128.GetCurrentExecutingMethodLevel() - 1);
 					}
 					return null;
 				}
@@ -159,7 +159,7 @@ namespace Jx.EntitySystem.LogicSystem
 			if (logicEntityObject != null)
 			{
 				LogicEntityObject expr_18A = logicEntityObject;
-				expr_18A.A(expr_18A.B() - 1);
+				expr_18A.SetCurrentExecutingMethodLevel(expr_18A.GetCurrentExecutingMethodLevel() - 1);
 			}
 			return result;
 		}
