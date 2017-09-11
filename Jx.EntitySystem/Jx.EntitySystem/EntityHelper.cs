@@ -25,7 +25,7 @@ namespace Jx.EntitySystem
         /// <param name="entityOrEntityType">true, Entity; false, EntityType</param>
         /// <param name="fieldInfo">字段</param>
         /// <returns></returns>
-        public static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
+        private static string GetFieldSerializeName(bool entityOrEntityType, FieldInfo fieldInfo)
         {
             string result = fieldInfo.Name;
             if (entityOrEntityType)
@@ -42,6 +42,7 @@ namespace Jx.EntitySystem
             }
             return result;
         }
+
         public static string ConvertToString(Type type, object value, string errorString)
         {
             if (typeof(EntityType).IsAssignableFrom(type))

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jx.EntitySystem.Exceptions\JxSerializationNotSupportException.cs" />
     <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\BooleanUtils.cs" />
     <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\Int32Utils.cs" />
     <Compile Include="Jx.EntitySystem.LogicSystem.SystemPrimitiveClasses\SingleUtils.cs" />

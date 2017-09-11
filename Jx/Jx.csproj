@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DEBUG_THREAD</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG_THREADx</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -51,6 +51,7 @@
     <Compile Include="JxEngineApp.cs" />
     <Compile Include="EngineRandom.cs" />
     <Compile Include="FunctionalityArea.cs" />
+    <Compile Include="JxException.cs" />
     <Compile Include="JxObject.cs" />
     <Compile Include="JxNameAttribute.cs" />
     <Compile Include="JxPropertyEditSelectOnlyAttribute.cs" />
