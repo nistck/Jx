@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Jx.Ext;
 
 namespace Jx.EntitySystem
 {
@@ -288,7 +289,7 @@ namespace Jx.EntitySystem
 				text = string.Concat(new string[]
 				{
 					text2,
-					Jx.Ext.CJ.TypeToCSharpString(current.VariableType),
+					CJ.TypeToCSharpString(current.VariableType),
 					" ",
 					current.VariableName,
 					";"

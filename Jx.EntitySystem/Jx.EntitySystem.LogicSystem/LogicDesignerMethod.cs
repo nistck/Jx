@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Jx.Ext;
 
 namespace Jx.EntitySystem.LogicSystem
 {
@@ -215,7 +216,7 @@ namespace Jx.EntitySystem.LogicSystem
 			string text = "";
 			if (base.ReturnType != typeof(void))
 			{
-				text += string.Format("return ({0})", Jx.Ext.CJ.TypeToCSharpString(base.ReturnType));
+				text += string.Format("return ({0})", CJ.TypeToCSharpString(base.ReturnType));
 			}
 			text += "__method.Execute( ";
 			if (base.ParentClass is LogicEntityClass)

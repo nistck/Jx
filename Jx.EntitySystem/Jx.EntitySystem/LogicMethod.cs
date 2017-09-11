@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using Jx.Ext;
+
+
 namespace Jx.EntitySystem
 {
 	public abstract class LogicMethod : LogicClassMember
@@ -164,7 +167,7 @@ namespace Jx.EntitySystem
 			}
 			if (this.ReturnType != typeof(void))
 			{
-				text += Jx.Ext.CJ.TypeToCSharpString(this.ReturnType);
+				text += CJ.TypeToCSharpString(this.ReturnType);
 			}
 			else
 			{
@@ -180,7 +183,7 @@ namespace Jx.EntitySystem
 					{
 						text += ", ";
 					}
-					text += Jx.Ext.CJ.TypeToCSharpString(this.parameters[i].ParameterType);
+					text += CJ.TypeToCSharpString(this.parameters[i].ParameterType);
 					if (!string.IsNullOrEmpty(this.parameters[i].ParameterName))
 					{
 						text = text + " " + this.parameters[i].ParameterName;

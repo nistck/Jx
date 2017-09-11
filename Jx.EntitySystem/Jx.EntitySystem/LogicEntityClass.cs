@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using Jx.Ext;
+
 namespace Jx.EntitySystem
 {
 	public class LogicEntityClass : LogicClass
@@ -37,7 +39,7 @@ namespace Jx.EntitySystem
 			string text = this.abe;
 			if (this.EntityClassInfo != null)
 			{
-				text = Jx.Ext.CJ.TypeToCSharpString(this.EntityClassInfo.entityClassType);
+				text = CJ.TypeToCSharpString(this.EntityClassInfo.entityClassType);
 			}
 			data.Strings.Add(string.Format("\t\t{0} __ownerEntity;", text));
 			data.Strings.Add("\t\t");
@@ -57,7 +59,7 @@ namespace Jx.EntitySystem
 						return;
 					}
 					MethodInfo method = entityEventInfo.EventHandlerType.GetMethod("Invoke");
-					string arg = Jx.Ext.CJ.TypeToCSharpString(method.GetParameters()[0].ParameterType);
+					string arg = CJ.TypeToCSharpString(method.GetParameters()[0].ParameterType);
 					text2 += string.Format("delegate( {0} __entity", arg);
 					foreach (LogicParameter current2 in current.Parameters)
 					{
@@ -66,7 +68,7 @@ namespace Jx.EntitySystem
 						{
 							text3,
 							", ",
-							Jx.Ext.CJ.TypeToCSharpString(current2.ParameterType),
+							CJ.TypeToCSharpString(current2.ParameterType),
 							" ",
 							current2.ParameterName
 						});
