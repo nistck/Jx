@@ -47,6 +47,8 @@ namespace Jx.EntitiesCommon.Editors
                 layers.Add(Map.Instance.RootEditorLayer);
                 layers.AddRange(Map.Instance.RootEditorLayer.ChildrenDescent);
 
+                // NULL
+                layersListBox.Items.Add(new LayerBean(null));
                 layers.Select(_layer => new LayerBean(_layer)).Any(_layer => {
                     layersListBox.Items.Add(_layer);
                     return false;
@@ -71,6 +73,9 @@ namespace Jx.EntitiesCommon.Editors
 
         public override string ToString()
         {
+            if (Layer == null)
+                return "<无>"; 
+
             string t = "";
             if (Layer != null && Layer.Indent > 0)
                 t = new string(' ', Layer.Indent);

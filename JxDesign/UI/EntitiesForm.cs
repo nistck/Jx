@@ -108,7 +108,7 @@ namespace JxDesign.UI
             if (objectNode == null)
                 return;
 
-            TreeNode layerNode = TreeViewUtil.FindNodeByTag(rootNode, target.EditorLayer);
+            TreeNode layerNode = target.EditorLayer == null? rootNode : TreeViewUtil.FindNodeByTag(rootNode, target.EditorLayer);
             if ( layerNode != null)
             {
                 objectNode.Remove();
