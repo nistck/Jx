@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,11 +45,14 @@
     <Compile Include="ExtendedFunctionalityDescriptorAttribute.cs" />
     <Compile Include="ExtendedFunctionalityDescriptorCustomTypeDescriptor.cs" />
     <Compile Include="JxObjectExt.cs" />
+    <Compile Include="BytesUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyName.cs" />
     <Compile Include="ReadOnlyICollection.cs" />
+    <Compile Include="DataReader.cs" />
     <Compile Include="ReflectionUtil.cs" />
     <Compile Include="ResourceUtils.cs" />
+    <Compile Include="DataWriter.cs" />
     <Compile Include="SimpleTypesUtils.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="ToolsLocalization.cs" />

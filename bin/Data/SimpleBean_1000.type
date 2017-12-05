@@ -3,6 +3,6 @@ type SimpleBean_1000
 	class = SimpleBean
 	id = 1992
 	scope = view
-	taskTimeout = 1800
+	parent = SimpleBean_20000
 	threadMode = New
 }

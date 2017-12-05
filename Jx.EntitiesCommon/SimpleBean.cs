@@ -18,7 +18,16 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private int id;
         [FieldSerialize]
-        private string scope; 
+        private string scope;
+        [FieldSerialize]
+        private SimpleBeanType parent;
+
+        [JxName("上级")]
+        public SimpleBeanType Parent
+        {
+            get { return parent; }
+            set { this.parent = value; }
+        }
 
         [JxName("Id")]
         [DefaultValue(1981)]

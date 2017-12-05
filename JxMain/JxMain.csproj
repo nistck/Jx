@@ -106,6 +106,10 @@
       <Project>{feb8fe8f-3399-48c8-ad0c-c86709adc89b}</Project>
       <Name>Jx.FileSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jx.Game\Jx.Game.csproj">
+      <Project>{5c054c2c-7f4e-4801-bb83-8fa97bf80312}</Project>
+      <Name>Jx.Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jx.MapSystem\Jx.MapSystem.csproj">
       <Project>{7f668db9-2e9e-4a5a-972b-a2822aa93aed}</Project>
       <Name>Jx.MapSystem</Name>
