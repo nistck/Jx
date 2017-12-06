@@ -2,9 +2,8 @@
 
 namespace Jx.Engine.Component
 {
-    public interface IComponent
+    public interface IComponent : Identifier
     {
-        Guid ID { get; }
         IComponent Clone();
         void Reset();
     }

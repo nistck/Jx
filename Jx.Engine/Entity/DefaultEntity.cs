@@ -99,13 +99,8 @@ namespace Jx.Engine.Entity
         {
             if (channels == null) return;
 
-            foreach (var s in channels)
+            foreach (var s in channels.Where(_s => !string.IsNullOrEmpty(_s)))
             {
-                if (string.IsNullOrEmpty(s))
-                {
-                    throw new ArgumentException("channel cannot be empty string or null");
-                }
-
                 Channels.Add(s);
             }
         }

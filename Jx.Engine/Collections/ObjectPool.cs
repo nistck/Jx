@@ -12,16 +12,12 @@ namespace Jx.Engine.Collections
         public ObjectPool(Func<T> creatorFunction, Action<T> resetFunction = null)
         {
             if (creatorFunction == null)
-            {
                 throw new ArgumentException("creatorFunction can't be null");
-            }
 
             _creatorFunction = creatorFunction;
 
             if (resetFunction != null)
-            {
                 _resetFunction = resetFunction;
-            }
 
             _items = new ConcurrentBag<T>();
         }

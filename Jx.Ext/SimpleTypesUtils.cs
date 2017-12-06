@@ -8,218 +8,123 @@ namespace Jx.Ext
 {
     public static class SimpleTypesUtils
     {
-        private delegate object A(string value);
-        private class a
+        private delegate object ParseDelegator(string value);
+        private class ParserInfo
         {
-            private SimpleTypesUtils.A ef;
-            private object eG;
-            public SimpleTypesUtils.A ParseDelegate
+            private ParseDelegator parseDelegate;
+            private object defaultValue;
+            public ParseDelegator ParseDelegate
             {
                 get
                 {
-                    return this.ef;
+                    return this.parseDelegate;
                 }
             }
             public object DefaultValue
             {
                 get
                 {
-                    return this.eG;
+                    return this.defaultValue;
                 }
             }
-            public a(SimpleTypesUtils.A parseDelegate, object defaultValue)
+            public ParserInfo(ParseDelegator parseDelegate, object defaultValue)
             {
-                this.ef = parseDelegate;
-                this.eG = defaultValue;
+                this.parseDelegate = parseDelegate;
+                this.defaultValue = defaultValue;
             }
         }
-        private static Dictionary<Type, SimpleTypesUtils.a> Dv;
-        private static Type[] DW;
+        private static Dictionary<Type, ParserInfo> Dv; 
         
-        private static SimpleTypesUtils.A Dw;
+        private static ParseDelegator StringParser;
         
-        private static SimpleTypesUtils.A DX;
+        private static ParseDelegator BoolParser;
         
-        private static SimpleTypesUtils.A Dx;
+        private static ParseDelegator SbyteParser;
         
-        private static SimpleTypesUtils.A DY;
+        private static ParseDelegator ByteParser;
         
-        private static SimpleTypesUtils.A Dy;
+        private static ParseDelegator CharParser;
         
-        private static SimpleTypesUtils.A DZ;
+        private static ParseDelegator ShortParser;
         
-        private static SimpleTypesUtils.A Dz;
+        private static ParseDelegator UshortParser;
         
-        private static SimpleTypesUtils.A dA;
+        private static ParseDelegator IntParser;
         
-        private static SimpleTypesUtils.A da;
+        private static ParseDelegator UintParser;
         
-        private static SimpleTypesUtils.A dB;
+        private static ParseDelegator LongParser;
         
-        private static SimpleTypesUtils.A db;
+        private static ParseDelegator UlongParser;
         
-        private static SimpleTypesUtils.A dC;
+        private static ParseDelegator FloatParser;
         
-        private static SimpleTypesUtils.A dc;
-        
-        private static SimpleTypesUtils.A dD;
-        
-        private static SimpleTypesUtils.A dd;
-        
-        private static SimpleTypesUtils.A dE;
-        
-        private static SimpleTypesUtils.A de;
-        
-        private static SimpleTypesUtils.A dF;
-        
-        private static SimpleTypesUtils.A df;
-        
-        private static SimpleTypesUtils.A dG;
-        
-        private static SimpleTypesUtils.A dg;
-        
-        private static SimpleTypesUtils.A dH;
-        
-        private static SimpleTypesUtils.A dh;
-        
-        private static SimpleTypesUtils.A dI;
-        
-        private static SimpleTypesUtils.A di;
-        
-        private static SimpleTypesUtils.A dJ;
-        
-        private static SimpleTypesUtils.A dj;
-        
-        private static SimpleTypesUtils.A dK;
-        
-        private static SimpleTypesUtils.A dk;
-        
-        private static SimpleTypesUtils.A dL;
-        
-        private static SimpleTypesUtils.A dl;
-        
-        private static SimpleTypesUtils.A dM;
-        
-        private static SimpleTypesUtils.A dm;
-        
-        private static SimpleTypesUtils.A dN;
-        
-        private static SimpleTypesUtils.A dn;
-        
-        private static SimpleTypesUtils.A dO;
-        
-        private static SimpleTypesUtils.A @do;
-        
-        private static SimpleTypesUtils.A dP;
-
-        public static Type[] SimpleTypes
-        {
-            get
-            {
-                return SimpleTypesUtils.DW;
-            }
-        }
+        private static ParseDelegator DoubleParser; 
+ 
         static SimpleTypesUtils()
         {
-            SimpleTypesUtils.Dv = new Dictionary<Type, SimpleTypesUtils.a>();
-            Dictionary<Type, SimpleTypesUtils.a> arg_40_0 = SimpleTypesUtils.Dv;
-            Type arg_40_1 = typeof(string);
-            if (SimpleTypesUtils.Dw == null)
-            {
-                SimpleTypesUtils.Dw = new SimpleTypesUtils.A(SimpleTypesUtils.GetSimpleTypeValue);
-            }
-            arg_40_0.Add(arg_40_1, new SimpleTypesUtils.a(SimpleTypesUtils.Dw, ""));
-            Dictionary<Type, SimpleTypesUtils.a> arg_7C_0 = SimpleTypesUtils.Dv;
-            Type arg_7C_1 = typeof(bool);
-            if (SimpleTypesUtils.DX == null)
-            {
-                SimpleTypesUtils.DX = new SimpleTypesUtils.A(SimpleTypesUtils.ToBool);
-            }
-            arg_7C_0.Add(arg_7C_1, new SimpleTypesUtils.a(SimpleTypesUtils.DX, false));
-            Dictionary<Type, SimpleTypesUtils.a> arg_B8_0 = SimpleTypesUtils.Dv;
-            Type arg_B8_1 = typeof(sbyte);
-            if (SimpleTypesUtils.Dx == null)
-            {
-                SimpleTypesUtils.Dx = new SimpleTypesUtils.A(SimpleTypesUtils.B);
-            }
-            arg_B8_0.Add(arg_B8_1, new SimpleTypesUtils.a(SimpleTypesUtils.Dx, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_F4_0 = SimpleTypesUtils.Dv;
-            Type arg_F4_1 = typeof(byte);
-            if (SimpleTypesUtils.DY == null)
-            {
-                SimpleTypesUtils.DY = new SimpleTypesUtils.A(SimpleTypesUtils.b);
-            }
-            arg_F4_0.Add(arg_F4_1, new SimpleTypesUtils.a(SimpleTypesUtils.DY, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_130_0 = SimpleTypesUtils.Dv;
-            Type arg_130_1 = typeof(char);
-            if (SimpleTypesUtils.Dy == null)
-            {
-                SimpleTypesUtils.Dy = new SimpleTypesUtils.A(SimpleTypesUtils.C);
-            }
-            arg_130_0.Add(arg_130_1, new SimpleTypesUtils.a(SimpleTypesUtils.Dy, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_16C_0 = SimpleTypesUtils.Dv;
-            Type arg_16C_1 = typeof(short);
-            if (SimpleTypesUtils.DZ == null)
-            {
-                SimpleTypesUtils.DZ = new SimpleTypesUtils.A(SimpleTypesUtils.c);
-            }
-            arg_16C_0.Add(arg_16C_1, new SimpleTypesUtils.a(SimpleTypesUtils.DZ, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_1A8_0 = SimpleTypesUtils.Dv;
-            Type arg_1A8_1 = typeof(ushort);
-            if (SimpleTypesUtils.Dz == null)
-            {
-                SimpleTypesUtils.Dz = new SimpleTypesUtils.A(SimpleTypesUtils.D);
-            }
-            arg_1A8_0.Add(arg_1A8_1, new SimpleTypesUtils.a(SimpleTypesUtils.Dz, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_1E4_0 = SimpleTypesUtils.Dv;
-            Type arg_1E4_1 = typeof(int);
-            if (SimpleTypesUtils.dA == null)
-            {
-                SimpleTypesUtils.dA = new SimpleTypesUtils.A(SimpleTypesUtils.d);
-            }
-            arg_1E4_0.Add(arg_1E4_1, new SimpleTypesUtils.a(SimpleTypesUtils.dA, 0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_220_0 = SimpleTypesUtils.Dv;
+            Dv = new Dictionary<Type, ParserInfo>();
+
+            if (StringParser == null)
+                StringParser = new ParseDelegator(GetSimpleTypeValue);
+            Dv.Add(typeof(string), new ParserInfo(StringParser, ""));
+            
+            if (BoolParser == null)
+                BoolParser = new ParseDelegator(ToBool);
+            Dv.Add(typeof(bool), new ParserInfo(BoolParser, false));
+
+            if (SbyteParser == null)
+                SbyteParser = new ParseDelegator(ToSbyte);
+            Dv.Add(typeof(sbyte), new ParserInfo(SbyteParser, 0));
+             
+            if (ByteParser == null)
+                ByteParser = new ParseDelegator(ToByte);
+            Dv.Add(typeof(byte), new ParserInfo(ByteParser, 0));
+
+            if (CharParser == null)
+                CharParser = new ParseDelegator(ToChar);
+            Dv.Add(typeof(char), new ParserInfo(CharParser, 0));
+
+            if (ShortParser == null)
+                ShortParser = new ParseDelegator(ToShort);
+            Dv.Add(typeof(short), new ParserInfo(ShortParser, 0));
+
+            if (UshortParser == null)
+                UshortParser = new ParseDelegator(ToUshort);
+            Dv.Add(typeof(ushort), new ParserInfo(UshortParser, 0));
+
+            if (IntParser == null)
+                IntParser = new ParseDelegator(ToInt);
+            Dv.Add(typeof(int), new ParserInfo(IntParser, 0));
+
             Type arg_220_1 = typeof(uint);
-            if (SimpleTypesUtils.da == null)
-            {
-                SimpleTypesUtils.da = new SimpleTypesUtils.A(SimpleTypesUtils.E);
-            }
-            arg_220_0.Add(arg_220_1, new SimpleTypesUtils.a(SimpleTypesUtils.da, 0u));
-            Dictionary<Type, SimpleTypesUtils.a> arg_25D_0 = SimpleTypesUtils.Dv;
-            Type arg_25D_1 = typeof(long);
-            if (SimpleTypesUtils.dB == null)
-            {
-                SimpleTypesUtils.dB = new SimpleTypesUtils.A(SimpleTypesUtils.e);
-            }
-            arg_25D_0.Add(arg_25D_1, new SimpleTypesUtils.a(SimpleTypesUtils.dB, 0L));
-            Dictionary<Type, SimpleTypesUtils.a> arg_29A_0 = SimpleTypesUtils.Dv;
-            Type arg_29A_1 = typeof(ulong);
-            if (SimpleTypesUtils.db == null)
-            {
-                SimpleTypesUtils.db = new SimpleTypesUtils.A(SimpleTypesUtils.F);
-            }
-            arg_29A_0.Add(arg_29A_1, new SimpleTypesUtils.a(SimpleTypesUtils.db, 0uL));
-            Dictionary<Type, SimpleTypesUtils.a> arg_2DA_0 = SimpleTypesUtils.Dv;
-            Type arg_2DA_1 = typeof(float);
-            if (SimpleTypesUtils.dC == null)
-            {
-                SimpleTypesUtils.dC = new SimpleTypesUtils.A(SimpleTypesUtils.f);
-            }
-            arg_2DA_0.Add(arg_2DA_1, new SimpleTypesUtils.a(SimpleTypesUtils.dC, 0f));
-            Dictionary<Type, SimpleTypesUtils.a> arg_31E_0 = SimpleTypesUtils.Dv;
-            Type arg_31E_1 = typeof(double);
-            if (SimpleTypesUtils.dc == null)
-            {
-                SimpleTypesUtils.dc = new SimpleTypesUtils.A(SimpleTypesUtils.G);
-            }
-            arg_31E_0.Add(arg_31E_1, new SimpleTypesUtils.a(SimpleTypesUtils.dc, 0.0));
-            Dictionary<Type, SimpleTypesUtils.a> arg_35E_0 = SimpleTypesUtils.Dv;
+            if (UintParser == null)
+                UintParser = new ParseDelegator(ToUint);
+            Dv.Add(typeof(uint), new ParserInfo(UintParser, 0u));
+
+            if (LongParser == null)
+                LongParser = new ParseDelegator(ToLong);
+            Dv.Add(typeof(long), new ParserInfo(LongParser, 0L));
+
+            if (UlongParser == null)
+                UlongParser = new ParseDelegator(ToUlong);
+            Dv.Add(typeof(ulong), new ParserInfo(UlongParser, 0uL));
+
+            if (FloatParser == null)
+                FloatParser = new ParseDelegator(ToFloat);
+            Dv.Add(typeof(float), new ParserInfo(FloatParser, 0f));
+
+            if (DoubleParser == null)
+                DoubleParser = new ParseDelegator(ToDouble);
+            Dv.Add(typeof(double), new ParserInfo(DoubleParser, 0.0));
 
         }
+
         public static bool IsSimpleType(Type type)
         {
-            return typeof(Enum).IsAssignableFrom(type) || SimpleTypesUtils.Dv.ContainsKey(type);
+            return typeof(Enum).IsAssignableFrom(type) || Dv.ContainsKey(type);
         }
+
         /// <summary>
         /// If null - not simple type
         /// </summary>
@@ -232,13 +137,14 @@ namespace Jx.Ext
             {
                 return Enum.Parse(type, value);
             }
-            SimpleTypesUtils.a a;
-            if (!SimpleTypesUtils.Dv.TryGetValue(type, out a))
+            ParserInfo a;
+            if (!Dv.TryGetValue(type, out a))
             {
                 return null;
             }
             return a.ParseDelegate(value);
         }
+
         public static object GetSimpleTypeDefaultValue(Type type)
         {
             if (typeof(Enum).IsAssignableFrom(type))
@@ -246,8 +152,8 @@ namespace Jx.Ext
                 Log.Fatal("SimpleTypesUtils: GetSimpleTypeDefaultValue: type is enum: not implemented");
                 return null;
             }
-            SimpleTypesUtils.a a;
-            if (!SimpleTypesUtils.Dv.TryGetValue(type, out a))
+            ParserInfo a;
+            if (!Dv.TryGetValue(type, out a))
             {
                 return null;
             }
@@ -276,52 +182,52 @@ namespace Jx.Ext
             return bool.Parse(text);
         }
         
-        private static object B(string s)
+        private static object ToSbyte(string s)
         {
             return sbyte.Parse(s);
         }
         
-        private static object b(string s)
+        private static object ToByte(string s)
         {
             return byte.Parse(s);
         }
         
-        private static object C(string s)
+        private static object ToChar(string s)
         {
             return char.Parse(s);
         }
         
-        private static object c(string s)
+        private static object ToShort(string s)
         {
             return short.Parse(s);
         }
         
-        private static object D(string s)
+        private static object ToUshort(string s)
         {
             return ushort.Parse(s);
         }
         
-        private static object d(string s)
+        private static object ToInt(string s)
         {
             return int.Parse(s);
         }
         
-        private static object E(string s)
+        private static object ToUint(string s)
         {
             return uint.Parse(s);
         }
         
-        private static object e(string s)
+        private static object ToLong(string s)
         {
             return long.Parse(s);
         }
         
-        private static object F(string s)
+        private static object ToUlong(string s)
         {
             return ulong.Parse(s);
         }
         
-        private static object f(string text)
+        private static object ToFloat(string text)
         {
             if (string.Compare(text, "infinity", true) == 0)
             {
@@ -330,7 +236,7 @@ namespace Jx.Ext
             return float.Parse(text);
         }
         
-        private static object G(string text)
+        private static object ToDouble(string text)
         {
             if (string.Compare(text, "infinity", true) == 0)
             {

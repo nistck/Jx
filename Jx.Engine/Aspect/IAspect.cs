@@ -6,9 +6,8 @@ using Jx.Engine.Entity;
 
 namespace Jx.Engine.Aspect
 {
-    public interface IAspect : IChannelFilterable
+    public interface IAspect : Identifier, IChannelFilterable
     {
-        Guid ID { get; }
         IDictionary<Type, IComponent> Components { get; }
         event EventHandler Deleted;
         void Delete();

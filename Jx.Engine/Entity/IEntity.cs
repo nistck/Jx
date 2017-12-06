@@ -6,9 +6,11 @@ using Jx.Engine.Events;
 
 namespace Jx.Engine.Entity
 {
-    public interface IEntity : IChannelFilterable
+    public interface IEntity : Identifier, IChannelFilterable
     {
-        Guid ID { get; }
+        /// <summary>
+        /// Entity是否已经被删除 （标记为删除）
+        /// </summary>
         bool IsDeleted { get; set; }
         IDictionary<Type, IComponent> Components { get; }
         string Name { get; set; }
