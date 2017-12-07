@@ -1,23 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Jx.Engine.Channel;
+using Jx.Engine.Component;
+using Jx.Engine.Entity;
 using Jx.Engine.Events;
-using Jx.Engine.Extensions;
 using Jx.Engine.Game;
 
 namespace Jx.Engine.System
 {
-    public class SystemManager : ISystemManager
+    internal class SystemManager : ISystemManager
     {
         private IGameManager _gameManager;
-        private readonly IChannelManager _channelManager;
         private readonly List<ISystem> _systems = new List<ISystem>();
         private readonly List<IDrawableSystem> _drawableSystems = new List<IDrawableSystem>();
         
-        public SystemManager(IChannelManager channelManager)
+        public SystemManager()
         {
-            _channelManager = channelManager;
         }
 
         public event EventHandler<SystemRemovedEventArgs> SystemRemoved;
@@ -39,7 +38,6 @@ namespace Jx.Engine.System
             _systems.Sort();
 
             var drawableSystem = system as IDrawableSystem;
-
             if (drawableSystem != null)
             {
                 _drawableSystems.Add(drawableSystem);
@@ -67,23 +65,47 @@ namespace Jx.Engine.System
             return _systems.SingleOrDefault(s => s.GetType() == systemType);
         }
 
+        public bool IsUpdating { get; private set; }
         public void Update(ITickEvent tickEvent)
         {
-            var systems = GetSystemsByChannels(_channelManager.Channel, "all");
-
-            foreach (var system in systems)
+            try
             {
-                system.Update(tickEvent);
+                IsUpdating = true;
+
+                var qSystems = _systems.Where(_sys => _sys.Actived);
+                foreach (var system in qSystems)
+                {
+                    system.Update(tickEvent);
+                }
+            }catch(Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                IsUpdating = false;
             }
         }
 
+        public bool IsDrawing { get; private set; }
         public void Draw(ITickEvent tickEvent)
         {
-            var systems = GetDrawableSystemsByChannels(_channelManager.Channel);
-
-            foreach (var system in systems)
+            try
             {
-                system.Draw(tickEvent);
+                IsDrawing = true;
+
+                var qSystems = _drawableSystems.Where(_sys => _sys.Actived);
+                foreach (var system in qSystems)
+                {
+                    system.Draw(tickEvent);
+                }
+            }
+            catch (Exception e) {
+                throw e;
+            }
+            finally
+            {
+                IsDrawing = false; 
             }
         }
 
@@ -110,7 +132,6 @@ namespace Jx.Engine.System
             _systems.Sort();
 
             var drawableSystem = system as IDrawableSystem;
-
             if (drawableSystem != null)
             {
                 _drawableSystems.Remove(drawableSystem);
@@ -140,14 +161,15 @@ namespace Jx.Engine.System
             return _systems.Any(s => s.ID == system.ID);
         }
 
-        private IEnumerable<ISystem> GetSystemsByChannels(params string[] channels)
+        public IEnumerator<ISystem> GetEnumerator()
         {
-            return _systems.Where(system => system.IsInChannel(channels));
+            return _systems.GetEnumerator();
         }
 
-        private IEnumerable<IDrawableSystem> GetDrawableSystemsByChannels(params string[] channels)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return _drawableSystems.Where(system => system.IsInChannel(channels));
+            return GetEnumerator();
         }
+
     }
 }

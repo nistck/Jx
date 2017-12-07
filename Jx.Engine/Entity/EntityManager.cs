@@ -1,24 +1,21 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using Jx.Engine.Channel;
 using Jx.Engine.Collections;
 using Jx.Engine.Events;
 using Jx.Engine.Game;
 
 namespace Jx.Engine.Entity
 {
-    public class EntityManager : IEntityManager
-    {
-        private readonly IChannelManager _channelManager;
+    internal class EntityManager : IEntityManager
+    { 
         private readonly IObjectPool<IEntity> _entityPool;
         private IGameManager _gameManager;
 
-        public EntityManager(
-            IChannelManager channelManager,
-            IObjectPool<IEntity> objectPool)
-        {
-            _channelManager = channelManager;
-            _entityPool = objectPool;
+        public EntityManager(IObjectPool<IEntity> objectPool = null)
+        { 
+            _entityPool = objectPool?? new EntityPool();
         }
 
         public event EventHandler<EntityChangedEventArgs> EntityAdded;
@@ -33,26 +30,12 @@ namespace Jx.Engine.Entity
 
         public IDictionary<Guid, IEntity> Entities { get; } = new Dictionary<Guid, IEntity>();
 
-        public IEntity Get(string name = "", string[] channels = null)
+        public IEntity Get(string name)
         {
-            var entity = _entityPool.Get();
-
+            var entity = _entityPool.Get(); 
             entity.Name = name;
-
-            if (channels == null || channels.Length == 0)
-            {
-                entity.Channels.Add(_channelManager.Channel);
-            }
-            else
-            {
-                foreach (var c in channels)
-                {
-                    entity.Channels.Add(c);
-                }
-            }
-
-            entity.Deleted += CleanupDeleted;
-
+ 
+            entity.Deleted += CleanupDeleted; 
             Entities[entity.ID] = entity;
 
             return entity;
@@ -112,6 +95,22 @@ namespace Jx.Engine.Entity
             Entities.Remove(entity.ID);
 
             _gameManager.RemoveEntity(entity);
+        }
+
+        public IEnumerator<IEntity> GetEnumerator()
+        {
+            return Entities.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Remove(string name)
+        {
+            var q = Entities.Where(_kvp => _kvp.Value != null && _kvp.Value.Name == name).Select(_kvp => _kvp.Value).FirstOrDefault();
+            Remove(q);
         }
     }
 }

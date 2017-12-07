@@ -1,34 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using Jx.Engine.Aspect;
+using System.Linq;
+using System.Collections.Generic; 
 using Jx.Engine.Entity;
 using Jx.Engine.Events;
 using Jx.Engine.System;
+using Jx.Engine.Collections;
 
 namespace Jx.Engine.Game
 {
     public abstract class BaseGameManager : IGameManager
     {        
-        protected BaseGameManager(
-            IEntityAspectManager entityAspectManager,
-            IEntityManager entityManager,
-            ISystemManager systemManager)
+        protected BaseGameManager( 
+            IEntityManager entityManager = null,
+            ISystemManager systemManager = null)
         {
-            EntityAspectManager = entityAspectManager;
-            EntityManager = entityManager;
-            Systems = systemManager;
-            
+            this.StartupTime = DateTime.Now;
+
+            EntityManager = entityManager ?? new EntityManager();
+            Systems = systemManager ?? new SystemManager();           
 
             RegisterManagers();
         }
 
-        public IEntityAspectManager EntityAspectManager { get; }
+        public Guid ID { get; } = Guid.NewGuid();
+
+        public DateTime StartupTime { get; private set; }
+
         public IEntityManager EntityManager { get; }
         public ISystemManager Systems { get; }
 
         public bool IsUpdating { get; private set; }
         public bool IsDrawing { get; private set; }
 
+        public event EventHandler<TickEventArgs> Tick;
         public event EventHandler<SystemChangedEventArgs> SystemAdded;
         public event EventHandler<SystemRemovedEventArgs> SystemRemoved;
         public event EventHandler<SystemStoppedEventArgs> SystemStopped;
@@ -41,31 +45,34 @@ namespace Jx.Engine.Game
             EntityManager.Add(entities);
         }
 
-        public void AddEntity(IEntity entity)
+        public IEntity CreateEntity(string name)
         {
+            IEntity entity = new DefaultEntity(name);
             EntityManager.Add(entity);
+            entity.ComponentAdded += Entity_ComponentAdded;
+            entity.ComponentRemoved += Entity_ComponentRemoved;
+            return entity;
+        }
+
+        private void Entity_ComponentRemoved(object sender, ComponentRemovedEventArgs e)
+        {
+            IEntity entity = sender as IEntity;
+            foreach (var system in Systems)
+                system.NotifyComponentChanged(entity, e.Component, false);
+        }
+
+        private void Entity_ComponentAdded(object sender, ComponentChangedEventArgs e)
+        {
+            IEntity entity = sender as IEntity;
+            foreach (var system in Systems)
+                system.NotifyComponentChanged(entity, e.Component, true);
         }
 
         public void AddSystem(ISystem system)
         {
             Systems.Add(system);
         }
-
-        public IEnumerable<TAspectType> GetAspectList<TAspectType>() where TAspectType : IAspect, new()
-        {
-            return EntityAspectManager.GetAspectList<TAspectType>();
-        }
-
-        public IEnumerable<TAspectType> GetUnfilteredAspectList<TAspectType>() where TAspectType : IAspect, new()
-        {
-            return EntityAspectManager.GetUnfilteredAspectList<TAspectType>();
-        }
-        
-        public void ReleaseAspectList<TAspectType>()
-        {
-            EntityAspectManager.ReleaseAspectList<TAspectType>();
-        }
-
+         
         public void RemoveAllSystems(bool shouldNotify)
         {
             Systems.Clear(shouldNotify);
@@ -78,6 +85,11 @@ namespace Jx.Engine.Game
 
         public void RemoveEntity(IEntity entity)
         {
+            if( entity != null)
+            {
+                entity.ComponentAdded -= Entity_ComponentAdded;
+                entity.ComponentRemoved -= Entity_ComponentRemoved;
+            }
             EntityManager.Remove(entity);
         }
 
@@ -96,24 +108,113 @@ namespace Jx.Engine.Game
             Systems.Stop(typeof(TSystemType));
         }
 
+        private List<ItfType> GetEntitiesImplementItf<ItfType>()
+        {
+            List<ItfType> result = new List<ItfType>();
+            if (EntityManager == null)
+                return result;
+
+            var q = EntityManager.Where(_entity => _entity != null && typeof(ItfType).IsAssignableFrom(_entity.GetType()))
+                .OfType<ItfType>().Where(_x => _x != null);
+            result.AddRange(q); 
+            return result;
+        }
+        
+        private List<ItfType> GetComponentsImplementItf<ItfType>()
+        {
+            List<ItfType> result = new List<ItfType>();
+            if (EntityManager == null)
+                return result;
+
+            var q = EntityManager.SelectMany(_entity => _entity.Components.Values)
+                .Where(_component => _component != null && typeof(ItfType).IsAssignableFrom(_component.GetType()))
+                .OfType<ItfType>().Where(_x => _x != null);
+            result.AddRange(q);
+            return result;
+        }
+
+        private void OnUpdateEntities(ITickEvent tickEvent)
+        {
+            foreach(var u in GetEntitiesImplementItf<IUpdatable>())
+                u.Update(tickEvent);
+        }
+
+        private void OnUpdateComponents(ITickEvent tickEvent)
+        {
+            foreach (var u in GetComponentsImplementItf<IUpdatable>())
+                u.Update(tickEvent);
+        }
+
         public virtual void Update(ITickEvent tickEvent)
         {
-            IsUpdating = true;
+            try
+            {
+                IsUpdating = true;
 
-            Systems.Update(tickEvent);
+                OnUpdateEntities(tickEvent);
+                OnUpdateComponents(tickEvent);
 
-            OnSystemsUpdated(tickEvent);
-            
-            IsUpdating = false;
+                Systems.Update(tickEvent); 
+
+                OnSystemsUpdated(tickEvent);
+
+                Tick?.Invoke(this, new TickEventArgs(tickEvent));
+                OnUpdate(tickEvent);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                IsUpdating = false;
+            }
         }
+
+        protected virtual void OnUpdate(ITickEvent tickEvent)
+        {
+
+        }
+
+
+        private void OnDrawEntities(ITickEvent tickEvent)
+        {
+            foreach (var u in GetEntitiesImplementItf<IDrawable>())
+                u.Draw(tickEvent);
+        }
+
+        private void OnDrawComponents(ITickEvent tickEvent)
+        {
+            foreach (var u in GetComponentsImplementItf<IDrawable>())
+                u.Draw(tickEvent);
+        }
+
 
         public void Draw(ITickEvent tickEvent)
         {
-            IsDrawing = true;
+            try
+            {
+                IsDrawing = true;
 
-            Systems.Draw(tickEvent);
+                OnDrawEntities(tickEvent);
+                OnDrawComponents(tickEvent);
 
-            IsDrawing = false;
+                Systems.Draw(tickEvent);
+                OnDraw(tickEvent); 
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                IsDrawing = false;
+            }
+        }
+
+        protected virtual void OnDraw(ITickEvent tickEvent)
+        {
+
         }
 
         public void RemoveSystem(Type systemType, bool shouldNotify)
@@ -149,24 +250,43 @@ namespace Jx.Engine.Game
 
         private void EntityManagerOnComponentRemoved(object sender, ComponentRemovedEventArgs args)
         {
-            EntityAspectManager.ComponentRemovedFromEntity(sender as IEntity, args.Component);
         }
 
         private void EntityManagerOnComponentAdded(object sender, ComponentChangedEventArgs args)
         {
-            EntityAspectManager.ComponentAddedToEntity(sender as IEntity, args.Component);
         }
 
         private void EntityManagerOnEntityRemoved(object sender, EntityRemovedEventArgs args)
         {
-            EntityAspectManager.UnregisterEntity(args.Entity);
             EntityRemoved?.Invoke(sender, args);
         }
 
         private void EntityManagerOnEntityAdded(object sender, EntityChangedEventArgs args)
         {
-            EntityAspectManager.RegisterEntity(args.Entity);
             EntityAdded?.Invoke(sender, args);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is BaseGameManager)) return base.Equals(obj);
+
+            var other = (BaseGameManager)obj;
+            return ID == other.ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
+        public IEntity GetEntity(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveEntity(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

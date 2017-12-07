@@ -4,5 +4,6 @@ type SimpleBean_1000
 	id = 1992
 	scope = view
 	parent = SimpleBean_20000
+	any = "\x4e2d\x6587"
 	threadMode = New
 }

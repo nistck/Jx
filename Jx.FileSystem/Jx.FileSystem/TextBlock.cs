@@ -257,6 +257,7 @@ namespace Jx.FileSystem
                 }
                 return false;
             }
+
             if (text.Length > 0 && (text[0] == ' ' || text[text.Length - 1] == ' '))
             {
                 return true;
@@ -417,11 +418,10 @@ namespace Jx.FileSystem
                 continue;
                 IL_B5:
                 if (c < ' ' || c >= '\u007f')
-                {
-                    StringBuilder arg_D9_0 = stringBuilder;
+                { 
                     string arg_D4_0 = "\\x";
                     int num = (int)c;
-                    arg_D9_0.Append(arg_D4_0 + num.ToString("x04"));
+                    stringBuilder.Append(arg_D4_0 + num.ToString("x04"));
                     goto IL_E9;
                 }
                 stringBuilder.Append(c);

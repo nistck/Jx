@@ -6,12 +6,11 @@ using Jx.Engine.Events;
 
 namespace Jx.Engine.Entity
 {
-    public class DefaultEntity : IEntity
+    internal class DefaultEntity : IEntity
     {
-        public DefaultEntity(string name = "", params string[] channels)
+        public DefaultEntity(string name = "")
         {
             Name = name;
-            AddChannels(channels);
         }
 
         public event EventHandler Deleted;
@@ -20,13 +19,11 @@ namespace Jx.Engine.Entity
 
         public Guid ID { get; } = Guid.NewGuid();
         public string Name { get; set; }
-        public bool IsDeleted { get; set; }
-        public IList<string> Channels { get; } = new List<string>();
+        public bool IsDeleted { get; set; } 
         public IDictionary<Type, IComponent> Components { get; } = new Dictionary<Type, IComponent>();
 
         public void Reset()
         {
-            Channels.Clear();
             IsDeleted = false;
         }        
 
@@ -38,7 +35,7 @@ namespace Jx.Engine.Entity
 
         public IEntity Clone()
         {
-            var e = new DefaultEntity(Name, Channels.ToArray());
+            var e = new DefaultEntity(Name);
             foreach (var c in Components.Values)
             {
                 e.Components.Add(c.GetType(), c.Clone());
@@ -56,6 +53,8 @@ namespace Jx.Engine.Entity
             }
 
             Components[componentType] = c;
+            if (c is BaseComponent)
+                ((BaseComponent)c).Owner = this;
             OnComponentAdded(c);
             return this;
         }
@@ -75,9 +74,26 @@ namespace Jx.Engine.Entity
             return Components.ContainsKey(componentType);
         }
 
+        public TComponent GetComponent<TComponent>() where TComponent : IComponent, new()
+        {
+            Type componentType = typeof(TComponent);
+            if (!HasComponent(componentType))
+                return default(TComponent);
+
+            IComponent x = Components[componentType];
+            if (!componentType.IsAssignableFrom(x.GetType()))
+                return default(TComponent);
+            return (TComponent)x;
+        }
+
         public bool HasComponents(IEnumerable<Type> types)
         {
             return types.All(HasComponent);
+        }
+
+        public bool HasComponents(params Type[] componentTypes)
+        {
+            return componentTypes.All(HasComponent);
         }
 
         public virtual void OnDeleted()
@@ -93,16 +109,12 @@ namespace Jx.Engine.Entity
         protected void OnComponentRemoved(IComponent c)
         {
             ComponentRemoved?.Invoke(this, new ComponentRemovedEventArgs(c));
-        }
-
-        private void AddChannels(string[] channels)
+        } 
+ 
+        public override string ToString()
         {
-            if (channels == null) return;
-
-            foreach (var s in channels.Where(_s => !string.IsNullOrEmpty(_s)))
-            {
-                Channels.Add(s);
-            }
+            string result = string.Format("Entity({0}, ID: {1})", Name, ID);
+            return result;
         }
     }
 }

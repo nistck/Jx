@@ -21,6 +21,8 @@ namespace Jx.EntitiesCommon
         private string scope;
         [FieldSerialize]
         private SimpleBeanType parent;
+        [FieldSerialize]
+        private string any;
 
         [JxName("上级")]
         public SimpleBeanType Parent
@@ -43,6 +45,12 @@ namespace Jx.EntitiesCommon
         {
             get { return scope; }
             set { this.scope = value; }
+        }
+         
+        public string Any
+        {
+            get { return this.any; }
+            set { this.any = value; }
         }
  
         protected override void OnLoaded()
