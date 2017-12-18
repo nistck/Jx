@@ -161,13 +161,13 @@ namespace Jx.Engine.System
             return ID.GetHashCode();
         } 
 
-        public void NotifyComponentChanged(IEntity entity, IComponent component, bool f)
+        public void NotifyComponentChanged(IEntity entity, IComponent component, bool fAdd)
         {
             if (Matcher == null)
                 return;
 
             _entities.Remove(entity);
-            if ( f && Matcher(entity) )
+            if (fAdd && Matcher(entity) )
                 _entities.Add(entity);
         }
     }

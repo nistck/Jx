@@ -6,9 +6,9 @@ using Jx.Engine.Events;
 
 namespace Jx.Engine.Entity
 {
-    internal class DefaultEntity : IEntity
+    public class BaseEntity : IEntity
     {
-        public DefaultEntity(string name = "")
+        public BaseEntity(string name = "")
         {
             Name = name;
         }
@@ -35,7 +35,7 @@ namespace Jx.Engine.Entity
 
         public IEntity Clone()
         {
-            var e = new DefaultEntity(Name);
+            var e = new BaseEntity(Name);
             foreach (var c in Components.Values)
             {
                 e.Components.Add(c.GetType(), c.Clone());

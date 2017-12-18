@@ -43,10 +43,9 @@
     <Compile Include="Collections\EntityPool.cs" />
     <Compile Include="Collections\IObjectPool.cs" />
     <Compile Include="Collections\ObjectPool.cs" />
-    <Compile Include="Identifier.cs" />
     <Compile Include="Component\BaseComponent.cs" />
     <Compile Include="Component\IComponent.cs" />
-    <Compile Include="Entity\DefaultEntity.cs" />
+    <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="Entity\EntityManager.cs" />
     <Compile Include="Entity\IEntity.cs" />
     <Compile Include="Entity\IEntityManager.cs" />

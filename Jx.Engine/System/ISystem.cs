@@ -10,11 +10,12 @@ namespace Jx.Engine.System
 {
     public delegate bool EntityIncludeMatcher(IEntity entity);
 
-    public interface ISystem : Identifier,  IUpdatable, IComparable<ISystem>, IEnumerable<IEntity>
+    public interface ISystem : IUpdatable, IComparable<ISystem>, IEnumerable<IEntity>
     {
         event EventHandler<TickEventArgs> Tick;
 
         Guid ID { get; }
+
         EntityIncludeMatcher Matcher { get; }        
         int Priority { get; }
         IGameManager GameManager { get; }
@@ -24,6 +25,6 @@ namespace Jx.Engine.System
         void AddToGameManager(IGameManager gameManager);
         void RemoveFromGameManager(IGameManager gameManager);
 
-        void NotifyComponentChanged(IEntity entity, IComponent component, bool f);
+        void NotifyComponentChanged(IEntity entity, IComponent component, bool fAdd);
     }
 }

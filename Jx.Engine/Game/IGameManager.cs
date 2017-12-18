@@ -6,7 +6,7 @@ using Jx.Engine.System;
 
 namespace Jx.Engine.Game
 {
-    public interface IGameManager : IUpdatable, IDrawable, Identifier
+    public interface IGameManager : IUpdatable, IDrawable
     {
         event EventHandler<TickEventArgs> Tick;
         event EventHandler<SystemChangedEventArgs> SystemAdded;
@@ -16,6 +16,7 @@ namespace Jx.Engine.Game
         event EventHandler<EntityChangedEventArgs> EntityAdded;
         event EventHandler<EntityRemovedEventArgs> EntityRemoved;
 
+        Guid ID { get; }
         DateTime StartupTime { get; }
          
         IEntityManager EntityManager { get; }

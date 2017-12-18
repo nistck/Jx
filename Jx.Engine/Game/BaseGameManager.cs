@@ -47,7 +47,7 @@ namespace Jx.Engine.Game
 
         public IEntity CreateEntity(string name)
         {
-            IEntity entity = new DefaultEntity(name);
+            IEntity entity = new BaseEntity(name);
             EntityManager.Add(entity);
             entity.ComponentAdded += Entity_ComponentAdded;
             entity.ComponentRemoved += Entity_ComponentRemoved;

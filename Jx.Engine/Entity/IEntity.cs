@@ -5,8 +5,9 @@ using Jx.Engine.Events;
 
 namespace Jx.Engine.Entity
 {
-    public interface IEntity : Identifier
+    public interface IEntity
     {
+        Guid ID { get; }
         /// <summary>
         /// Entity是否已经被删除 （标记为删除）
         /// </summary>
