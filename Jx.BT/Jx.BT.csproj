@@ -4,30 +4,27 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FC5F2353-E8D6-43B6-B09C-EFAC97BF630C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{29E791A0-4F91-4851-8F0F-2ADA069750EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JxECS</RootNamespace>
-    <AssemblyName>JxECS</AssemblyName>
+    <RootNamespace>Jx.BT</RootNamespace>
+    <AssemblyName>Jx.BT</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,52 +36,44 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GravitySystem.cs" />
-    <Compile Include="HasLife.cs" />
-    <Compile Include="Movable.cs" />
-    <Compile Include="MyGameManager.cs" />
-    <Compile Include="PlayerSystem.cs" />
-    <Compile Include="Position.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="BTConstants.cs" />
+    <Compile Include="Core\BTPropertyAttribute.cs" />
+    <Compile Include="Core\BTLeafNode.cs" />
+    <Compile Include="Decorator\BTGetProperty.cs" />
+    <Compile Include="Core\BTDatabase.cs" />
+    <Compile Include="Conditional\BTCompareData.cs" />
+    <Compile Include="Core\BTConditional.cs" />
+    <Compile Include="Decorator\BTMute.cs" />
+    <Compile Include="Decorator\BTSetProperty.cs" />
+    <Compile Include="Decorator\BTTimer.cs" />
+    <Compile Include="Decorator\BTRepeater.cs" />
+    <Compile Include="Decorator\BTInverter.cs" />
+    <Compile Include="Constraint\BTFalse.cs" />
+    <Compile Include="Constraint\BTTrue.cs" />
+    <Compile Include="Core\BTConstraint.cs" />
+    <Compile Include="BTDebug.cs" />
+    <Compile Include="Composite\BTParallel.cs" />
+    <Compile Include="Composite\BTSequence.cs" />
+    <Compile Include="Composite\BTRandom.cs" />
+    <Compile Include="Composite\BTSelector.cs" />
+    <Compile Include="Core\BTComposite.cs" />
+    <Compile Include="Core\BTResult.cs" />
+    <Compile Include="Core\BTAction.cs" />
+    <Compile Include="Actions\BTPrintAction.cs" />
+    <Compile Include="Core\BTContext.cs" />
+    <Compile Include="Core\BTNode.cs" />
+    <Compile Include="Core\BTTree.cs" />
+    <Compile Include="Core\BTDecorator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <Compile Include="Utilities\BTConfiguration.cs" />
+    <Compile Include="Utilities\BTConstants.cs" />
+    <Compile Include="Utilities\BTUtility.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
