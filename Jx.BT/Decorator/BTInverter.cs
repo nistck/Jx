@@ -20,7 +20,7 @@ namespace Jx.BT
 
         protected override BTResult OnTick(BTContext context)
         {
-            BTResult result = m_Child.Tick(context);
+            BTResult result = m_Child.Tick_(context);
             switch (result.Code)
             {
                 case BTResultCode.Running:

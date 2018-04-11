@@ -25,7 +25,7 @@ namespace Jx.BT
             {
                 BTNode activeChild = m_Children[_activeChildIndex];
 
-                BTResult result = activeChild.Tick(context); 
+                BTResult result = activeChild.Tick_(context); 
                 switch (result.Code)
                 {
                     case BTResultCode.Running:

@@ -24,7 +24,7 @@ namespace Jx.BT
 
         protected override BTResult OnTick(BTContext context)
         {
-            m_Child.Tick(context); 
+            m_Child.Tick_(context); 
             return result; 
         }
 

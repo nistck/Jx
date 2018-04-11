@@ -526,8 +526,18 @@ namespace Jx.EntitySystem
 				this.entitiesQueuedForDeletion.Add(key, null);
 			}
 		}
+                
+        private void OnPostCreateEntity(Entity entity, bool loaded)
+        {
+            entity?.OnPostCreate_(loaded);
+        }
 
-		private void PostCreateInitLoadedEntities()
+        private void OnPostCreateEntity2(Entity entity, bool loaded)
+        {
+            entity?.OnPostCreate2_(loaded);
+        }
+
+        private void PostCreateInitLoadedEntities()
 		{
 			LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities");
 			foreach (EntityTextBlock current in this.aAF)
@@ -545,12 +555,12 @@ namespace Jx.EntitySystem
 				{
 					Log.Fatal("Entities: PostCreateInitLoadedEntities : entity.postCreated.");
 				}
-				current2.entity.OnPostCreate(true); 
+				OnPostCreateEntity(current2.entity, true); 
 			}
 			foreach (Entities.EntityTextBlock current3 in this.aAF)
 			{
-				LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities: OnPostCreate2: " + current3.entity.ToString());
-				current3.entity.OnPostCreate2(true);
+				LongOperationNotifier.Notify("Entities: PostCreateInitLoadedEntities: OnPostCreate2: " + current3.entity.ToString());				
+                OnPostCreateEntity2(current3.entity, true);
 				current3.entity.loadingTextBlock = null;
 				current3.entity.isPostCreated = true;
 				if (EntitySystemWorld.Instance.IsServer() && current3.entity.Type.NetworkType == EntityNetworkTypes.Synchronized)

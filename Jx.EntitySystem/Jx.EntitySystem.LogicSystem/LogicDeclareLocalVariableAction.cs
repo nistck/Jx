@@ -58,7 +58,7 @@ namespace Jx.EntitySystem.LogicSystem
 				return this.abD;
 			}
 		}
-		protected internal override void OnCreate()
+		protected override void OnCreate()
 		{
 			base.OnCreate();
 			if (string.IsNullOrEmpty(this.abC))

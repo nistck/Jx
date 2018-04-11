@@ -4,12 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Jx.EntitySystem;
+
 namespace Jx.BT
 {
+    [Name("BT打印")]
+    public class BTPrintActionType : BTActionType
+    {
+
+    }
+
+    [Name("BT打印")]
     [BTProperty("打印", BTConstants.GROUP_ACTION)]
     public class BTPrintAction : BTAction
     {
+        private BTPrintActionType _type = null; 
+        public new BTPrintActionType Type { get { return _type; } }
+
+        [FieldSerialize]
         private BTLogLevel level;
+        [FieldSerialize]
         private string message; 
 
         public BTLogLevel Level
@@ -27,7 +41,7 @@ namespace Jx.BT
         public BTPrintAction()
             : base()
         {
-            this.Name = "Print"; 
+            this.Name_ = "Print"; 
         }
 
         protected override BTResult OnTick(BTContext context)

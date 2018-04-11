@@ -4,10 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Jx.EntitySystem;
+
 namespace Jx.BT
 {
-    public class BTContext
+    [Name("BT环境")]
+    public class BTContextType : EntityType
     {
+
+    }
+
+    [Name("BT环境")]
+    public class BTContext : Entity
+    {
+        private BTContextType _type = null; 
+        public new BTContextType Type { get { return _type; } }
+
         private BTTree tree;
 
         private BTDatabase db;
@@ -15,11 +27,6 @@ namespace Jx.BT
         private readonly Dictionary<string, BTResult> nodeResultDic = new Dictionary<string, BTResult>();
         private readonly List<WeakReference<BTNode>> travelNodes = new List<WeakReference<BTNode>>(); 
 
-
-        public BTContext(BTTree tree)
-        {
-            this.Tree = tree;
-        }
  
         /// <summary>
         /// 当前上下文，行为树本身

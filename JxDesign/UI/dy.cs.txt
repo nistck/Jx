@@ -1,0 +1,269 @@
+﻿internal class dy : Form
+    {
+        private class AT : System.Collections.IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                TreeNode treeNode = (TreeNode)x;
+                TreeNode treeNode2 = (TreeNode)y;
+                if (treeNode.Nodes.Count != 0 && treeNode2.Nodes.Count == 0)
+                {
+                    return -1;
+                }
+                if (treeNode.Nodes.Count == 0 && treeNode2.Nodes.Count != 0)
+                {
+                    return 1;
+                }
+                return treeNode.Text.CompareTo(treeNode2.Text);
+            }
+        }
+
+
+        private IContainer BJB;
+        private TreeView BJb;
+        private Button BJC;
+        private Button BJc;
+        private ImageList BJD;
+        private static dy BJd;
+        private Entity BJE;
+        private System.Type BJe;
+        private bool BJF;
+        private TreeNode BJf;
+        [Config("ChooseEntityForm", "lastWindowPosition")]
+        public static Vec2I lastWindowPosition;
+        [Config("ChooseEntityForm", "lastWindowSize")]
+        public static Vec2I lastWindowSize;
+        public static dy Instance
+        {
+            get
+            {
+                return dy.BJd;
+            }
+        }
+        public Entity Entity
+        {
+            get
+            {
+                Trace.Assert(this.BJb.SelectedNode != null);
+                if (this.BJF && this.BJb.SelectedNode == this.BJf)
+                {
+                    return null;
+                }
+                return (Entity)this.BJb.SelectedNode.Tag;
+            }
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && this.BJB != null)
+            {
+                this.BJB.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void A()
+        {
+            this.BJB = new Container();
+            ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof(dy));
+            this.BJb = new TreeView();
+            this.BJD = new ImageList(this.BJB);
+            this.BJC = new Button();
+            this.BJc = new Button();
+            base.SuspendLayout();
+            this.BJb.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            this.BJb.ImageIndex = 0;
+            this.BJb.ImageList = this.BJD;
+            this.BJb.Location = new Point(16, 15);
+            this.BJb.Margin = new Padding(4);
+            this.BJb.Name = "treeView";
+            this.BJb.SelectedImageIndex = 0;
+            this.BJb.Size = new Size(647, 499);
+            this.BJb.TabIndex = 0;
+            this.BJb.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(this.treeNodeMouseDoubleClick);
+            this.BJb.AfterSelect += new TreeViewEventHandler(this.afterSelect);
+            this.BJb.KeyDown += new KeyEventHandler(this.keyDown);
+            //this.BJD.ImageStream = (ImageListStreamer)componentResourceManager.GetObject("imageListTreeView.ImageStream");
+            this.BJD.TransparentColor = Color.Transparent;
+
+            initImageList(this.BJD); 
+
+            this.BJC.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
+            this.BJC.DialogResult = DialogResult.OK;
+            this.BJC.Location = new Point(421, 528);
+            this.BJC.Margin = new Padding(4);
+            this.BJC.Name = "buttonOK";
+            this.BJC.Size = new Size(117, 32);
+            this.BJC.TabIndex = 1;
+            this.BJC.Text = "OK";
+            this.BJC.UseVisualStyleBackColor = true;
+            this.BJc.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
+            this.BJc.DialogResult = DialogResult.Cancel;
+            this.BJc.Location = new Point(547, 528);
+            this.BJc.Margin = new Padding(4);
+            this.BJc.Name = "buttonCancel";
+            this.BJc.Size = new Size(117, 32);
+            this.BJc.TabIndex = 2;
+            this.BJc.Text = "Cancel";
+            this.BJc.UseVisualStyleBackColor = true;
+            base.AcceptButton = this.BJC;
+            base.AutoScaleDimensions = new SizeF(8f, 16f);
+            base.AutoScaleMode = AutoScaleMode.Font;
+            base.CancelButton = this.BJc;
+            base.ClientSize = new Size(680, 575);
+            base.Controls.Add(this.BJc);
+            base.Controls.Add(this.BJC);
+            base.Controls.Add(this.BJb);
+            base.Margin = new Padding(4);
+            base.MaximizeBox = false;
+            base.MinimizeBox = false;
+            this.MinimumSize = new Size(400, 300);
+            base.Name = "ChooseEntityForm";
+            base.ShowIcon = false;
+            base.ShowInTaskbar = false;
+            base.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Object Selection";
+            base.Load += new System.EventHandler(this.Form_Load);
+            base.FormClosed += new FormClosedEventHandler(this.Form_Closed);
+            base.ResumeLayout(false);
+        }
+
+        private void initImageList(ImageList IL)
+        { 
+            this.BJD.Images.Add("Folder_16.png", Resources.Folder_16);
+            this.BJD.Images.Add("File_16.png", Resources.File_16);
+            this.BJD.Images.Add("Entity_16.png", Resources.Entity_16);
+        }
+
+        public dy(Entity ownerEntity, System.Type entityClassType, bool allowChooseNull, Entity currentEntity)
+        {
+            this.A();
+            EngineApp.Instance.Config.RegisterClassParameters(typeof(ChooseResourceForm));
+            if (dy.lastWindowSize != Vec2I.Zero)
+            {
+                base.Location = new Point(dy.lastWindowPosition.X, dy.lastWindowPosition.Y);
+                base.Size = new Size(dy.lastWindowSize.X, dy.lastWindowSize.Y);
+                base.StartPosition = FormStartPosition.Manual;
+            }
+            this.Font = MainForm.GetFont(null, this.Font);
+            this.BJb.Font = MainForm.GetFont(null, this.BJb.Font);
+            this.BJf = null;
+            this.BJE = ownerEntity;
+            this.BJe = entityClassType;
+            this.BJF = allowChooseNull;
+            this.A(currentEntity);
+            dy.BJd = this;
+        }
+
+
+        protected override void OnClosed(System.EventArgs e)
+        {
+            dy.lastWindowPosition = new Vec2I(base.Location.X, base.Location.Y);
+            dy.lastWindowSize = new Vec2I(base.Size.Width, base.Size.Height);
+            base.OnClosed(e);
+        }
+
+        private void Form_Closed(object obj, FormClosedEventArgs formClosedEventArgs)
+        {
+            dy.BJd = null;
+        }
+
+        private void A(Entity entity)
+        {
+            this.BJb.BeginUpdate();
+            this.BJb.Nodes.Clear();
+            TreeNode treeNode = null;
+            foreach (Entity current in Entities.Instance.EntitiesCollection)
+            {
+                if (!current.Editor_IsExcludedFromWorld() && (!(this.BJe != null) || this.BJe.IsAssignableFrom(current.GetType())))
+                {
+                    bool flag = !string.IsNullOrEmpty(current.Name);
+                    if (this.BJE != null)
+                    {
+                        LogicEntityClass logicEntityClass = current as LogicEntityClass;
+                        if (logicEntityClass != null && logicEntityClass.EntityClassInfo != null && logicEntityClass.EntityClassInfo.EntityClassType.IsAssignableFrom(this.BJE.GetType()))
+                        {
+                            flag = true;
+                        }
+                    }
+                    if (flag)
+                    {
+                        TreeNode treeNode2 = new TreeNode(current.ToString(), 2, 2);
+                        treeNode2.Name = treeNode2.Text;
+                        treeNode2.Tag = current;
+                        this.BJb.Nodes.Add(treeNode2);
+                        if (current == entity)
+                        {
+                            treeNode = treeNode2;
+                        }
+                    }
+                }
+            }
+            this.BJb.TreeViewNodeSorter = new dy.AT();
+            this.BJb.Sort();
+            if (treeNode != null)
+            {
+                TreeViewUtils.ExpandAllPathToNode(treeNode);
+                this.BJb.SelectedNode = treeNode;
+            }
+            if (this.BJF)
+            {
+                this.BJf = new TreeNode(ToolsLocalization.Translate("ChooseEntityForm", "(Null)"), 1, 1);
+                this.BJf.Name = this.BJf.Text;
+                this.BJb.Nodes.Add(this.BJf);
+                if (entity == null)
+                {
+                    this.BJb.SelectedNode = this.BJf;
+                }
+            }
+            this.BJb.EndUpdate();
+        }
+        private void treeNodeMouseDoubleClick(object obj, TreeNodeMouseClickEventArgs treeNodeMouseClickEventArgs)
+        {
+            if (treeNodeMouseClickEventArgs.Node != this.BJb.SelectedNode)
+            {
+                return;
+            }
+            if (this.BJC.Enabled)
+            {
+                base.DialogResult = DialogResult.OK;
+                base.Close();
+            }
+        }
+        private void keyDown(object obj, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.KeyCode == Keys.Return && this.BJC.Enabled)
+            {
+                base.DialogResult = DialogResult.OK;
+                base.Close();
+            }
+        }
+        private void afterSelect(object obj, TreeViewEventArgs treeViewEventArgs)
+        {
+            if (treeViewEventArgs.Node == null)
+            {
+                this.BJC.Enabled = false;
+                return;
+            }
+            if (this.BJF && treeViewEventArgs.Node == this.BJf)
+            {
+                this.BJC.Enabled = true;
+                return;
+            }
+            this.BJC.Enabled = (treeViewEventArgs.Node.Tag != null);
+        }
+        private void Form_Load(object obj, System.EventArgs eventArgs)
+        {
+            this.a();
+        }
+        private void a()
+        {
+            this.Text = ToolsLocalization.Translate("ChooseEntityForm", this.Text);
+            foreach (Control control in base.Controls)
+            {
+                if (control is Label || control is Button)
+                {
+                    control.Text = ToolsLocalization.Translate("ChooseEntityForm", control.Text);
+                }
+            }
+        }
+    }

@@ -63,7 +63,7 @@ namespace Jx.BT
 
             for (int i = 0; i < m_Children.Count; i++)
             {
-                BTResult childStatus = m_Children[i].Tick(context);
+                BTResult childStatus = m_Children[i].Tick_(context);
  
                 if (childStatus == BTResult.Success)
                     numberOfSuccesses++;

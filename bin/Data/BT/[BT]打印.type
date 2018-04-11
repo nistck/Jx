@@ -1,0 +1,5 @@
+type "[BT]\x6253\x5370"
+{
+	class = BTPrintAction
+	_context = "[BT]\x7f3a\x7701\x73af\x5883"
+}

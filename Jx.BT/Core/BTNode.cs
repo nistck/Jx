@@ -1,13 +1,42 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Jx.EntitySystem;
+
 namespace Jx.BT
 {
-    public abstract class BTNode
+    public abstract class BTNodeType : EntityType
     {
+        [FieldSerialize]
+        private BTContextType _context;
+
+        [DisplayName("环境")]
+        public BTContextType Context
+        {
+            get { return _context; }
+            set { this._context = value; }
+        }
+
+    }
+
+    public abstract class BTNode : Entity
+    {
+        private BTNodeType _type; 
+        public new BTNodeType Type { get { return _type; } }
+
+        [FieldSerialize]
+        private BTContext _context;
+        public BTContext Context
+        {
+            get { return _context; }
+            set { this._context = value; }
+        }
+
+
         private List<BTConstraint> m_Constraints = new List<BTConstraint>(); 
 
         /// <summary>
@@ -17,7 +46,7 @@ namespace Jx.BT
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name_ { get; protected set; }
         /// <summary>
         /// 描述
         /// </summary>
@@ -36,11 +65,37 @@ namespace Jx.BT
         /// <summary>
         /// 父节点
         /// </summary>
-        public BTNode Parent { get; internal set; }
+        public BTNode Parent_ { get; internal set; }
+
+        public BTResult Result { get; private set; }
 
         public BTNode()
         {
             this.Id = Guid.NewGuid().ToString(); 
+        }
+
+        protected override void OnCreate()
+        {
+            base.OnCreate(); 
+
+            if( Type.Context != null )
+                Context = Entities.Instance.Create(Type.Context, Parent) as BTContext;
+        }
+
+        protected override void OnPostCreate(bool loaded)
+        {
+            base.OnPostCreate(loaded);
+
+            if( Parent_ == null )
+                SubscribeToTickEvent(); 
+        }
+
+        protected override void OnDestroy()
+        {
+            if( Parent_ == null )
+                UnsubscribeToTickEvent(); 
+
+            base.OnDestroy();
         }
 
         public bool AddConstraint(BTConstraint constraint)
@@ -85,14 +140,20 @@ namespace Jx.BT
             return MuteResult == null ? r : MuteResult;
         }
 
+        protected override void OnTick()
+        {
+            base.OnTick();
+            Result = Tick_(Context); 
+        }
+
         /// <summary>
         /// 每帧处理函数
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        internal BTResult Tick(BTContext context)
+        internal BTResult Tick_(BTContext context)
         {
-            context.Travel(this); 
+            context?.Travel(this); 
 
             BTResult result = BTResult.Running;
 
@@ -122,7 +183,7 @@ namespace Jx.BT
                 }
             }
              
-            context.SetNodeResult(this, result); 
+            context?.SetNodeResult(this, result); 
             return _MuteResult(result); 
         } 
 

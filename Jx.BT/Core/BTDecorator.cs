@@ -15,7 +15,7 @@ namespace Jx.BT
         {
             this.m_Child = child;
             if (child != null)
-                child.Parent = this; 
+                child.Parent_ = this; 
         }
 
         public BTNode Child
@@ -23,11 +23,11 @@ namespace Jx.BT
             get { return m_Child; }
             set {
                 if (this.m_Child != null)
-                    this.m_Child.Parent = null; 
+                    this.m_Child.Parent_ = null; 
 
                 this.m_Child = value;
                 if (this.m_Child != null)
-                    this.m_Child.Parent = this; 
+                    this.m_Child.Parent_ = this; 
             }
         }
     }

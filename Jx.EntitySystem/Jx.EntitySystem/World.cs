@@ -77,13 +77,13 @@ namespace Jx.EntitySystem
             this.SaveCustomSerializationValues(block);
         }
 
-        protected internal override void OnPostCreate(bool loaded)
+        protected override void OnPostCreate(bool loaded)
         {
             base.OnPostCreate(loaded);
             base.SubscribeToTickEvent();
         }
 
-        protected internal override void OnDestroy()
+        protected override void OnDestroy()
         {
             instance = null;
             base.OnDestroy();

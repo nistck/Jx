@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -1791,11 +1792,12 @@ namespace Aga.Controls.Tree
 		{
 			if (e.Path == null)
 				throw new ArgumentNullException();
-
-			TreeNodeAdv node = FindNode(e.Path);
+ 
+            TreeNodeAdv node = FindNode(e.Path);
 			if (node != null)
 			{
-				Collection<ExpandedNode> expandedNodes = null;
+                node.IsLeaf = Model.IsLeaf(e.Path);
+                Collection<ExpandedNode> expandedNodes = null;
 				if (KeepNodesExpanded && node.IsExpanded)
 				{
 					expandedNodes = FindExpandedNodes(node);
@@ -1810,8 +1812,8 @@ namespace Aga.Controls.Tree
 				{
 					_structureUpdating = false;
 				}
-				SmartFullUpdate();
-			}
+				SmartFullUpdate(); 
+            }
 		}
 
 		private Collection<ExpandedNode> FindExpandedNodes(TreeNodeAdv parent)
@@ -1885,7 +1887,7 @@ namespace Aga.Controls.Tree
 		}
 
 		private void _model_NodesChanged(object sender, TreeModelEventArgs e)
-		{
+		{ 
 			TreeNodeAdv parent = FindNode(e.Path);
 			if (parent != null)
 			{
@@ -1917,7 +1919,7 @@ namespace Aga.Controls.Tree
 				}
 			}
 			SafeUpdateScrollBars();
-			UpdateView();
+			UpdateView(); 
 		}
 
 		public TreeNodeAdv FindNode(TreePath path)

@@ -49,7 +49,7 @@ namespace Jx.BT
         {
             if (count == 0)
             {
-                BTResult result = m_Child.Tick(context);
+                BTResult result = m_Child.Tick_(context);
 
                 if (endOnFailure && result == BTResult.Failed)
                 {
@@ -61,7 +61,7 @@ namespace Jx.BT
             }
             else if (currentCount < count)
             {
-                BTResult result = m_Child.Tick(context);
+                BTResult result = m_Child.Tick_(context);
                 currentCount++;
 
                 if (currentCount >= count)

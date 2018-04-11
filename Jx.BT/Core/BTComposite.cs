@@ -28,7 +28,7 @@ namespace Jx.BT
         {
             if (node != null && !m_Children.Contains(node))
             {
-                node.Parent = this;
+                node.Parent_ = this;
                 m_Children.Add(node);
             }
         }
@@ -38,7 +38,7 @@ namespace Jx.BT
         {
             if (child != null && m_Children.Contains(child))
             {
-                child.Parent = this; 
+                child.Parent_ = this; 
                 m_Children.Insert(index, child);
             }
         }
@@ -48,7 +48,7 @@ namespace Jx.BT
         {
             if (child != null)
             {
-                child.Parent = null; 
+                child.Parent_ = null; 
                 m_Children.Remove(child);
             }
         }
@@ -58,7 +58,7 @@ namespace Jx.BT
         {
             if (index >= 0 && index < m_Children.Count)
             {
-                m_Children[index].Parent = null; 
+                m_Children[index].Parent_ = null; 
                 m_Children.RemoveAt(index);
             }
         }
@@ -67,7 +67,7 @@ namespace Jx.BT
         public void RemoveAllChildren()
         {
             m_Children.Any(_x => {
-                _x.Parent = null; 
+                _x.Parent_ = null; 
                 return false; 
             });
             m_Children.Clear();

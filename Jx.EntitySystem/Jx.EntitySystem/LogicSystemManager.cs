@@ -66,7 +66,7 @@ namespace Jx.EntitySystem
 			}
 			LogicSystemManager.aBQ = this;
 		}
-		protected internal override void OnPostCreate(bool loaded)
+		protected override void OnPostCreate(bool loaded)
 		{
 			base.OnPostCreate(loaded);
 			if (this.aBr == null)
@@ -75,7 +75,7 @@ namespace Jx.EntitySystem
 				this.aBr.PostCreate();
 			}
 		}
-		protected internal override void OnDestroy()
+		protected override void OnDestroy()
 		{
 			base.OnDestroy();
 			LogicSystemManager.aBQ = null;

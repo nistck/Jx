@@ -583,7 +583,7 @@ namespace Jx.EntitySystem
             OnCreate();
         }
 
-        protected internal virtual void OnCreate()
+        protected virtual void OnCreate()
         {
         }
 
@@ -637,7 +637,17 @@ namespace Jx.EntitySystem
                 PostCreated(this, loaded);
         }
 
-        protected internal virtual void OnPostCreate(bool loaded)
+        internal void OnPostCreate_(bool loaded)
+        {
+            OnPostCreate(loaded);
+        }
+
+        internal void OnPostCreate2_(bool loaded)
+        {
+            OnPostCreate2(loaded);
+        }
+
+        protected virtual void OnPostCreate(bool loaded)
         {
             if (editor_excludeEntityFromWorld)
             {
@@ -649,7 +659,7 @@ namespace Jx.EntitySystem
             }
         }
 
-        protected internal virtual void OnPostCreate2(bool loaded)
+        protected virtual void OnPostCreate2(bool loaded)
         {
             if (editor_excludeEntityFromWorld)
                 return;
@@ -680,7 +690,7 @@ namespace Jx.EntitySystem
                 Destroyed(this);
         }
 
-        protected internal virtual void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (editor_excludeEntityFromWorld)
                 return;

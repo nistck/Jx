@@ -52,7 +52,7 @@ namespace Jx.BT
 
         protected override BTResult OnTick(BTContext context)
         {
-            BTResult r = m_Child.Tick(context);
+            BTResult r = m_Child.Tick_(context);
             if (skipTick)
                 return r;
 
@@ -65,7 +65,7 @@ namespace Jx.BT
 
                 if (_field != null)
                 {
-                    object fv = context.Database.GetData<object>(DataId);
+                    object fv = context.Database?.GetData<object>(DataId);
                     _field.SetValue(m_Child, fv);  
                 }
                 else
@@ -77,7 +77,7 @@ namespace Jx.BT
                     _property = childType.GetProperty(MemberName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                 if (_property != null && _property.CanWrite)
                 {
-                    object pv = context.Database.GetData<object>(DataId);
+                    object pv = context.Database?.GetData<object>(DataId);
                     _property.GetSetMethod().Invoke(m_Child, new object[] { pv });
                 }
                 else

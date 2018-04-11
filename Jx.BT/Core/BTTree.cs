@@ -24,7 +24,7 @@ namespace Jx.BT
             try
             {
                 if (Root != null)
-                    result = Root.Tick(context);
+                    result = Root.Tick_(context);
             }
             finally {
                 context.OnSessionEnd(); 

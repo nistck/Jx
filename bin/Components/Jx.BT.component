@@ -1,0 +1,11 @@
+fullName = "Jx.BT classes"
+componentTypes = "EntityClasses"
+platforms = "Windows"
+enableByDefaultPlatforms = "Windows"
+
+path
+{
+	path = "Jx.BT.dll"
+	platforms = "Windows"
+	entryPoint = True
+}

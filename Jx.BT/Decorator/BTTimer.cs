@@ -34,7 +34,7 @@ namespace Jx.BT
             if (ts >= interval)
             {
                 _timer = DateTime.Now.Ticks;
-                BTResult result = m_Child.Tick(context);
+                BTResult result = m_Child.Tick_(context);
                 return result;
             }
             else

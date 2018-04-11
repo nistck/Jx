@@ -29,7 +29,7 @@ namespace Jx.BT
                 return BTResult.Failed;
 
             int index = SelectChild();
-            BTResult result = m_Children[index].Tick(context);
+            BTResult result = m_Children[index].Tick_(context);
             //m_Children[index].Reset();
             lastSelectedIndex = index; 
             return result;

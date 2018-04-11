@@ -23,7 +23,7 @@ namespace Jx.BT
             {
                 BTNode child = m_Children[i];
 
-                BTResult result = child.Tick(context); 
+                BTResult result = child.Tick_(context); 
                 switch (result.Code)
                 {
                     case BTResultCode.Running:

@@ -50,7 +50,7 @@ namespace Jx.BT
 
         protected override BTResult OnTick(BTContext context)
         {            
-            BTResult r = m_Child.Tick(context);
+            BTResult r = m_Child.Tick_(context);
             if (skipTick)
                 return r;  
 
@@ -65,7 +65,7 @@ namespace Jx.BT
                 {
                     object fv = _field.GetValue(m_Child);
                     if (DataId != null)
-                        context.Database.SetData(DataId, fv);
+                        context.Database?.SetData(DataId, fv);
                 }
                 else
                     skipTick = true;
@@ -78,7 +78,7 @@ namespace Jx.BT
                 {
                     object pv = _property.GetGetMethod().Invoke(m_Child, null);
                     if (DataId != null)
-                        context.Database.SetData(DataId, pv);
+                        context.Database?.SetData(DataId, pv);
                 }
                 else
                     skipTick = true; 

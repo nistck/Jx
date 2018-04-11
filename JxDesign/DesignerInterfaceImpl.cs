@@ -257,6 +257,7 @@ namespace JxDesign
          
         public override bool EntityUITypeEditorEditValue(Entity ownerEntity, System.Type entityClassType, ref Entity entity)
         {
+            Log.Debug("No Implementation!");
             /*
 #if DEBUG
             XLog.debug(
