@@ -12,7 +12,7 @@ using Jx.MapSystem;
 
 namespace Jx.EntitiesCommon
 {
-    [JxName("简单Bean")]
+    [Name("简单Bean")]
     public class SimpleBeanType : MapObjectType
     {
         [FieldSerialize]
@@ -24,14 +24,14 @@ namespace Jx.EntitiesCommon
         [FieldSerialize]
         private string any;
 
-        [JxName("上级")]
+        [DisplayName("上级")]
         public SimpleBeanType Parent
         {
             get { return parent; }
             set { this.parent = value; }
         }
 
-        [JxName("Id")]
+        [DisplayName("Id")]
         [DefaultValue(1981)]
         public int Id
         {
@@ -39,7 +39,7 @@ namespace Jx.EntitiesCommon
             set { this.id = value; }
         }
 
-        [JxName("作用域")]
+        [DisplayName("作用域")]
         [DefaultValue("property")]
         public string Scope
         {
@@ -47,6 +47,7 @@ namespace Jx.EntitiesCommon
             set { this.scope = value; }
         }
          
+        [DisplayName("ANY-")]
         public string Any
         {
             get { return this.any; }
@@ -63,7 +64,7 @@ namespace Jx.EntitiesCommon
 
     }
 
-    [JxName("简单Bean")]
+    [Name("简单Bean")]
     public class SimpleBean : MapObject
     {
         public enum MethodType
@@ -85,7 +86,7 @@ namespace Jx.EntitiesCommon
             return base.OnLoad(block);
         }
 
-        [JxName("Bean Id")]
+        [Name("Bean Id")]
         public int BeanId
         {
             get { return beanId; }

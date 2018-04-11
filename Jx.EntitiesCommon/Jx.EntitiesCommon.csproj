@@ -41,18 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\ActionNode.cs" />
-    <Compile Include="Behaviors\BehaviorNode.cs" />
-    <Compile Include="Behaviors\BehaviorTree.cs" />
-    <Compile Include="Behaviors\BehaviorTreeNode.cs" />
-    <Compile Include="Behaviors\CompositeNode.cs" />
-    <Compile Include="Behaviors\ConditionNode.cs" />
-    <Compile Include="Behaviors\DeciderNode.cs" />
-    <Compile Include="Behaviors\DecoratorNode.cs" />
-    <Compile Include="Behaviors\SerialNode.cs" />
-    <Compile Include="Behaviors\ParallelNode.cs" />
-    <Compile Include="Behaviors\SequenceNode.cs" />
-    <Compile Include="Behaviors\SelectorNode.cs" />
     <Compile Include="Dynamic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleBean.cs" />

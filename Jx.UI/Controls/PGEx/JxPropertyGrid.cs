@@ -618,7 +618,7 @@ namespace Jx.UI.Controls.PGEx
                 {
                     if (propertyInfo != null)
                     {
-                        JxNameAttribute attrFound = propertyInfo.GetCustomAttribute<JxNameAttribute>();
+                        NameAttribute attrFound = propertyInfo.GetCustomAttribute<NameAttribute>();
                         if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
                             return attrFound.Name;
                     }
@@ -632,7 +632,7 @@ namespace Jx.UI.Controls.PGEx
                 {
                     if (propertyInfo != null)
                     {
-                        JxNameAttribute attrFound = propertyInfo.DeclaringType.GetCustomAttribute<JxNameAttribute>();
+                        NameAttribute attrFound = propertyInfo.DeclaringType.GetCustomAttribute<NameAttribute>();
                         if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
                         {
                             string categoryInfo = string.Format("{0} ({1})", attrFound.Name, base.Category);

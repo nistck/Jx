@@ -125,7 +125,7 @@ namespace Jx
 
             foreach (PropertyDescriptor pd in pds)
             {
-                JxNameAttribute attr = pd.Attributes.OfType<JxNameAttribute>().FirstOrDefault();
+                NameAttribute attr = pd.Attributes.OfType<NameAttribute>().FirstOrDefault();
                 string name = pd.Name;
                 if (attr != null && !string.IsNullOrEmpty(attr.Name) && attr.Name.Trim().Length > 0)
                     name = attr.Name.Trim();

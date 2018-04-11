@@ -50,7 +50,7 @@
             this.ResourcesView.Margin = new System.Windows.Forms.Padding(2);
             this.ResourcesView.Name = "ResourcesView";
             this.ResourcesView.SelectedImageIndex = 0;
-            this.ResourcesView.Size = new System.Drawing.Size(259, 363);
+            this.ResourcesView.Size = new System.Drawing.Size(259, 338);
             this.ResourcesView.TabIndex = 0;
             this.ResourcesView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnBeforeNodeLabelEdit);
             this.ResourcesView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.OnAfterNodeLabelEdit);
@@ -123,7 +123,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(263, 387);
             this.tableLayoutPanel1.TabIndex = 1;
             // 

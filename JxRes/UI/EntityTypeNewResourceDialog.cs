@@ -70,10 +70,10 @@ namespace JxRes.UI
                 if (Class == null)
                     return "<未知类型>";
 
-                object[] attrs = Class.EntityClassType.GetCustomAttributes(typeof(JxNameAttribute), false);
+                object[] attrs = Class.EntityClassType.GetCustomAttributes(typeof(NameAttribute), false);
                 if( attrs != null )
                 {
-                    JxNameAttribute nameAttr = attrs.OfType<JxNameAttribute>().FirstOrDefault();
+                    NameAttribute nameAttr = attrs.OfType<NameAttribute>().FirstOrDefault();
                     if( nameAttr != null )
                     {
                         string text = string.Format("{0} ({1})", nameAttr.Name, Class.EntityClassType.Name);

@@ -93,7 +93,7 @@ namespace Jx.EntitySystem
             {
                 if (propertyInfo != null)
                 {
-                    JxNameAttribute attrFound = propertyInfo.GetCustomAttribute<JxNameAttribute>();
+                    NameAttribute attrFound = propertyInfo.GetCustomAttribute<NameAttribute>();
                     if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name))
                         return attrFound.Name; 
                 }
@@ -124,7 +124,7 @@ namespace Jx.EntitySystem
                     Type type = types[0];
                     types.RemoveAt(0);
 
-                    JxNameAttribute attrFound = type.GetCustomAttribute<JxNameAttribute>();
+                    NameAttribute attrFound = type.GetCustomAttribute<NameAttribute>();
                     if (attrFound != null && !string.IsNullOrEmpty(attrFound.Name) )
                     {
                         categoryInfo = string.Format("{0} ({1})", attrFound.Name, base.Category);

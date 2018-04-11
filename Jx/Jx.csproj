@@ -52,8 +52,8 @@
     <Compile Include="EngineRandom.cs" />
     <Compile Include="FunctionalityArea.cs" />
     <Compile Include="JxException.cs" />
+    <Compile Include="NameAttribute.cs" />
     <Compile Include="JxObject.cs" />
-    <Compile Include="JxNameAttribute.cs" />
     <Compile Include="JxPropertyEditSelectOnlyAttribute.cs" />
     <Compile Include="JxRuntime.cs" />
     <Compile Include="JxThread.cs" />

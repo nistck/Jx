@@ -42,14 +42,20 @@ namespace JxRes
 
         private DeserializeDockContent serializeContext;
 
+        [Config("Loading", "showSplashScreen")]
+        private static bool showSplashScreen = false; 
+
         public MainForm()
         {
-            this.Hide();
-            LongOperationNotifier.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
+            if (showSplashScreen)
+            {
+                this.Hide();
+                LongOperationNotifier.LongOperationNotify += LongOperationCallbackManager_LongOperationNotify;
 
-            string p0 = Path.GetDirectoryName(Application.ExecutablePath);
-            string filePath = Path.Combine(p0, @"Resources\Splash.jpg");
-            SplashScreen.Show(filePath);
+                string p0 = Path.GetDirectoryName(Application.ExecutablePath);
+                string filePath = Path.Combine(p0, @"Resources\Splash.jpg");
+                SplashScreen.Show(filePath);
+            }
 
             InitializeComponent();
             instance = this;
@@ -140,11 +146,13 @@ namespace JxRes
             resourcesForm.UpdateView();
 
             #region Splash Screen
-
-            LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
-            this.Show();
-            SplashScreen.Hide();
-            this.Activate();
+            if (showSplashScreen)
+            {
+                LongOperationNotifier.LongOperationNotify -= LongOperationCallbackManager_LongOperationNotify;
+                this.Show();
+                SplashScreen.Hide();
+                this.Activate();
+            }
             #endregion
 
             this.WindowState = FormWindowState.Maximized;
