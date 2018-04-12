@@ -133,6 +133,7 @@
             this.treeViewObjects.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewObjects.HideSelection = false;
+            this.treeViewObjects.ItemHeight = 24;
             this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
             this.treeViewObjects.Name = "treeViewObjects";
             this.treeViewObjects.Size = new System.Drawing.Size(376, 480);

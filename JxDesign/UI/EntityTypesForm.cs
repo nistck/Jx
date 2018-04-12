@@ -445,7 +445,10 @@ namespace JxDesign.UI
  
             if (node.Bounds.Height != 0)
             {
-                drawTreeNodeEventArgs.Graphics.DrawString(node.Text, font, brush, bounds);
+                StringFormat textFormat = new StringFormat();
+                textFormat.Alignment = StringAlignment.Near;
+                textFormat.LineAlignment = StringAlignment.Center;
+                drawTreeNodeEventArgs.Graphics.DrawString(node.Text, font, brush, bounds, textFormat);
             }
 
             EntityType entityType = node.Tag as EntityType;

@@ -40,10 +40,10 @@
             this.tsmiDeleteLayer = new System.Windows.Forms.ToolStripButton();
             this.tsmiEditLayer = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiDelete = new System.Windows.Forms.ToolStripButton();
             this.IL16 = new System.Windows.Forms.ImageList(this.components);
             this.ILtreeView = new System.Windows.Forms.ImageList(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tsmiDelete = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.XTS.SuspendLayout();
             this.SuspendLayout();
@@ -52,7 +52,7 @@
             // 
             this.treeViewEntities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewEntities.HideSelection = false;
-            this.treeViewEntities.ItemHeight = 16;
+            this.treeViewEntities.ItemHeight = 24;
             this.treeViewEntities.Location = new System.Drawing.Point(3, 28);
             this.treeViewEntities.Name = "treeViewEntities";
             this.treeViewEntities.Size = new System.Drawing.Size(338, 512);
@@ -149,6 +149,16 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
+            // tsmiDelete
+            // 
+            this.tsmiDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsmiDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsmiDelete.Image")));
+            this.tsmiDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsmiDelete.Name = "tsmiDelete";
+            this.tsmiDelete.Size = new System.Drawing.Size(23, 22);
+            this.tsmiDelete.Text = "删除Entity";
+            this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
+            // 
             // IL16
             // 
             this.IL16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL16.ImageStream")));
@@ -171,16 +181,6 @@
             // 
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // tsmiDelete
-            // 
-            this.tsmiDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsmiDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsmiDelete.Image")));
-            this.tsmiDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(23, 22);
-            this.tsmiDelete.Text = "删除Entity";
-            this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
             // 
             // EntitiesForm
             // 
