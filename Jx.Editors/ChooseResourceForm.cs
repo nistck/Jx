@@ -315,7 +315,7 @@ namespace Jx.Editors
         {
             if (this.checkBoxAllowRelativePath.Enabled)
             {
-                ChooseResourceForm.allowRelativePath = this.checkBoxAllowRelativePath.Checked;
+                allowRelativePath = this.checkBoxAllowRelativePath.Checked;
             }
         }
 

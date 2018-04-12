@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChooseEntityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseEntityForm.Designer.cs">
+      <DependentUpon>ChooseEntityForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChooseResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ChooseEntityForm.resx">
+      <DependentUpon>ChooseEntityForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ChooseResourceForm.resx">
       <DependentUpon>ChooseResourceForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -117,6 +126,7 @@
   <ItemGroup>
     <Content Include="Resources\Config_16.png" />
     <None Include="Resources\EntityType_16.png" />
+    <Content Include="Resources\entity_16.png" />
     <Content Include="Resources\file_16.png" />
     <Content Include="Resources\folder_16.png" />
     <Content Include="Resources\no_16.png" />

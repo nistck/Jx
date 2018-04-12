@@ -17,7 +17,28 @@ entity
 	classPrompt = BTPrintAction
 	level = Error
 	message = Dxdx
+	_context = 4
 	name = "[BT]\x6253\x5370_1"
+	tags
+	{
+	}
+}
+entity
+{
+	type = "[BT]\x7f3a\x7701\x73af\x5883"
+	uin = 4
+	classPrompt = BTContext
+	name = "[BT]\x7f3a\x7701\x73af\x5883_0"
+	tags
+	{
+	}
+}
+entity
+{
+	type = "[BT]\x7f3a\x7701\x73af\x5883"
+	uin = 5
+	classPrompt = BTContext
+	name = "[BT]\x7f3a\x7701\x73af\x5883_1"
 	tags
 	{
 	}

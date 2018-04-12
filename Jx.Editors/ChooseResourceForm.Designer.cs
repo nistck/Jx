@@ -33,9 +33,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.treeView = new System.Windows.Forms.TreeView();
             this.imageListTreeView = new System.Windows.Forms.ImageList(this.components);
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonConfirm = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.buttonConfirm = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.checkBoxAllowRelativePath = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -79,32 +79,6 @@
             this.imageListTreeView.Images.SetKeyName(0, "folder");
             this.imageListTreeView.Images.SetKeyName(1, "file");
             // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonCancel.Image = global::Jx.Editors.Properties.Resources.no_16;
-            this.buttonCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonCancel.Location = new System.Drawing.Point(391, 4);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(90, 36);
-            this.buttonCancel.TabIndex = 0;
-            this.buttonCancel.Text = "  取 消(&C)";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // buttonConfirm
-            // 
-            this.buttonConfirm.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.buttonConfirm.Image = global::Jx.Editors.Properties.Resources.yes_16;
-            this.buttonConfirm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonConfirm.Location = new System.Drawing.Point(291, 4);
-            this.buttonConfirm.Name = "buttonConfirm";
-            this.buttonConfirm.Size = new System.Drawing.Size(90, 36);
-            this.buttonConfirm.TabIndex = 0;
-            this.buttonConfirm.Text = "  确 定(&Y)";
-            this.buttonConfirm.UseVisualStyleBackColor = true;
-            this.buttonConfirm.Click += new System.EventHandler(this.buttonConfirm_Click);
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 4;
@@ -122,6 +96,32 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(484, 44);
             this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // buttonConfirm
+            // 
+            this.buttonConfirm.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonConfirm.Image = global::Jx.Editors.Properties.Resources.yes_16;
+            this.buttonConfirm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonConfirm.Location = new System.Drawing.Point(291, 4);
+            this.buttonConfirm.Name = "buttonConfirm";
+            this.buttonConfirm.Size = new System.Drawing.Size(90, 36);
+            this.buttonConfirm.TabIndex = 0;
+            this.buttonConfirm.Text = "  确 定(&Y)";
+            this.buttonConfirm.UseVisualStyleBackColor = true;
+            this.buttonConfirm.Click += new System.EventHandler(this.buttonConfirm_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonCancel.Image = global::Jx.Editors.Properties.Resources.no_16;
+            this.buttonCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonCancel.Location = new System.Drawing.Point(391, 4);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(90, 36);
+            this.buttonCancel.TabIndex = 0;
+            this.buttonCancel.Text = "  取 消(&C)";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // checkBoxAllowRelativePath
             // 

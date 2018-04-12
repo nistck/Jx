@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Jx;
 using Jx.EntitySystem;
+using Jx.Editors;
 
 namespace JxDesign
 {
@@ -257,7 +258,12 @@ namespace JxDesign
          
         public override bool EntityUITypeEditorEditValue(Entity ownerEntity, System.Type entityClassType, ref Entity entity)
         {
-            Log.Debug("No Implementation!");
+            ChooseEntityForm f = new ChooseEntityForm(ownerEntity, entityClassType, true, entity); 
+            if( f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                entity = f.Entity;
+                return true; 
+            }
             /*
 #if DEBUG
             XLog.debug(
